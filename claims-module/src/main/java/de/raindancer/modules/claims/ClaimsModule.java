@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.13.2")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.14.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -206,6 +206,7 @@ public final class ClaimsModule implements FlexModule {
         ambience = new AmbienceService(context.plugin(), features, claims, land, claimService,
                 settings.current(), context.core().messages(), names);
         ambience.equipService(equipment);
+        ambience.flight(new de.raindancer.modules.claims.service.ClaimFlight(context.core().flight(), features, land));
 
         selectionFlow = new SelectionFlow(context.plugin(), context.plugin().getServer(), log, context.core().messages(),
                 context.core().prompts(), selections, stick, claims, claimService, zones,
@@ -406,6 +407,9 @@ public final class ClaimsModule implements FlexModule {
     @Override
     public void disable() {
         ClaimCommands.stopped();
+        if (ambience != null) {
+            ambience.releaseFlight();
+        }
         if (storage != null && claims != null) {
             int failed = 0;
             for (Claim claim : claims.all()) {

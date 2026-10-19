@@ -268,7 +268,7 @@ public final class ClaimMenu extends ClaimScreen {
     /** How many perks are running right now, for the same reason. */
     private int livePerks() {
         List<ClaimFeature> perks = new ArrayList<>(List.of(
-                ClaimFeature.EFFECTS, ClaimFeature.PANTRY, ClaimFeature.AUTO_EQUIP,
+                ClaimFeature.EFFECTS, ClaimFeature.PANTRY, ClaimFeature.AUTO_EQUIP, ClaimFeature.FLIGHT,
                 ClaimFeature.CLAIM_WEATHER, ClaimFeature.CLAIM_TIME));
         int running = 0;
         for (ClaimFeature perk : perks) {

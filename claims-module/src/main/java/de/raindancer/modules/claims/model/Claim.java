@@ -77,6 +77,8 @@ public final class Claim {
             new ConcurrentHashMap<>();
     /** The owner's master switch for those effects; the list survives switching them off. */
     private boolean effectsEnabled = true;
+    /** Whether people inside may fly; off until the owner says, since it changes what walls are for. */
+    private boolean flightEnabled;
 
     /** Made on first use; see area(). */
     private ClaimAreaRule area;
@@ -522,13 +524,13 @@ public final class Claim {
             return true;
         }
         EnumSet<LandAudience> served = featureAudiences.get(feature);
-        return served == null || served.contains(audience);
+        return (served == null ? feature.defaultAudiences() : served).contains(audience);
     }
 
-    /** The groups a feature serves, always a full set when the owner has never narrowed it. */
+    /** The groups a feature serves, its {@link ClaimFeature#defaultAudiences()} when the owner never said. */
     public EnumSet<LandAudience> featureAudiences(ClaimFeature feature) {
         EnumSet<LandAudience> served = featureAudiences.get(feature);
-        return served == null ? EnumSet.allOf(LandAudience.class) : EnumSet.copyOf(served);
+        return served == null ? feature.defaultAudiences() : EnumSet.copyOf(served);
     }
 
     public void setFeatureAudience(ClaimFeature feature, LandAudience audience, boolean served) {
@@ -541,7 +543,7 @@ public final class Claim {
         } else {
             current.remove(audience);
         }
-        if (current.size() == LandAudience.values().length) {
+        if (current.equals(feature.defaultAudiences())) {
             featureAudiences.remove(feature);
         } else {
             featureAudiences.put(feature, current);
@@ -549,11 +551,11 @@ public final class Claim {
         markDirty();
     }
 
-    /** Used by the loader; an empty or full set is stored as "everybody". */
+    /** Used by the loader; a set equal to the feature's default is stored as "never said". */
     public void restoreFeatureAudiences(Map<ClaimFeature, EnumSet<LandAudience>> loaded) {
         featureAudiences.clear();
         loaded.forEach((feature, served) -> {
-            if (feature.audienceAware() && served.size() < LandAudience.values().length) {
+            if (feature.audienceAware() && !served.equals(feature.defaultAudiences())) {
                 featureAudiences.put(feature, EnumSet.copyOf(served));
             }
         });
@@ -667,6 +669,15 @@ public final class Claim {
 
     public void effectsEnabled(boolean effectsEnabled) {
         this.effectsEnabled = effectsEnabled;
+        markDirty();
+    }
+
+    public boolean flightEnabled() {
+        return flightEnabled;
+    }
+
+    public void flightEnabled(boolean flightEnabled) {
+        this.flightEnabled = flightEnabled;
         markDirty();
     }
 

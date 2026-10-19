@@ -39,17 +39,21 @@ public final class PerksMenu extends ClaimScreen {
     protected void render() {
         Claim claim = claim();
 
-        perk(MenuLayout.WHO, 2, ClaimFeature.EFFECTS, Material.BREWING_STAND, "Effects",
+        perk(MenuLayout.WHO, 1, ClaimFeature.EFFECTS, Material.BREWING_STAND, "Effects",
                 claim.effects().size() + " granted inside",
                 () -> claim.effectsEnabled(!claim.effectsEnabled()));
 
-        perk(MenuLayout.WHO, 4, ClaimFeature.PANTRY, Material.BREAD, "Pantry",
+        perk(MenuLayout.WHO, 3, ClaimFeature.PANTRY, Material.BREAD, "Pantry",
                 claim.pantry().totalItems() + " item(s) stocked",
                 () -> claim.pantry().enabled(!claim.pantry().enabled()));
 
-        perk(MenuLayout.WHO, 6, ClaimFeature.AUTO_EQUIP, Material.ARMOR_STAND, "Auto-equip",
+        perk(MenuLayout.WHO, 5, ClaimFeature.AUTO_EQUIP, Material.ARMOR_STAND, "Auto-equip",
                 claim.equipment().rules().size() + " rule(s)",
                 () -> claim.equipment().enabled(!claim.equipment().enabled()));
+
+        perk(MenuLayout.WHO, 7, ClaimFeature.FLIGHT, Material.FEATHER, "Flight",
+                "for " + audienceWords(claim.featureAudiences(ClaimFeature.FLIGHT)),
+                () -> claim.flightEnabled(!claim.flightEnabled()));
 
         perk(MenuLayout.RULES, 3, ClaimFeature.CLAIM_WEATHER, Material.WATER_BUCKET, "Its own weather",
                 claim.atmosphere().weather().displayName(),
@@ -122,6 +126,27 @@ public final class PerksMenu extends ClaimScreen {
                     services().ambience().refreshClaim(claim);
                 })
                 .open();
+    }
+
+    /** "owners, trusted", "nobody" — who a perk reaches, for its detail line. */
+    static String audienceWords(java.util.Set<LandAudience> served) {
+        if (served.isEmpty()) {
+            return "nobody";
+        }
+        if (served.size() == LandAudience.values().length) {
+            return "everybody";
+        }
+        List<String> words = new ArrayList<>();
+        for (LandAudience audience : LandAudience.values()) {
+            if (served.contains(audience)) {
+                words.add(switch (audience) {
+                    case OWNER -> "owners";
+                    case TRUSTED -> "trusted";
+                    case VISITOR -> "visitors";
+                });
+            }
+        }
+        return String.join(", ", words);
     }
 
     /** An hour, ten minutes, a minute, a tick — a Minecraft day is 24000 ticks. */

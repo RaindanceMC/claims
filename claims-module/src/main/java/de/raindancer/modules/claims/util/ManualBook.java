@@ -589,6 +589,23 @@ public final class ManualBook {
                     "<black>and stock it."));
         }
 
+        if (has(ClaimFeature.FLIGHT)) {
+            pages.addAll(spread(heading("Flight"), "",
+                    "<black>Your claim can let",
+                    "<black>people fly inside it.",
+                    "",
+                    "<black>Open your claim's menu,",
+                    "<black>click <bold>Perks</bold>, then",
+                    "<black><bold>Flight</bold>. Right click",
+                    "<black>it to choose who.",
+                    "",
+                    "<dark_gray>Only you and trusted",
+                    "<dark_gray>players until you say.",
+                    "<dark_gray>Flying out over the",
+                    "<dark_gray>border ends it; the",
+                    "<dark_gray>landing does not hurt."));
+        }
+
         if (has(ClaimFeature.AUTO_EQUIP)) {
             pages.addAll(spread(heading("Auto-equip"), "",
                     "<black>The claim keeps people",

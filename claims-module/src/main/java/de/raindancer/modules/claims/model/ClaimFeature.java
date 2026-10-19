@@ -5,6 +5,7 @@ import de.raindancer.core.world.protection.LandAudience;
 import de.raindancer.core.world.protection.LandFlag;
 import org.bukkit.Material;
 
+import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -38,6 +39,9 @@ public enum ClaimFeature {
     AUTO_EQUIP("Auto-equip", "The claim keeps people supplied from its own stock",
             Material.ARMOR_STAND, FeaturePolicy.AVAILABLE, true, true,
             "equipment.policy", "equipment.enabled"),
+    FLIGHT("Flight", "People inside may fly, as in creative",
+            Material.FEATHER, FeaturePolicy.AVAILABLE, true, true,
+            null, null),
     CLAIM_WEATHER("Own weather", "The claim shows its own weather, client side",
             Material.WATER_BUCKET, FeaturePolicy.FORCED_OFF, true, true,
             null, "atmosphere.weather"),
@@ -139,6 +143,15 @@ public enum ClaimFeature {
     /** Whether the owner may choose which {@link LandAudience} this serves. */
     public boolean audienceAware() {
         return audienceAware;
+    }
+
+    /**
+     * Who it serves while the owner has not said. Everybody, except flight: a visitor who can fly over the
+     * walls sees everything the walls were built to hide.
+     */
+    public EnumSet<LandAudience> defaultAudiences() {
+        return this == FLIGHT ? EnumSet.of(LandAudience.OWNER, LandAudience.TRUSTED)
+                : EnumSet.allOf(LandAudience.class);
     }
 
     /** Where a config written before feature policies existed kept a three-state policy, if anywhere. */

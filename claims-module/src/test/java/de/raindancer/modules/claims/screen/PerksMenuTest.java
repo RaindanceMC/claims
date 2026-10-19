@@ -37,4 +37,15 @@ class PerksMenuTest {
                 .containsExactly("+1 tick", "+1 min", "+10 min", "+1 hour");
         assertThat(PerksMenu.timeStep(-167)).isEqualTo("-10 min");
     }
+
+    @org.junit.jupiter.api.Test
+    void whoAPerkReachesReadsAsWords() {
+        assertThat(PerksMenu.audienceWords(java.util.EnumSet.of(
+                de.raindancer.core.world.protection.LandAudience.OWNER,
+                de.raindancer.core.world.protection.LandAudience.TRUSTED))).isEqualTo("owners, trusted");
+        assertThat(PerksMenu.audienceWords(java.util.EnumSet.allOf(
+                de.raindancer.core.world.protection.LandAudience.class))).isEqualTo("everybody");
+        assertThat(PerksMenu.audienceWords(java.util.EnumSet.noneOf(
+                de.raindancer.core.world.protection.LandAudience.class))).isEqualTo("nobody");
+    }
 }

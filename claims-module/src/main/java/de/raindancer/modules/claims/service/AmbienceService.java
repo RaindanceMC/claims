@@ -71,6 +71,7 @@ public final class AmbienceService implements IClaimService {
     // ThreadLocalRandom, not a shared Random: this is read from every player's region thread, and a
     // shared Random makes them contend on one atomic seed for the sake of deciding where lightning goes.
     private EquipService equipService;
+    private ClaimFlight flight;
     /** The border tracker, injected late because it is built after this service. */
     private MovementListener movement;
     /** Effects this plugin granted, so they can be cleared again on leaving. */
@@ -206,6 +207,9 @@ public final class AmbienceService implements IClaimService {
 
     private void tick(Player player) {
         Optional<Claim> claim = resolve(player);
+        if (flight != null) {
+            flight.update(player, claim.orElse(null));
+        }
         if (claim.isEmpty()) {
             clearGranted(player);
             clearAtmosphere(player);
@@ -226,6 +230,24 @@ public final class AmbienceService implements IClaimService {
 
     public void equipService(EquipService equipService) {
         this.equipService = equipService;
+    }
+
+    public void flight(ClaimFlight flight) {
+        this.flight = flight;
+    }
+
+    /** Right after a border crossing, so flight starts and ends at the border rather than up to a tick later. */
+    public void crossed(Player player, Claim now) {
+        if (flight != null) {
+            flight.update(player, now);
+        }
+    }
+
+    /** The module is stopping. */
+    public void releaseFlight() {
+        if (flight != null) {
+            flight.releaseAll(plugin, plugin.getServer().getOnlinePlayers());
+        }
     }
 
     // ------------------------------------------------------------ weather and time

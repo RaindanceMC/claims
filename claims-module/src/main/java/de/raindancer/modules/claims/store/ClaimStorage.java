@@ -280,6 +280,7 @@ public final class ClaimStorage {
         }
         claim.restoreEffects(effects);
         claim.effectsEnabled(yaml.getBoolean("effects-enabled", true));
+        claim.flightEnabled(yaml.getBoolean("flight-enabled", false));
 
         ConfigurationSection pantrySection = yaml.getConfigurationSection("pantry");
         if (pantrySection != null) {
@@ -505,6 +506,7 @@ public final class ClaimStorage {
         claim.effects().values().forEach(effect -> effectList.add(effect.serialize()));
         yaml.set("effects", effectList);
         yaml.set("effects-enabled", claim.effectsEnabled());
+        yaml.set("flight-enabled", claim.flightEnabled());
 
         yaml.set("pantry.enabled", claim.pantry().enabled());
         yaml.set("pantry.threshold", claim.pantry().threshold());

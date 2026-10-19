@@ -33,6 +33,8 @@ public final class PlayerSessionListener implements IClaimListener {
         // Names come from Core, which sees every join itself, so there is nothing to remember here.
         services.movement().syncPosition(event.getPlayer());
         services.ambience().track(event.getPlayer());
+        // Now rather than on the first tick: somebody who logged out flying comes back in the air.
+        services.ambience().crossed(event.getPlayer(), services.movement().claimOf(event.getPlayer()).orElse(null));
         evictIfBanned(event.getPlayer());
         warnOfArrears(event.getPlayer());
     }

@@ -123,6 +123,7 @@ public final class MovementListener implements IClaimListener {
             onLeave(player, previous);
         }
         record(player, to.orElse(null));
+        services.ambience().crossed(player, to.orElse(null));
         if (targetId != null) {
             to.ifPresent(claim -> onEnter(player, claim));
         }
@@ -181,6 +182,7 @@ public final class MovementListener implements IClaimListener {
             services.claims().byId(previousId).ifPresent(previous -> onLeave(player, previous));
         }
         record(player, to.orElse(null));
+        services.ambience().crossed(player, to.orElse(null));
         if (targetId != null) {
             to.ifPresent(claim -> onEnter(player, claim));
         }
@@ -384,6 +386,7 @@ public final class MovementListener implements IClaimListener {
                 services.claims().byId(previousId).ifPresent(previous -> onLeave(rider, previous));
             }
             record(rider, toClaim.orElse(null));
+            services.ambience().crossed(rider, toClaim.orElse(null));
             if (targetId != null) {
                 toClaim.ifPresent(claim -> onEnter(rider, claim));
             }

@@ -107,6 +107,7 @@ public final class FeatureRules implements IClaimRule {
             case EFFECTS -> claim.effectsEnabled();
             case PANTRY -> claim.pantry().enabled();
             case AUTO_EQUIP -> claim.equipment().enabled();
+            case FLIGHT -> claim.flightEnabled();
             case CLAIM_WEATHER -> claim.atmosphere().overridesWeather();
             case CLAIM_TIME -> claim.atmosphere().overridesTime();
             case ENTRY_FEE -> claim.entryFee().rawEnabled();

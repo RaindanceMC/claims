@@ -61,7 +61,8 @@
         <!-- 2.13.0: a guild can pay a claim's upkeep from its bank (/claim guild pays [off], opt-in per claim, started by its leader); the owner's bill stays counted over all their land, the guild pays its claims' part, an empty guild bank leaves it to the owner. -->
         <!-- 2.13.1: only the guild leader starts the guild paying (an officer may not take from the bank); handing a claim on ends it (security review). -->
         <!-- 2.13.2: owners are told again that a pantry is empty or claim effects ran out of potions (both messages were missing); the key test also checks keys passed through notifyOwners. -->
-        <plugin.version>2.13.2</plugin.version>
+        <!-- 2.14.0: flight as a claim perk (owner switch, owners and trusted by default), through RainsCore's shared Flight leases. -->
+        <plugin.version>2.14.0</plugin.version>
     </properties>
 
     <dependencies>
