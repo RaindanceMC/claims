@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.14.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.15.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -206,7 +206,8 @@ public final class ClaimsModule implements FlexModule {
         ambience = new AmbienceService(context.plugin(), features, claims, land, claimService,
                 settings.current(), context.core().messages(), names);
         ambience.equipService(equipment);
-        ambience.flight(new de.raindancer.modules.claims.service.ClaimFlight(context.core().flight(), features, land));
+        ambience.flight(new de.raindancer.modules.claims.service.ClaimFlight(context.plugin(),
+                context.core().flight(), features, land, context.core().messages()));
 
         selectionFlow = new SelectionFlow(context.plugin(), context.plugin().getServer(), log, context.core().messages(),
                 context.core().prompts(), selections, stick, claims, claimService, zones,

@@ -42,6 +42,12 @@ class ClaimFlightTest {
     private final Flight core = mock(Flight.class);
     private final Land land = mock(Land.class);
     private final Player player = mock(Player.class);
+    private final org.bukkit.plugin.Plugin plugin = mock(org.bukkit.plugin.Plugin.class);
+    private final org.bukkit.World world = mock(org.bukkit.World.class);
+    private final de.raindancer.core.ui.messages.Messages messages = mock(de.raindancer.core.ui.messages.Messages.class);
+    private final java.util.List<java.util.function.Consumer<Object>> queued = new java.util.ArrayList<>();
+    /** Where the player counts as standing when the grace runs out. */
+    private Claim standingIn;
     private ClaimFlight flight;
     private Claim claim;
 
@@ -53,7 +59,29 @@ class ClaimFlightTest {
         claim = new Claim(UUID.randomUUID(), "test", UUID.randomUUID(), "world", shape, owner);
         when(player.getUniqueId()).thenReturn(owner);
         when(land.has(any(), eq(player), eq(LandAction.ENTER))).thenReturn(true);
-        flight = new ClaimFlight(core, features, land);
+        when(plugin.isEnabled()).thenReturn(true);
+        when(player.getWorld()).thenReturn(world);
+        when(player.getBoundingBox()).thenReturn(new org.bukkit.util.BoundingBox(0, 64, 0, 0.6, 65.8, 0.6));
+        var scheduler = mock(io.papermc.paper.threadedregions.scheduler.EntityScheduler.class);
+        when(player.getScheduler()).thenReturn(scheduler);
+        when(scheduler.runDelayed(any(), any(), any(), org.mockito.ArgumentMatchers.anyLong())).thenAnswer(call -> {
+            queued.add(call.getArgument(1));
+            return null;
+        });
+        airborne(false);
+        flight = new ClaimFlight(plugin, core, features, land, messages);
+        flight.where(who -> standingIn);
+    }
+
+    private void airborne(boolean inTheAir) {
+        when(world.hasCollisionsIn(any())).thenReturn(!inTheAir);
+    }
+
+    /** The grace runs out. */
+    private void ticks() {
+        var due = new java.util.ArrayList<>(queued);
+        queued.clear();
+        due.forEach(task -> task.accept(null));
     }
 
     @Test
@@ -153,6 +181,85 @@ class ClaimFlightTest {
         claim.flightEnabled(true);
         when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
         flight.update(player, claim);
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+    }
+
+    @Test
+    @DisplayName("flying out, flight lasts two more seconds and they are told so")
+    void graceOnLeaving() {
+        claim.flightEnabled(true);
+        flight.update(player, claim);
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        airborne(true);
+
+        flight.update(player, null);
+        verify(core, never()).revoke(any(), any());
+        verify(player).sendActionBar(org.mockito.ArgumentMatchers.<net.kyori.adventure.text.Component>any());
+        verify(messages).get("flight.ending", "seconds", ClaimFlight.GRACE_SECONDS);
+
+        flight.update(player, null); // the ambience tick inside the grace changes nothing
+        verify(core, never()).revoke(any(), any());
+
+        ticks();
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+        assertThat(queued).isEmpty();
+    }
+
+    @Test
+    @DisplayName("back in before the two seconds are up, they never stop flying")
+    void backInTime() {
+        claim.flightEnabled(true);
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        airborne(true);
+
+        flight.update(player, null);
+        flight.update(player, claim);
+        standingIn = claim;
+        ticks();
+        verify(core, never()).revoke(any(), any());
+    }
+
+    @Test
+    @DisplayName("an earlier grace that ran out of date does not cut a later one short")
+    void staleGraceIgnored() {
+        claim.flightEnabled(true);
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        airborne(true);
+
+        flight.update(player, null);  // out: grace one
+        flight.update(player, claim); // back in
+        var first = new java.util.ArrayList<>(queued);
+        queued.clear();
+        flight.update(player, null);  // out again: grace two
+        first.forEach(task -> task.accept(null));
+        verify(core, never()).revoke(any(), any());
+
+        ticks();
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+    }
+
+    @Test
+    @DisplayName("walking out on the ground ends it at once, with nothing to warn about")
+    void groundedEndsAtOnce() {
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        flight.update(player, null);
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+        verify(player, never()).sendActionBar(org.mockito.ArgumentMatchers.<net.kyori.adventure.text.Component>any());
+        assertThat(queued).isEmpty();
+    }
+
+    @Test
+    @DisplayName("the module stopping ends it without waiting out a grace")
+    void releaseAllIsImmediate() {
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        airborne(true);
+        flight.update(player, null);
+        try (var bukkit = org.mockito.Mockito.mockStatic(org.bukkit.Bukkit.class)) {
+            bukkit.when(() -> org.bukkit.Bukkit.isOwnedByCurrentRegion(player)).thenReturn(true);
+            flight.releaseAll(List.of(player));
+        }
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+        ticks(); // the abandoned grace does nothing more
         verify(core).revoke(player, ClaimFlight.SOURCE);
     }
 }

@@ -166,6 +166,9 @@ entry-fee:
   claim-gone: "<gray>That claim is gone."
   owner-notified: "<gray><player> paid to come into <white><claim></white>."
 
+flight:
+  ending: "<yellow>Flight ends in <white><seconds>s</white> — fly back in to keep it."
+
 pantry:
   fed: "<gray><claim>'s pantry fed you <white><food></white>."
   empty-notice: "<yellow><white><claim></white>'s pantry is empty. <gray>Visitors will have to bring their own snacks."

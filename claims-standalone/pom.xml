@@ -62,7 +62,8 @@
         <!-- 2.13.1: only the guild leader starts the guild paying (an officer may not take from the bank); handing a claim on ends it (security review). -->
         <!-- 2.13.2: owners are told again that a pantry is empty or claim effects ran out of potions (both messages were missing); the key test also checks keys passed through notifyOwners. -->
         <!-- 2.14.0: flight as a claim perk (owner switch, owners and trusted by default), through RainsCore's shared Flight leases. -->
-        <plugin.version>2.14.0</plugin.version>
+        <!-- 2.15.0: flying out of a claim keeps flight two more seconds (with a notice) and floats you down on Slow Falling. -->
+        <plugin.version>2.15.0</plugin.version>
     </properties>
 
     <dependencies>

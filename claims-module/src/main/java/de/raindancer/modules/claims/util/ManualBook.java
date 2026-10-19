@@ -602,8 +602,9 @@ public final class ManualBook {
                     "<dark_gray>Only you and trusted",
                     "<dark_gray>players until you say.",
                     "<dark_gray>Flying out over the",
-                    "<dark_gray>border ends it; the",
-                    "<dark_gray>landing does not hurt."));
+                    "<dark_gray>border ends it after",
+                    "<dark_gray>two seconds, and you",
+                    "<dark_gray>float down slowly."));
         }
 
         if (has(ClaimFeature.AUTO_EQUIP)) {

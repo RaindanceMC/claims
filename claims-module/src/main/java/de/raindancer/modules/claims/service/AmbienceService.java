@@ -165,6 +165,9 @@ public final class AmbienceService implements IClaimService {
         lastFed.remove(uuid);
         granted.remove(uuid);
         atmosphereState.remove(uuid);
+        if (flight != null) {
+            flight.forget(uuid);
+        }
     }
 
     public void stopAll() {
@@ -234,6 +237,7 @@ public final class AmbienceService implements IClaimService {
 
     public void flight(ClaimFlight flight) {
         this.flight = flight;
+        flight.where(player -> resolve(player).orElse(null));
     }
 
     /** Right after a border crossing, so flight starts and ends at the border rather than up to a tick later. */
@@ -246,7 +250,7 @@ public final class AmbienceService implements IClaimService {
     /** The module is stopping. */
     public void releaseFlight() {
         if (flight != null) {
-            flight.releaseAll(plugin, plugin.getServer().getOnlinePlayers());
+            flight.releaseAll(plugin.getServer().getOnlinePlayers());
         }
     }
 
