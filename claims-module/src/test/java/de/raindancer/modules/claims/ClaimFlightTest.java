@@ -48,6 +48,7 @@ class ClaimFlightTest {
     private final java.util.List<java.util.function.Consumer<Object>> queued = new java.util.ArrayList<>();
     /** Where the player counts as standing when the grace runs out. */
     private Claim standingIn;
+    private long now = 1_000_000L;
     private ClaimFlight flight;
     private Claim claim;
 
@@ -69,7 +70,7 @@ class ClaimFlightTest {
             return null;
         });
         airborne(false);
-        flight = new ClaimFlight(plugin, core, features, land, messages);
+        flight = new ClaimFlight(plugin, core, features, land, messages, () -> now);
         flight.where(who -> standingIn);
     }
 
@@ -235,6 +236,23 @@ class ClaimFlightTest {
         verify(core, never()).revoke(any(), any());
 
         ticks();
+        verify(core).revoke(player, ClaimFlight.SOURCE);
+    }
+
+    @Test
+    @DisplayName("a grace whose timer never fired (died, respawned, changed world) still ends on the next check")
+    void lostTimerStillEnds() {
+        claim.flightEnabled(true);
+        when(core.holds(owner, ClaimFlight.SOURCE)).thenReturn(true);
+        airborne(true);
+
+        flight.update(player, null);
+        queued.clear(); // the server dropped the task with the entity it was bound to
+        flight.update(player, null);
+        verify(core, never()).revoke(any(), any());
+
+        now += ClaimFlight.GRACE_SECONDS * 1000L;
+        flight.update(player, null);
         verify(core).revoke(player, ClaimFlight.SOURCE);
     }
 

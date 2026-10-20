@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.LongSupplier;
 
 /**
  * The flight perk: a lease on Core's {@link Flight} while somebody stands in a claim that lets them fly.
@@ -28,6 +29,10 @@ import java.util.function.Function;
  * <p>Ending it in the air waits {@link #GRACE_SECONDS}, with a notice: overshooting a border by a block is the
  * common case, and dropping somebody for it is the thing that makes a perk feel like a trap. Back in a flying
  * claim within the grace, nothing happens at all. On the ground there is nothing to soften, so it ends at once.
+ *
+ * <p>The grace is a deadline, not only a timer: the server drops an entity task when the player dies, respawns or
+ * changes world before it fires, and a grace waiting on that timer alone never ended — they kept flying anywhere.
+ * The ambience tick ends any grace past its deadline.
  */
 public final class ClaimFlight implements IClaimService {
 
@@ -41,12 +46,28 @@ public final class ClaimFlight implements IClaimService {
     private final FeatureRules features;
     private final Land protection;
     private final Messages messages;
-    /** Players in their grace, each with the token of the timer that may end it — a later grace gets a new one. */
-    private final Map<UUID, Object> ending = new ConcurrentHashMap<>();
+    /** Players in their grace — a later grace is a new instance, so an older timer cannot end it. */
+    private final Map<UUID, Grace> ending = new ConcurrentHashMap<>();
+    private final LongSupplier clock;
     private volatile Function<Player, Claim> where = player -> null;
 
+    /** Compared by identity, not deadline: two graces begun in the same millisecond are still two. */
+    private static final class Grace {
+        final long until;
+
+        Grace(long until) {
+            this.until = until;
+        }
+    }
+
     public ClaimFlight(Plugin plugin, Flight flight, FeatureRules features, Land protection, Messages messages) {
+        this(plugin, flight, features, protection, messages, System::currentTimeMillis);
+    }
+
+    public ClaimFlight(Plugin plugin, Flight flight, FeatureRules features, Land protection, Messages messages,
+                       LongSupplier clock) {
         this.plugin = plugin;
+        this.clock = clock;
         this.flight = flight;
         this.features = features;
         this.protection = protection;
@@ -85,9 +106,16 @@ public final class ClaimFlight implements IClaimService {
             flight.revoke(player, SOURCE);
             return;
         }
-        Object token = new Object();
+        Grace pending = ending.get(id);
+        if (pending != null) {
+            if (clock.getAsLong() >= pending.until && ending.remove(id, pending)) {
+                flight.revoke(player, SOURCE); // its timer never came
+            }
+            return;
+        }
+        Grace token = new Grace(clock.getAsLong() + GRACE_SECONDS * 1000L);
         if (ending.putIfAbsent(id, token) != null) {
-            return; // already counting down
+            return;
         }
         player.sendActionBar(messages.get("flight.ending", "seconds", GRACE_SECONDS));
         Scheduling.entityLater(plugin, player, GRACE_TICKS, () -> {
