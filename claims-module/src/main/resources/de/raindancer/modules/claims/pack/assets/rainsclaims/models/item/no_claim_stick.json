@@ -1,0 +1,7 @@
+{
+  "parent": "rainsclaims:item/claim_stick",
+  "textures": {
+    "0": "rainsclaims:item/no_claim_stick",
+    "particle": "rainsclaims:item/no_claim_stick"
+  }
+}

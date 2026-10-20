@@ -94,7 +94,12 @@ public final class SelectionStick {
                 .glint(settings.selectionStickGlint())
                 .hideAttributes()
                 .tag(key, purpose.name())
+                .itemModel(modelFor(purpose))
                 .build();
+    }
+
+    static net.kyori.adventure.key.Key modelFor(Selection.Purpose purpose) {
+        return purpose == Selection.Purpose.NO_CLAIM_ZONE ? ClaimsPack.NO_CLAIM_STICK : ClaimsPack.CLAIM_STICK;
     }
 
     /**

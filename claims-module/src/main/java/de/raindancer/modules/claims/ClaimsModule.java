@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.15.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.16.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -194,6 +194,8 @@ public final class ClaimsModule implements FlexModule {
         visualizer = new BorderVisualizer(context.plugin(), settings.current());
         selections = new SelectionService(settings.current());
         stick = new SelectionStick(context.plugin(), settings.current(), context.core().messages());
+        de.raindancer.modules.claims.selection.ClaimsPack.contribute(context.plugin(), context.core());
+        context.closeWith(() -> de.raindancer.modules.claims.selection.ClaimsPack.withdraw(context.core()));
         fences = new FenceService(context.plugin(), settings.current(), claimService, features);
         claimService.fences(fences);
         broadcasts = new BroadcastService(context.plugin(), settings.current(), features,

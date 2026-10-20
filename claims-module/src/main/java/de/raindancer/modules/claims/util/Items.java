@@ -114,6 +114,11 @@ public final class Items {
         return this;
     }
 
+    public Items itemModel(net.kyori.adventure.key.Key model) {
+        stack.editMeta(meta -> meta.setItemModel(new NamespacedKey(model.namespace(), model.value())));
+        return this;
+    }
+
     public ItemStack build() {
         if (!lore.isEmpty()) {
             stack.lore(new ArrayList<>(lore));
