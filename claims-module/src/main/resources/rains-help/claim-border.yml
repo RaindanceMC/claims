@@ -1,0 +1,40 @@
+id: claim-border
+title: Borders, fences and greetings
+summary: See where a claim ends, build a real fence along it, and welcome people with a title.
+intro: |
+  A claim is invisible until you ask. Fortunately, I am here, and so are these buttons.
+icon: OAK_FENCE
+category: Land & building
+order: 8
+module: claims
+aliases: [fence, border, borders, show, hide, greeting, greetings, titles, welcome]
+keywords: [outline, particles, corner, pillars, gate, gap, material, notice, action bar, flash, title]
+related: [claims, claim-new, claim-warps]
+sections:
+  - question: How do I see a claim's border?
+    title: Showing borders
+    text: |
+      Stand inside and type {run:/claim show} — the border is drawn around you for {setting:claims:visualisation.duration-seconds|seconds}. {run:/claim hide} clears it. In the claim list, right-click a claim to be shown its border; it only works in the world it lies in.
+      It is drawn with {setting:claims:visualisation.mode|lower}: particles, blocks only you see, or both. Gold-ish blocks mark the edge, glowing ones the corners, and red ones a no-claim zone. Only the part within {setting:claims:visualisation.radius} blocks of you is sent, and every {setting:claims:visualisation.spacing|number}. block of the outline.
+  - question: What announces I've entered a claim?
+    title: Notices
+    text: |
+      Walking onto somebody's claim tells you whose it is — on the {if:claims:notifications.use-action-bar}action bar{else}chat{/if}. The owner can switch the enter notice, the leave notice and an outline flash on or off if the server offers them. The border flashes for {setting:claims:notifications.border-on-enter-seconds|seconds} when you come in (0 means never), and the same notice is held back for {setting:claims:notifications.cooldown-seconds|seconds} so pacing a border does not spam you.
+      {if:claims:selection.mute-notifications-for-hidden-claims}Claims buried under your feet stay silent.{/if}
+  - question: Can I greet people with a title?
+    title: Greetings
+    text: |
+      Open the claim, <b>Configuration</b> then <b>Greetings</b>: a big line and a small line for arriving, and the same for leaving. Click a line to type the text in chat (type <i>cancel</i> to leave it alone), choose a colour — left-click next, right-click back — and toggle bold, italic, underline and the rest. <b>Show me</b> plays it at you so you know what visitors see. Right-click a line to clear it.
+  - question: How do I put a real fence up?
+    title: Fences
+    text: |
+      If the server offers fences: open the claim, <b>Configuration</b> then <b>Fence</b>, and click to build or take down. It is a real fence along the border, and it follows the claim when you reshape it. Its material is yours to pick; new claims start with {setting:claims:fence.default-material|lower}, {setting:claims:fence.height} block(s) tall.
+      {if:claims:fence.auto-build-on-create}A fence goes up by itself when you create a claim.{else}No fence goes up by itself; build one when you want it.{/if} Very large claims are built in batches of at most {setting:claims:fence.max-columns-per-build|number} columns, and the fence climbs at most {setting:claims:fence.max-step} block(s) between neighbouring columns before it gives up.
+  - question: Who pays for the fence?
+    title: Fence material
+    text: |
+      {if:claims:fence.charge-material}You do: the blocks are taken from the claim's bank, so stock it first.{else}Nobody — the blocks appear from nowhere, like magic.{/if} {if:claims:fence.refund-to-bank}Taking a fence down puts its blocks back into the bank, so switching it off and on again costs nothing.{else}Taking a fence down does not return the blocks.{/if}
+  - question: Can I leave a gap in the fence?
+    title: Gaps
+    text: |
+      Yes: break a fence block yourself and it stays open — a gate. It is not filled in again, and the fence menu counts the gaps you made.

@@ -1,0 +1,56 @@
+id: claim-people
+title: Trust, co-owners and guild claims
+summary: Let friends build, give single rights, add co-owners, hand a claim over, or share it with your guild.
+intro: |
+  A claim protects you from everybody — including the people you actually like. Here is how to let the right ones in.
+icon: PLAYER_HEAD
+category: Land & building
+order: 3
+module: claims
+aliases: [trust, untrust, coowner, co-owner, transfer, trusted, members, permissions, friends-claim]
+keywords: [build, friend, share, member, rights, hand over, owner, guild claim, public, visitors]
+related: [claims, claim-rules, claim-keepout]
+sections:
+  - question: How do I let a friend build?
+    title: Trusting
+    text: |
+      Stand in your claim and type {cmd:/claim trust <player>}. They get the usual package: walk in, build, break, open containers, doors, buttons and levers, beds, workstations, animals, vehicles, item frames, buckets, picking up items and trading. They do <i>not</i> get fire, hurting animals or farmland trampling — you can add those one by one.
+      {cmd:/claim untrust <player>} takes it all back. The player is told when you trust them.
+  - question: Can I give someone just one right?
+    title: Single rights
+    text: |
+      Yes: open the claim, then <b>People</b> then <b>Trusted people</b>, and click the person. You get a grid of seventeen rights — enter, build, break, containers, doors, buttons and levers, beds, workstations, animals, hurting animals, vehicles, frames and stands, farmland, buckets, fire, item pickup and villager trading. Click one to flip it. The player is told what you gave or took.
+      This works for people who are not yet trusted too: click <b>Trust somebody</b>, pick a name, and set what they may do.
+  - question: What may strangers do?
+    title: Everybody else
+    text: |
+      Anybody not trusted is a visitor. <b>People</b> then <b>Everybody else</b> shows the same seventeen rights for them. By default visitors may enter, use workstations, pick up items and trade — and nothing more. A shop wants chests or buttons open to the public; a public farm wants crops. A trusted player's own rights are added on top of whatever visitors may do.
+  - question: Can they manage the claim too?
+    title: Claim admins
+    text: |
+      A trusted player can also be allowed to help <i>run</i> the claim. Click them in the trusted list and open <b>Claim admin rights</b>. The rights you can hand out are: manage members, grant permissions, manage public access, manage flags, kick/ban/timeout, manage titles, manage the entry fee, access the bank, resize the claim, and manage admins (to appoint others).
+      <b>What they may grant</b> limits which of the seventeen rights such a helper may pass on. Owners are never limited.
+  - question: What's the difference to a co-owner?
+    title: Co-owners
+    text: |
+      A co-owner owns the claim exactly like you: everything, always, with no rights to configure. Use {cmd:/claim owner add <player>} or the <b>Add a co-owner</b> button in the trusted list; {cmd:/claim owner remove <player>} takes them off again.
+      One person can never be removed that way: whoever claimed it first, and the last remaining owner. If the server has switched co-owners off, the command says so.
+  - question: How do I hand a claim to someone?
+    title: Handing it over
+    text: |
+      {cmd:/claim transfer <player>} gives the claim you stand in to that player — completely. Afterwards you do not own it, not even as a co-owner. Be sure before you type it: the command runs at once. The button <b>Hand this claim over</b> in the trusted list does the same, but asks first.
+      The new owner is told. Any warp the claim had is reassigned along with it.
+  - question: Can my guild share a claim?
+    title: Guild claims
+    text: |
+      If you lead or manage a guild, stand in your claim and type {cmd:/claim guild} (or {cmd:/claim guild <tag>} if you manage more than one). The guild then owns the claim as well: its leader owns it, its officers manage it, and every member may use it — everything except lighting fires and hurting animals.
+      {cmd:/claim guild off} makes it yours alone again. See {topic:guilds} for guilds themselves.
+  - question: Can my guild pay the upkeep?
+    title: Guild pays
+    when: claims:upkeep.enabled
+    text: |
+      Yes: the guild leader types {cmd:/claim guild pays} in a guild claim and the guild's bank pays that claim's share of the upkeep. If the bank runs dry, the owner pays instead. {cmd:/claim guild pays off} ends it; the leader, officers or the owner may do that. More in {topic:claim-upkeep}.
+  - question: Why does it say I may not change that?
+    title: Not yours to change
+    text: |
+      Because it is not. Owners may change everything. Trusted players may change only what an owner gave them as a claim admin right. Flags and perks the server has fixed (forced on or off) show as locked: those are the server's decisions, not the owner's.

@@ -1,0 +1,29 @@
+id: claim-warps
+title: Claim warps and your main home
+summary: Give a claim a front door others can warp to, and choose which claim is your main home.
+intro: |
+  Everybody likes a front door. Here is how to give your claim one — and who is allowed to knock.
+icon: LODESTONE
+category: Land & building
+order: 9
+module: claims
+aliases: [claimwarp, home-claim, claim-home, sethome]
+keywords: [warp, home, door, teleport, entrance, visit]
+related: [claims, claim-rules]
+sections:
+  - question: How do I give my claim a warp?
+    title: Setting a warp
+    text: |
+      Stand in your claim, where visitors should arrive, and type {cmd:/claim warp}. People arrive right where you stood, facing the way you faced. You must be inside the claim and be one of its owners. {cmd:/claim warp remove} takes it away — which also removes anybody's home that pointed there. The claim menu has the same button (click to set, right-click to remove).
+  - question: Who can warp there?
+    title: Who may arrive
+    text: |
+      A warp is only a destination. Whether somebody may actually arrive is the claim's own <i>teleport in</i> rule (see {topic:claim-rules}) — by default owners and trusted players only. Warps show up wherever the server's warps plugin lists claims (<white>/warp claim</white>).
+  - question: What is my main home?
+    title: Main home
+    text: |
+      Stand in one of your claims that has a warp and type {cmd:/claim home}. Others can then reach it with <white>/warp home</white> and your name. Only one claim can be your main home; {cmd:/claim home clear} removes it again. A claim without a warp cannot be a home — set one first. The claim menu has a bed button for it too.
+  - question: What happens when a claim changes hands?
+    title: Handing over
+    text: |
+      Warp and home follow the rules of ownership: when you transfer a claim, the warp goes along and homes pointing at it are cleared; when a claim is deleted, its warp is gone with it so nobody is sent into whatever gets built there next.

@@ -1,0 +1,38 @@
+id: claim-keepout
+title: Keeping people out
+summary: Kick, ban and time out troublemakers from your claim, and who hears about it.
+intro: |
+  Trust is a list. Distrust, it turns out, is also a list.
+icon: IRON_BARS
+category: Land & building
+order: 6
+module: claims
+aliases: [ban, unban, kick-claim, timeout, mute-claim, banned, evict]
+keywords: [bar, remove, evict, troublemaker, griefer, announcements, reason, duration, return]
+related: [claim-people, claim-tolls, claims]
+sections:
+  - question: How do I throw someone out?
+    title: Kicking
+    text: |
+      Stand in your claim and type {cmd:/claim kick <player>}. They are escorted to the nearest safe spot beyond the border. They can walk straight back in — a kick is a hint, not a verdict. The player must be online (and visible to you). Owners cannot be kicked.
+  - question: How do I keep someone out for good?
+    title: Banning
+    text: |
+      {cmd:/claim ban <player> [reason]} bars them until you lift it. If they are inside, they are removed at once; if they come back — on foot or by teleporting in — they are turned away and shown the reason. The ban works even when the player is offline. Lift it with {cmd:/claim unban <player>}. Owners cannot be barred from their own claim.
+  - question: What's a timeout?
+    title: Timeouts
+    text: |
+      {cmd:/claim timeout <player> <duration> [reason]} is a ban that ends on its own: {cmd:/claim timeout Steve 2h too loud}. Durations are written like <i>30m</i>, <i>2h</i> or <i>1d</i>. They are removed immediately if inside and shown how long is left when they try again. {cmd:/claim mute} is a synonym of the same command.
+  - question: Can I see who is barred?
+    title: The list
+    text: |
+      Open the claim, <b>People</b> then <b>Kept out</b>. It lists every ban and timeout — click an entry to let that player back in early. The same screen has buttons to kick, time out or ban somebody: click, choose a person, type a reason or duration in chat.
+  - question: Who may do this in my claim?
+    title: Who may
+    text: |
+      Owners always. A trusted player only if you gave them the <b>kick / ban / timeout</b> claim admin right (see {topic:claim-people}). Staff can everywhere.
+  - question: Does everybody hear about it?
+    title: Announcements
+    text: |
+      Throwing somebody out — or letting them back — can be announced in chat. Who hears it: {if:claims:broadcasts.scope == claim}the owners, trusted players and the person it happened to{/if}{if:claims:broadcasts.scope == nearby}anybody within {setting:claims:broadcasts.nearby-radius} blocks{/if}{if:claims:broadcasts.scope == everyone}the whole server{/if}.
+      Announced here: {if:claims:broadcasts.kick}kicks, {/if}{if:claims:broadcasts.ban}bans, {/if}{if:claims:broadcasts.timeout}timeouts, {/if}{if:claims:broadcasts.lift}and lifted bans{/if}. Anything not on that list happens quietly.

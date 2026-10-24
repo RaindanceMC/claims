@@ -1,0 +1,50 @@
+id: claim-perks
+title: Claim perks
+summary: Potion effects, a pantry, auto-equip, flight, own weather and time — what a claim can do for the people inside it.
+intro: |
+  A claim does not have to be only a wall. Give it a beacon's worth of effects, a larder, a kit rack, or a sky of its own.
+icon: BREWING_STAND
+category: Land & building
+order: 5
+module: claims
+aliases: [perks, effects, pantry, autoequip, auto-equip, flight-claim, weather-claim]
+keywords: [potion, food, hunger, totem, armour, fly, weather, time, day, night, rain, store, stock]
+related: [claims, claim-rules, claim-keepout]
+sections:
+  - question: What perks can a claim have?
+    title: Overview
+    text: |
+      Open the claim, then <b>Configuration</b> then <b>Perks</b>. Depending on what the server offers you will find: <b>potion effects</b>, a <b>pantry</b>, <b>auto-equip</b>, <b>flight</b>, and the claim's own <b>weather</b> and <b>time of day</b>. A perk the server forced on says so; one it switched off is not shown.
+      Click a perk to turn it on. <b>Right-click</b> it to choose who is served: owners, trusted players, visitors — any mix. Everything stops the moment somebody steps outside.
+  - question: How do claim effects work?
+    title: Potion effects
+    text: |
+      Pick <b>Choose the effects</b> and add what you like: speed, haste, regeneration... Everybody inside who is served receives it. A claim can grant up to {setting:claims:effects.max-per-claim} effects at once, with a strongest amplifier of {setting:claims:effects.max-amplifier} (0 is level I, 1 is level II, and so on).
+      In the effect list: <b>left-click</b> raises the level, <b>right-click</b> lowers it, <b>Q</b> toggles the particles, <b>shift + right-click</b> removes it. Effects vanish the second somebody leaves, so nobody carries them away.
+      {if:claims:atmosphere.blocked}Some effects are never available because they would harm visitors: {setting:claims:atmosphere.blocked}.{/if}
+  - question: Do effects need potions?
+    title: Potion fuel
+    when: claims:effects.require-potions
+    text: |
+      Here, yes. Stock <b>Potions the effects drink</b> with real potions — the store takes {setting:claims:effects.potion-store-max-stacks} stacks and only potions. Each potion keeps its effect running for {setting:claims:effects.potion-minutes|minutes}. When the last potion for an effect is spent, the effect stops and the owner is told to top up. An effect no potion in the game brews cannot be fuelled.
+  - question: What is the pantry?
+    title: The pantry
+    text: |
+      A shared larder: put food in via <b>Stock the pantry</b> (it takes only food — it is not a junk drawer), and people inside who get hungry are fed automatically. It holds up to {setting:claims:pantry.max-stacks} stacks. Players are fed at most every few seconds, and when it runs empty the owners are told. You can set the hunger level at which feeding starts; a hungrier threshold means fewer, bigger meals.
+  - question: What does auto-equip do?
+    title: Auto-equip
+    text: |
+      The claim keeps people supplied: a totem in the off hand, armour in its slots, firework rockets on a hotbar key. Stock the <b>equipment store</b> ({setting:claims:equipment.max-stacks} stacks), then add rules — hold the item, click <b>Add the item in your hand</b> — up to {setting:claims:equipment.max-rules} of them. For each rule you choose where it goes and how many people should keep carrying.
+      It only <i>tops people up</i>: it fills an empty slot and never swaps or takes anything you wear, and gives nothing if there is no room.
+  - question: Can a claim let people fly?
+    title: Flight
+    text: |
+      Yes, when the server allows it. Click <b>Flight</b> in the perks (right-click to choose who; owners and trusted by default). Inside you can fly like in creative. Flying out over the border ends it after a couple of seconds, with a warning; fly back in within that time and nothing happens. You float down slowly when it ends in the air, and flight you had anyway is never taken from you.
+  - question: Can a claim have its own sky?
+    title: Weather and time
+    text: |
+      If the server offers it, the claim can show its own sky: pick the weather and the time of day. It is purely visual, client side: the world keeps its real weather, so crops and mob spawning are unaffected.{if:claims:atmosphere.thunder-bolts} A storm in a claim also flashes lightning, visually only.{/if}
+  - question: Why are some perks missing?
+    title: Missing perks
+    text: |
+      The server decides per perk: <b>available</b> (owners switch it on), <b>forced on</b>, or <b>switched off</b> — gone from the menu. It is a server-wide decision; ask the staff if you think something should be there.

@@ -1,0 +1,66 @@
+id: claims
+title: Claiming land
+summary: Protect your builds — claim the ground, decide who may do what there, and run it all from one menu.
+intro: |
+  Somebody, somewhere, is going to want your chest. Claim the ground it stands on and the answer becomes a firm "no" — unless <i>you</i> say otherwise.
+icon: GRASS_BLOCK
+category: Land & building
+order: 1
+module: claims
+aliases: [claim, land, protect, protection, plot, plots, grief, griefing, rec]
+keywords: [claims, border, own, owner, safe, lock, chest, stick, menu, manual]
+commands: [claim]
+related: [claim-new, claim-people, claim-rules, claim-perks, claim-border, claim-keepout, claim-tolls, claim-upkeep]
+sections:
+  - question: What is a claim?
+    title: Claims
+    text: |
+      A claim is a piece of ground — a rectangle or any outline you draw, reaching up and down as far as you set it — that belongs to you. Inside it, strangers cannot build, break, open your chests or use your doors unless you let them. Fire, mobs, explosions and PvP follow rules <i>you</i> choose, within what the server allows.
+      Nothing about it is hidden: {cmd:/claim} is the front door to all of it.
+  - question: How do I make my first claim?
+    title: Getting started
+    text: |
+      1. Type {run:/claim new}. You get the marking stick.
+      2. Right-click a block for one corner, then another for the opposite corner. The second click finishes a rectangle.
+      3. Type a name in chat when asked. Done — the border lights up so you can admire your work.
+      The full walk-through, including free-form outlines, is under {topic:claim-new}.
+  - question: What does /claim open?
+    title: The claim list
+    text: |
+      {run:/claim} (also {cmd:/claim menu}) lists your claims, and the ones where you are trusted. Click one to manage it, right-click to be shown its border. Beside the list you find the manual (a book with all of this, also {cmd:/claim manual}), {if:claims:upkeep.enabled}the upkeep page, {/if}and the button to mark out a new claim.
+      {if:claims:slots.buying}There is also a button to buy an extra claim slot — see {topic:claim-new}.{/if}
+  - question: How many claims may I have?
+    title: Limits
+    text: |
+      You may hold {setting:claims:limits.max-claims-per-player} claims; a rank on this server can raise that for you (staff do it with a permission named <white>rec.maxclaims.N</white>, N being the number).
+      One claim covers at least {setting:claims:limits.min-area-blocks|number} blocks of ground{if:claims:limits.max-area-blocks > 0} and at most {setting:claims:limits.max-area-blocks|number}{else} and has no upper size limit{/if}. An outline may have up to {setting:claims:limits.max-vertices} corners, and a claim must be at least {setting:claims:limits.min-height} blocks tall.
+  - question: Where can I not claim?
+    title: Forbidden ground
+    text: |
+      Three kinds of place refuse a new claim:
+      - Worlds where claims are switched off{if:claims:worlds.disabled} (right now: {setting:claims:worlds.disabled}){/if}. Claims that already stand there keep protecting.
+      - Ground inside a staff-made <i>no-claim zone</i> (spawn, usually).
+      {if:claims:limits.claims-must-not-overlap}- Ground that overlaps somebody else's claim — or one of yours. The refusal names the claim in the way.{else}- (Overlapping claims are allowed here, which makes "who may build?" a matter for lawyers.){/if}
+      {if:!claims:selection.allow-underground-claims}This server also refuses claims that sit entirely underground: they must reach from bedrock to the sky.{/if}
+  - question: What can strangers do in my claim?
+    title: Strangers
+    text: |
+      Out of the box: walk in, use crafting tables and other workstations, pick up items that lie around, and trade with villagers. Nothing else — no building, no chests, no doors.
+      You can widen or narrow that any time with <b>Everybody else</b> in the claim's menu. See {topic:claim-people}.
+  - question: What if I die or log out?
+    title: Death and logout
+    text: |
+      Your claim does not care. It stays, it protects, and the border does not move. {if:claims:upkeep.enabled}The one thing that can change that is unpaid upkeep — see {topic:claim-upkeep}.{else}Nothing expires; this server charges no upkeep.{/if}
+  - question: Is there a manual I can keep?
+    title: The manual
+    text: |
+      {run:/claim manual} hands you a written book (once — it will not stack up in your inventory) and opens it. It covers the same ground as these pages, in book form. Blue text in it is clickable.
+  - question: What's /claim help for?
+    title: Command list
+    text: |
+      {run:/claim help} prints every subcommand in chat. For the lazy, here are the ones you will use most:
+      {cmd:/claim new} · {cmd:/claim here} · {cmd:/claim show} · {cmd:/claim hide} · {cmd:/claim trust <player>} · {cmd:/claim untrust <player>} · {cmd:/claim ban <player>} · {cmd:/claim rename <name>} · {cmd:/claim transfer <player>}
+  - question: Who can see what I've claimed?
+    title: Looking at claims
+    text: |
+      Stand in a claim and type {run:/claim here} to open its menu — if it is not yours, you are told whose it is instead. {run:/claim show} draws the border around you for {setting:claims:visualisation.duration-seconds|seconds}; {run:/claim hide} clears it again.

@@ -1,0 +1,31 @@
+id: claim-tolls
+title: Entry fees and the claim bank
+summary: Charge visitors a toll at your border, and where the money, fence blocks and refunds end up.
+intro: |
+  Some people build castles. Some build toll booths. I respect both.
+icon: GOLD_NUGGET
+category: Land & building
+order: 7
+module: claims
+aliases: [entryfee, entry-fee, toll, accept, decline, claimbank, bank-claim]
+keywords: [pay, price, visitors, border, pass, money, xp, item, cut, withdraw]
+related: [claims, claim-people, claim-border]
+sections:
+  - question: How do I charge people to enter?
+    title: Setting a toll
+    text: |
+      If the server allows entry fees: open the claim and click <b>Entry fee</b>. Switch it on, choose what is paid (money, experience or an item), how much — at most {setting:claims:entry-fee.max-amount|number} — and how long a paid pass lasts. 0 means every crossing pays. Money needs an economy on the server; the menu skips it if there is none.
+  - question: What happens at a toll border?
+    title: Paying
+    text: |
+      You are stopped at the border and asked. Type {cmd:/claim accept} to pay and go in, {cmd:/claim decline} to decline. You have {setting:claims:entry-fee.prompt-timeout-seconds|seconds} to decide. It works for walking and for teleporting in, so teleport plugins are covered too.
+      Decline and you are not asked again for {setting:claims:entry-fee.decline-cooldown-seconds|seconds}. If you cannot afford it you are told how much is missing. Nobody is ever charged without saying yes.
+  - question: Who never pays?
+    title: Exemptions
+    text: |
+      The owners always go in free. {if:claims:entry-fee.exempt-trusted}Trusted players pay nothing too.{else}Trusted players pay like everybody else.{/if} {if:claims:entry-fee.exempt-admins}Staff with admin rights walk in free.{else}Staff pay like anyone unless they hold the permission <white>rec.admin.nofee</white> or switch bypass on.{/if}
+  - question: Where does the money go?
+    title: The bank
+    text: |
+      Into the claim's <b>bank</b> — click <b>Bank</b> in the claim's menu and take it all with one click. {if:claims:entry-fee.server-cut-percent > 0}The server keeps {setting:claims:entry-fee.server-cut-percent|percent} of every paid fee; the rest reaches the claim.{else}The server takes no cut; it all reaches the claim.{/if}
+      The bank also receives refunds when you shrink the claim and fence blocks you take down. If you delete the claim, everything in the bank comes back to you first. Only people with the <b>access bank</b> right can withdraw.

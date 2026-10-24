@@ -1,0 +1,40 @@
+id: claim-upkeep
+title: Claim upkeep
+summary: What holding land costs, when the bill comes, and what happens if you cannot pay.
+intro: |
+  Land is not free forever. Neither, apparently, is owning it.
+icon: CLOCK
+category: Land & building
+order: 10
+module: claims
+when: claims:upkeep.enabled
+aliases: [upkeep, rent, claimrent, arrears, claim-tax]
+keywords: [bill, pay, debt, owe, price, chunks, discount, lapse, protection]
+related: [claims, claim-new, claim-people]
+sections:
+  - question: What is upkeep?
+    title: Overview
+    text: |
+      This server bills owners every {setting:claims:upkeep.every-hours|hours} for the land they hold: a price per chunk (16 by 16 blocks) of claimed land{if:claims:upkeep.per-claim}, plus a fee for every claim you have{/if}. All your claims count together. Nothing is ever deleted for not paying — the worst a debt does is described under arrears.
+  - question: How is the bill worked out?
+    title: The sum
+    text: |
+      <b>Land:</b> the first chunk costs {setting:claims:upkeep.per-chunk|money}{if:claims:upkeep.growth-percent > 0}, and every further chunk costs {setting:claims:upkeep.growth-percent|percent} more than the one before, across all your claims — big landholders pay proportionally more{else}; every further chunk costs the same{/if}.
+      <b>Claims:</b> {setting:claims:upkeep.per-claim|money} for each claim{if:claims:upkeep.per-claim-area-percent > 0}, rising by {setting:claims:upkeep.per-claim-area-percent|percent} for each chunk the claim covers beyond its first — so one big claim costs more than two small ones{/if}.
+      A claim only partly inside a chunk still counts the whole chunk. Prices may also move with the server's economy.
+  - question: How do I see what I owe?
+    title: Checking
+    text: |
+      {run:/claim upkeep} shows how many chunks you hold, your bill, the period, the time to the next bill and what it is made of — and any arrears. The claim menu has an <b>Upkeep</b> button too. Nobody is billed the moment upkeep is switched on: you get a full period of grace from when you are first seen.
+  - question: How do I pay?
+    title: Paying
+    text: |
+      Bills are taken automatically from your balance when due. If you can not pay, the amount becomes a <b>debt</b>. {cmd:/claim upkeep pay} pays as much of it as you can afford; the economy also collects part of your income toward it. You are reminded when you log in with a debt.
+  - question: What happens if I owe upkeep?
+    title: Arrears
+    text: |
+      While you owe anything you cannot make new claims or enlarge old ones (shrinking is fine).{if:claims:upkeep.arrears-lift-protection-after-days > 0} If it goes unpaid for {setting:claims:upkeep.arrears-lift-protection-after-days|days}, your claims <b>stop protecting</b> until you pay — anybody may build there. Paying brings protection back at once.{else} Your claims keep protecting; this server never lifts protection for a debt.{/if} The claims themselves are never deleted.
+  - question: Is there a discount?
+    title: Discounts
+    text: |
+      {if:claims:upkeep.operators-pay-percent < 100}Server operators pay {setting:claims:upkeep.operators-pay-percent|percent} of the bill, and so does anyone holding the permission <white>rainsclaims.upkeep.discount</white> (while online when billed).{else}No: everybody pays the full bill, operators included.{/if} A guild can also pay for a guild claim from its bank — see {topic:claim-people}.

@@ -1,0 +1,76 @@
+id: claim-new
+title: Marking out a claim
+summary: The marking stick, rectangles and outlines, names, costs, resizing, height, deleting and extra claim slots.
+intro: |
+  Drawing a border is two clicks and a name. Everything after that — reshaping, raising the ceiling, giving it up — is just as short.
+icon: STICK
+category: Land & building
+order: 2
+module: claims
+aliases: [claim-create, newclaim, stick, resize, unclaim, buyslot, claimslot]
+keywords: [corner, outline, polygon, rectangle, shape, cost, price, refund, delete, height, rename, name, slot, buy, extra]
+related: [claims, claim-people, claim-border, claim-upkeep]
+sections:
+  - question: How do I mark out a claim?
+    title: Marking out
+    text: |
+      Type {run:/claim new} (or {cmd:/claim stick} to just get the tool). The marking stick — {setting:claims:selection.stick-material|lower} — lands in your hand.
+      Right-click a block for the first corner, right-click another for the opposite one. A rectangle finishes with the second click. A glowing marker shows each corner you set, and the outline appears briefly.
+      Then you are asked for a name. Type it in chat — or <i>cancel</i> if you got cold feet. The prompt gives up after 24 seconds.
+  - question: What do the stick's clicks do?
+    title: The stick
+    text: |
+      <b>Right-click a block</b>: add a corner.
+      <b>Left-click a block</b>: take the last corner back.
+      <b>Right-click the air</b>: open the selection menu (shape, finish, undo, give up).
+      <b>Sneak + right-click the air</b>: finish.
+      <b>Left-click the air</b>: preview the outline. <b>Sneak + left-click the air</b>: give up.
+      Drop the stick and the selection is forgotten. {cmd:/claim cancel} does the same, as does the red button in the menu. {cmd:/claim select} opens the menu at will.
+  - question: Can I claim a non-rectangular shape?
+    title: Free outlines
+    text: |
+      Yes. Right-click the air with the stick to open its menu and click <b>Shape</b>: it switches between a plain rectangle and a free outline. With an outline you can set as many corners as you like (at most {setting:claims:limits.max-vertices}), at least three, and finish with a sneaking right-click in the air or the green <b>Finish</b> button. All corners must lie in one world.
+  - question: How tall is a new claim?
+    title: Height of a new claim
+    text: |
+      {if:claims:selection.vertical-mode == 'full height'}A new claim reaches from bedrock to the sky — everything above and below your border is covered too.{/if}{if:claims:selection.vertical-mode == selection}A new claim reaches exactly from the lowest to the highest corner you clicked. Click at different heights to shape it.{/if}{if:claims:selection.vertical-mode == 'selection padded'}A new claim reaches from {setting:claims:selection.padding-down|number} blocks below your lowest corner to {setting:claims:selection.padding-up|number} blocks above your highest.{/if}
+      It must be at least {setting:claims:limits.min-height} blocks tall. {if:claims:selection.allow-underground-claims}Claims that are completely underground are allowed.{else}Claims have to reach from bedrock to the build limit; a claim hidden underground is refused.{/if}
+      You can change the range later without redrawing — see the question on height below.
+  - question: What does a claim cost?
+    title: Price
+    text: |
+      {if:claims:creation-cost.type == none}Nothing. Claims are free here — go wild, within your limit.{/if}{if:claims:creation-cost.type == money}A claim costs {setting:claims:creation-cost.amount|money}{/if}{if:claims:creation-cost.type == 'xp levels'}A claim costs {setting:claims:creation-cost.amount} experience levels{/if}{if:claims:creation-cost.type == 'xp points'}A claim costs {setting:claims:creation-cost.amount} experience points{/if}{if:claims:creation-cost.type == item}A claim costs {setting:claims:creation-cost.amount} of a particular item that you hand over{/if}{if:claims:creation-cost.type != none && !claims:creation-cost.scale-with-area}, flat, however big it is.{/if}{if:claims:creation-cost.type != none && claims:creation-cost.scale-with-area} for every {setting:claims:creation-cost.blocks-per-unit|number} blocks of ground (at least one such portion).{/if}
+      {if:claims:creation-cost.type != none}The Finish button in the selection menu shows the exact price before you click. If you cannot pay, the claim is not made and you are told what is missing.{/if}
+  - question: Do I get anything back?
+    title: Refunds
+    when: claims:creation-cost.type != none
+    text: |
+      {if:claims:creation-cost.refund-on-delete}Give a claim up yourself and {setting:claims:creation-cost.delete-refund-rate|number} of the payment that is still invested in it comes back (1 means all of it). It is paid out when you confirm.{else}Deleting a claim does not refund what you paid for it.{/if}
+      {if:claims:creation-cost.charge-on-grow}Making a claim bigger costs the difference in price.{else}Making a claim bigger costs nothing extra.{/if} Making it smaller refunds {setting:claims:creation-cost.shrink-refund-rate|number} of the difference (1 is everything, 0 is nothing), put into the claim's bank. Resizing settles against what you originally paid, so shrinking and growing back is free of loss and cannot be farmed.
+  - question: How do I change a claim's shape?
+    title: Redrawing
+    text: |
+      Open the claim ({run:/claim here} while standing in it), click <b>Redraw the border</b> and mark the new outline with the stick, same as before. The same limits as for a new claim apply (size, corners, overlap{if:claims:upkeep.enabled}, and no unpaid upkeep when growing{/if}). If the server has switched resizing off, the button is simply not there.
+  - question: How do I change its height or depth?
+    title: Height
+    text: |
+      In the claim's menu, <b>Configuration</b> then <b>How deep and how high</b>. Nudge the bottom and top up and down, type exact values, or click a preset: full world height, surface only, hidden underground, or around where you stand. The claim must stay at least {setting:claims:limits.min-height} blocks tall.
+  - question: How do I rename it?
+    title: Renaming
+    text: |
+      Stand inside and type {cmd:/claim rename <name>}, or open the claim and click <b>Name and icon</b>. Names use letters, digits, dashes and underscores, up to 32 of them, and must be unique among <i>your</i> claims — somebody else's "home" does not matter. The same menu lets you pick the item the claim shows as in your list: hold it and click.
+  - question: How do I give a claim up?
+    title: Deleting
+    text: |
+      Open the claim and click the red <b>Give this claim up</b> button. It asks first. The border comes down, the land is open to everybody again, a standing fence is taken down, and what was in the claim's bank comes back to you.
+      The command {cmd:/claim delete} just opens that same menu; nothing is deleted by typing alone.
+  - question: Can I buy more claim slots?
+    title: Extra claim slots
+    when: claims:slots.buying
+    text: |
+      Yes. Once you reach your limit you can buy one claim more, forever: {cmd:/claim buyslot} asks you to confirm with {cmd:/claim buyslot confirm}, or click the button in {run:/claim}.
+      The first slot costs {setting:claims:slots.price|money}{if:claims:slots.price-growth-percent > 0}, and every further one costs {setting:claims:slots.price-growth-percent|percent} more than the one before{/if}.{if:claims:slots.most-bought > 0} You can buy at most {setting:claims:slots.most-bought} of them.{/if} Slots are not refunded.
+  - question: Why was my claim refused?
+    title: Refusals
+    text: |
+      The message tells you which rule you broke. In plain words: you are at your claim limit; the claim is too small ({setting:claims:limits.min-area-blocks|number} blocks at least){if:claims:limits.max-area-blocks > 0} or too big ({setting:claims:limits.max-area-blocks|number} at most){/if}; too many corners; too short; it overlaps another claim or a no-claim zone; claims are off in this world; the name is taken or invalid; you could not pay{if:claims:upkeep.enabled}; or you owe upkeep (pay it with {cmd:/claim upkeep pay}){/if}.
