@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.17.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.18.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -155,6 +155,17 @@ public final class ClaimsModule implements FlexModule {
         // Player names come from Core, which already knows everybody it has seen. A second name cache here
         // would be a second set of answers, drifting apart the first time somebody renames.
         names = new ClaimNames(claims, id -> context.core().identities().nameOf(id).orElse(null));
+
+        // Screens for /screen — Core 2.10.0; on an older Core there are simply none.
+        try {
+            var screens = context.core().screens();
+            if (screens != null) {
+                new de.raindancer.modules.claims.service.ClaimScreens(claims, names).register(screens, context.plugin());
+                context.closeWith(() -> de.raindancer.modules.claims.service.ClaimScreens.KINDS.forEach(screens::unregister));
+            }
+        } catch (LinkageError olderCore) {
+            context.log().info("RainsCore is older than 2.10.0: no claim screens until it is updated.");
+        }
 
         provider = new ClaimLandProvider(claims);
         if (!land.provider(provider)) {
