@@ -473,6 +473,13 @@ public final class ClaimService implements IClaimService {
         this.warps = warps;
     }
 
+    /** The waystones to take down with the land under them; null until the module wires it. */
+    private volatile WaystoneService waystones;
+
+    public void waystones(WaystoneService waystones) {
+        this.waystones = waystones;
+    }
+
     /** Claim slots each player bought on top of their limit; nobody has any until wired. */
     private volatile java.util.function.ToIntFunction<UUID> boughtSlots = player -> 0;
 
@@ -492,6 +499,10 @@ public final class ClaimService implements IClaimService {
         ClaimWarpService following = warps;
         if (following != null) {
             following.reshaped(claim);
+        }
+        WaystoneService stones = waystones;
+        if (stones != null) {
+            stones.reshaped(claim);
         }
     }
 
@@ -546,6 +557,10 @@ public final class ClaimService implements IClaimService {
             // Before anything else can be sent there: a warp outliving its claim leads onto whatever
             // is built on that ground next.
             following.deleted(claim);
+        }
+        WaystoneService stones = waystones;
+        if (stones != null) {
+            stones.deleted(claim);
         }
         UUID id = claim.id();
         Scheduling.async(plugin, () -> {

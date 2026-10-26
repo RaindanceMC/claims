@@ -27,3 +27,10 @@ error:
 
 pantry:
   empty-notice: "<yellow><white><claim></white>'s pantry is empty."
+
+waystone:
+  outside: "<red>A waystone works only inside a claim."
+  no-room: "<red>A waystone needs the block above it free."
+  bad-name: "<red>A name needs 1 to 32 characters."
+  cancelled-moved: "<red>You moved, so the trip was cancelled."
+  nowhere-safe: "<red>There is no safe place to arrive at <white><name></white> right now."

@@ -109,6 +109,7 @@ public final class ClaimCommand implements IClaimCommand {
             case "guild", "group" -> group(claims, player, args);
             case "warp", "setwarp", "door" -> warp(claims, player, args);
             case "home", "sethome" -> home(claims, player, args);
+            case "waystones", "waystone", "stones" -> waystones(claims, player);
             case "cancel" -> claims.selectionFlow().cancel(player);
             // The two halves of an entry-fee prompt. Without these the prompt is unanswerable, which makes
             // the whole feature a dead end rather than a degraded one.
@@ -453,6 +454,20 @@ public final class ClaimCommand implements IClaimCommand {
         }
     }
 
+    /** {@code /claim waystones}: the waystones of the claim somebody stands in — these are its own paths. */
+    private void waystones(ClaimServices claims, Player player) {
+        if (!claims.waystones().offered()) {
+            claims.messages().send(player, "waystone.off");
+            return;
+        }
+        Optional<Claim> standing = claims.claimAround(player);
+        if (standing.isEmpty()) {
+            claims.messages().send(player, "claim.none-here");
+            return;
+        }
+        claims.screens().waystones(player, standing.get());
+    }
+
     private void here(ClaimServices claims, Player player) {
         Optional<Claim> standing = claims.claimAround(player);
         if (standing.isEmpty()) {
@@ -773,7 +788,7 @@ public final class ClaimCommand implements IClaimCommand {
                     "new", "create", "list", "here", "info", "show", "border", "hide", "delete",
                     "rename", "trust", "untrust", "kick", "ban", "unban", "timeout", "owner", "transfer", "guild",
                     "cancel", "accept", "decline", "manual", "stick", "select", "help", "warp", "home", "upkeep",
-                    "buyslot"));
+                    "buyslot", "waystones"));
             if (args.length == 1) {
                 String prefix = args[0].toLowerCase(Locale.ROOT);
                 words.removeIf(word -> !word.startsWith(prefix));

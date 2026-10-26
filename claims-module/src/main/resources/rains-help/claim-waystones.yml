@@ -1,0 +1,29 @@
+id: claim-waystones
+title: Waystones
+summary: Stones inside a claim that take you to its other stones — the claim's own paths, nowhere else.
+intro: |
+  A big claim is a long walk. Put waystones down inside it and step from one to the next.
+icon: LODESTONE
+category: Land & building
+order: 10
+module: claims
+aliases: [waystone, stones, claim-travel]
+keywords: [waystone, travel, teleport, fast travel, inside, claim, fire]
+related: [claim-warps, claim-people]
+sections:
+  - question: How do I get a waystone?
+    title: Getting one
+    text: |
+      Open {run:/claim waystones} while you stand in your claim, or the Waystones button in the claim menu, and take one. Put it down anywhere inside the claim with room above it — it stands two blocks tall, a brazier burning on top. Owners, and claim admins given the right to manage waystones, can do this.
+  - question: How many can a claim have?
+    title: How many
+    text: |
+      Every claim may have {setting:claims-waystones:waystones.per-claim}{if:claims-waystones:waystones.blocks-per-extra > 0}, and one more for every {setting:claims-waystones:waystones.blocks-per-extra|number} blocks of ground{/if}. Two may not stand closer than {setting:claims-waystones:waystones.min-distance} blocks. {if:claims-waystones:waystones.buying}Owners can buy more from the waystone list: each one counts in every claim they own.{/if}
+  - question: How do I travel?
+    title: Travelling
+    text: |
+      Click a waystone. It lists the other stones of this claim that are open to you; pick one, stand still for {setting:claims-waystones:waystones.warmup-seconds|seconds} while the fire turns blue, and you are there. From {run:/claim waystones} you can travel too, as long as you stand inside the claim — these paths never start or end outside it.
+  - question: Who may use my waystones?
+    title: Who may use them
+    text: |
+      Each stone has its own setting: owners only, owners and trusted, or everybody on the claim. A trip needs both ends: somebody may only leave from a stone open to them, and only go to one open to them — a visitor at the public gate never sees the stone in your vault. Click a stone you manage to change it, rename it or take it down (you get it back).

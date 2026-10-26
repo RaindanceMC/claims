@@ -290,6 +290,8 @@ public final class ClaimStorage {
             claim.pantry().restore(ItemText.decodeAll(pantrySection.getStringList("items")));
         }
 
+        loadWaystones(claim, yaml.getConfigurationSection("waystones"), label);
+
         claim.potionStore().restore(ItemText.decodeAll(yaml.getStringList("potion-store")));
         // Resume the potion that was burning, so a restart does not throw away a partly used one.
         claim.potionStore().restoreActive(ItemText.decode(yaml.getString("potion-active.item")),
@@ -351,6 +353,46 @@ public final class ClaimStorage {
             claim.clearDirty();
         }
         return claim;
+    }
+
+    /**
+     * Waystones, one section each under their id. One that cannot be read is skipped and said in the log:
+     * losing a stone is better than losing the claim it stands in.
+     */
+    private static void loadWaystones(Claim claim, ConfigurationSection section, String label) {
+        if (section == null) {
+            return;
+        }
+        List<de.raindancer.modules.claims.model.ClaimWaystone> stones = new ArrayList<>();
+        for (String key : section.getKeys(false)) {
+            ConfigurationSection stone = section.getConfigurationSection(key);
+            if (stone == null) {
+                continue;
+            }
+            try {
+                stones.add(new de.raindancer.modules.claims.model.ClaimWaystone(UUID.fromString(key),
+                        stone.getString("name", "Waystone"), stone.getInt("x"), stone.getInt("y"),
+                        stone.getInt("z"), (float) stone.getDouble("yaw"),
+                        de.raindancer.core.world.protection.LandAudience.byKey(stone.getString("open-to"))
+                                .orElse(de.raindancer.core.world.protection.LandAudience.TRUSTED)));
+            } catch (IllegalArgumentException unreadable) {
+                log.warn("A waystone in {} could not be read ({}); it is left out.", label, key);
+            }
+        }
+        claim.waystones().restore(stones);
+    }
+
+    private static void saveWaystones(Claim claim, YamlConfiguration yaml) {
+        yaml.set("waystones", null);
+        for (var stone : claim.waystones().all()) {
+            String path = "waystones." + stone.id();
+            yaml.set(path + ".name", stone.name());
+            yaml.set(path + ".x", stone.x());
+            yaml.set(path + ".y", stone.y());
+            yaml.set(path + ".z", stone.z());
+            yaml.set(path + ".yaw", (double) stone.yaw());
+            yaml.set(path + ".open-to", stone.audience().key());
+        }
     }
 
     private static void loadTitles(ClaimTitles titles, ConfigurationSection section) {
@@ -507,6 +549,8 @@ public final class ClaimStorage {
         yaml.set("effects", effectList);
         yaml.set("effects-enabled", claim.effectsEnabled());
         yaml.set("flight-enabled", claim.flightEnabled());
+
+        saveWaystones(claim, yaml);
 
         yaml.set("pantry.enabled", claim.pantry().enabled());
         yaml.set("pantry.threshold", claim.pantry().threshold());

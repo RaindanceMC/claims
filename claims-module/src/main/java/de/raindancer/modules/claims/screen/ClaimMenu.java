@@ -206,6 +206,14 @@ public final class ClaimMenu extends ClaimScreen {
                     click -> new EntryFeeMenu(services(), viewer, claim, this).open());
         }
 
+        if (services().waystones().offered()) {
+            toolbar(4, Icons.of(Material.LODESTONE, "<white>Waystones",
+                            "<gray>Stones to travel between, inside this claim.",
+                            "<dark_gray>" + claim.waystones().size() + " of "
+                                    + services().waystones().limitFor(claim) + " put down"),
+                    click -> services().screens().waystones(viewer, claim));
+        }
+
         if (services().features().isOffered(ClaimFeature.BANK)) {
             toolbar(5, Icons.of(Material.ENDER_CHEST, "<white>Bank",
                             "<gray>Items and experience the claim holds.",

@@ -66,7 +66,8 @@
         <!-- 2.17.0: /help guide pages for claims (RainsCore 2.4.0). -->
         <!-- 2.16.0: the claim and no-claim sticks have their own model and texture (Blockbench sources in claims-module/art), shipped through Core's resource packs. -->
         <!-- 2.18.0: screens for /screen (RainsCore 2.10.1). -->
-        <plugin.version>2.18.0</plugin.version>
+        <!-- 2.19.0: waystones — stones to travel between inside one claim. -->
+        <plugin.version>2.19.0</plugin.version>
     </properties>
 
     <dependencies>

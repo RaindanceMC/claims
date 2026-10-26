@@ -169,7 +169,8 @@ final class FakeServices {
                             mock(de.raindancer.core.world.poi.ClaimWarps.class)),
                     noUpkeep(), new de.raindancer.modules.claims.service.ClaimSlotService(
                             new de.raindancer.core.social.economy.BuyableSlots(slotsFile(), "claims.slot", "slot"),
-                            messages, settings));
+                            messages, settings),
+                    mock(de.raindancer.modules.claims.service.WaystoneService.class));
             movement[0] = new de.raindancer.modules.claims.listener.MovementListener(services);
             return services;
         }

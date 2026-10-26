@@ -72,6 +72,7 @@ public final class Claim {
     private final PotionStore potionStore = new PotionStore();
     private final ClaimEquipment equipment = new ClaimEquipment();
     private final ClaimAtmosphere atmosphere = new ClaimAtmosphere();
+    private final ClaimWaystones waystones = new ClaimWaystones();
     /** Potion effects granted to everybody inside, keyed by type so one effect cannot be added twice. */
     private final Map<org.bukkit.potion.PotionEffectType, ClaimEffect> effects =
             new ConcurrentHashMap<>();
@@ -647,6 +648,10 @@ public final class Claim {
 
     public ClaimEquipment equipment() {
         return equipment;
+    }
+
+    public ClaimWaystones waystones() {
+        return waystones;
     }
 
     public ClaimAtmosphere atmosphere() {

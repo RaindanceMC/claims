@@ -25,6 +25,7 @@ public enum ClaimAdminPermission {
     MANAGE_ENTRY_FEE("Manage Entry Fee", "Change the toll charged for entering", Material.GOLD_INGOT),
     MANAGE_BANK("Access Bank", "Withdraw collected entry fees", Material.ENDER_CHEST),
     MANAGE_SHAPE("Resize Claim", "Reshape the claim from a selection", Material.GOLDEN_HOE),
+    MANAGE_WAYSTONES("Manage Waystones", "Put down, rename and take up waystones", Material.LODESTONE),
     MANAGE_ADMINS("Manage Admins", "Promote and demote other claim admins", Material.BEACON);
 
     private final String displayName;

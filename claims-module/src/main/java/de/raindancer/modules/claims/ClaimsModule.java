@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.18.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.19.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -98,6 +98,7 @@ public final class ClaimsModule implements FlexModule {
     private MovementListener movement;
     private ClaimServices services;
     private UpkeepService upkeep;
+    private de.raindancer.modules.claims.service.WaystoneService waystones;
 
     @Override
     public ModuleInfo info() {
@@ -251,12 +252,30 @@ public final class ClaimsModule implements FlexModule {
             }
         });
 
+        // Waystones: their own settings record, Core's travel for the trip, displays that are never saved.
+        var waystoneSettings = context.settings(WaystoneSettings.class, WaystoneSettings.DEFAULTS);
+        var waystoneTravel = new de.raindancer.core.world.teleport.Travel(context.plugin(),
+                context.core().safety(), context.core().audit());
+        context.listener(new de.raindancer.core.world.teleport.TravelListener(waystoneTravel));
+        var waystoneSlots = new de.raindancer.core.social.economy.BuyableSlots(
+                context.dataFolder().resolve("bought-waystones.yml"),
+                de.raindancer.modules.claims.service.WaystoneService.SLOT_SOURCE, "Extra waystone");
+        waystoneSlots.load();
+        waystones = new de.raindancer.modules.claims.service.WaystoneService(context.plugin(), claims,
+                claimService, features, rights, context.core().messages(), waystoneSlots, waystoneTravel,
+                new de.raindancer.modules.claims.service.WaystoneDisplays(context.plugin(),
+                        () -> waystoneSettings.current().animated()),
+                waystoneSettings.current());
+        waystoneSettings.onChange(waystones::settings);
+        claimService.waystones(waystones);
+
         services = new ClaimServices(context.plugin(), context.plugin().getServer(), log,
                 context.core().messages(), context.chat().brand(), context.core().prompts(), land,
                 land.flags(), features, claims, storage, zones, claimService, names, rights, provider,
                 costs, selections, stick, selectionFlow, visualizer, fences, ambience, entryFees,
                 eviction, equipment, broadcasts, settings::current, new LiveScreens(), () -> movement,
-                this::saveZones, this::saveFeaturePolicies, context.core(), claimWarps, upkeep, claimSlots);
+                this::saveZones, this::saveFeaturePolicies, context.core(), claimWarps, upkeep, claimSlots,
+                waystones);
         movement = new MovementListener(services);
         ambience.movement(movement);
 
@@ -290,6 +309,9 @@ public final class ClaimsModule implements FlexModule {
         context.listener(new PlayerSessionListener(services));
         context.listener(new SelectionListener(services));
         context.listener(new FenceListener(services));
+        context.listener(new de.raindancer.modules.claims.listener.WaystoneListener(services));
+        waystones.showLoaded();
+        context.closeWith(waystones::hideAll);
 
         // The commands were registered during bootstrap, long before any of this existed, and have been
         // answering "not started yet" until now. See ClaimCommands.
@@ -364,6 +386,17 @@ public final class ClaimsModule implements FlexModule {
         @Override
         public void titles(org.bukkit.entity.Player viewer, Claim claim) {
             new de.raindancer.modules.claims.screen.TitlesMenu(services, viewer, claim, null).open();
+        }
+
+        @Override
+        public void waystone(org.bukkit.entity.Player viewer, Claim claim,
+                             de.raindancer.modules.claims.model.ClaimWaystone stone) {
+            new de.raindancer.modules.claims.screen.WaystoneMenu(services, viewer, claim, stone, null).open();
+        }
+
+        @Override
+        public void waystones(org.bukkit.entity.Player viewer, Claim claim) {
+            new de.raindancer.modules.claims.screen.WaystonesMenu(services, viewer, claim, null).open();
         }
 
         @Override

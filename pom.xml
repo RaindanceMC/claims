@@ -20,7 +20,7 @@
 
     <!-- This repository's own versions: bump them here. CI publishes a new version on the next push to master. -->
     <properties>
-        <claims-module.version>2.18.0</claims-module.version>
+        <claims-module.version>2.19.0</claims-module.version>
         <rainscore.version>2.10.1</rainscore.version>
         <modules-wrapper.version>1.11.0</modules-wrapper.version>
     </properties>

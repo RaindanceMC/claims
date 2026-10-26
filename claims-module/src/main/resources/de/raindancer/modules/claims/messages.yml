@@ -28,6 +28,7 @@ claim:
     <gray>/claim rename <white>a new name<dark_gray> · <gray>delete<dark_gray>
     <gray>/claim transfer <white>somebody<dark_gray> — hand it over entirely
     <gray>/claim warp<dark_gray> · <gray>home<dark_gray> — its warp where you stand, your main home
+    <gray>/claim waystones<dark_gray> — travel between the waystones of the claim you are in
     <gray>/claim upkeep<dark_gray> · <gray>pay<dark_gray> — what holding land costs, if the server charges
     <dark_gray>everything else is in the menus
   manual-given: "<green>The manual is in your inventory. <gray>Read it any time."
@@ -309,3 +310,41 @@ slot:
   no-economy: "<red>There is no economy on this server to pay with."
   not-saved: "<red>The slot could not be saved, so your money was given back."
   refused: "<red>That payment was refused, and nothing was taken."
+
+waystone:
+  # ── the stone itself ───────────────────────────────────────────────────────
+  item-name: "<gold>Waystone"
+  item-lore-1: "<gray>Put it down inside your claim,"
+  item-lore-2: "<gray>then travel between your waystones there."
+  given: "<green>Here is a waystone for <white><claim></white>. <gray><count> of <limit> are down — put it anywhere inside."
+  placed: "<green><white><name></white> is lit. <gray><count> of <limit> in <white><claim></white>. Click it to travel or to rename it."
+  taken-down: "<green><white><name></white> is out, and back in your pocket."
+  # ── putting one down, refused ──────────────────────────────────────────────
+  "off": "<gray>Waystones are switched off on this server."
+  outside: "<red>A waystone only works inside a claim. Out here it would just be a very fancy rock."
+  outside-height: "<red>That would stick out of <white><claim></white>. Waystones are two blocks tall — put it lower."
+  no-room: "<red>It needs the block above it free. Waystones are two blocks tall, not shy."
+  too-close: "<red>Too close to another waystone. Leave <white><blocks></white> blocks between them."
+  full: "<red><white><claim></white> already has all <white><limit></white> waystones it may. Take one down, or grow the claim."
+  not-yours: "<red>Only those who manage <white><claim></white>'s waystones may do that."
+  # ── names and who may use one ──────────────────────────────────────────────
+  ask-name: "<yellow>What should <white><name></white> be called? <gray>Type it in chat, or <white>cancel</white>."
+  rename-aborted: "<gray>Kept the old name."
+  bad-name: "<red>A name needs 1 to 32 characters. Ambitious, but no."
+  name-taken: "<red>This claim already has a waystone called <white><name></white>."
+  renamed: "<green>It is called <white><name></white> now."
+  # ── travelling ─────────────────────────────────────────────────────────────
+  counting: "<gold>To <white><name></white> in <white><seconds></white>…"
+  not-here: "<red>Stand in <white><claim></white>, at one of its waystones, to travel. These paths do not reach outside."
+  not-for-you: "<red><white><name></white> is not open to you."
+  gone: "<red>That waystone is gone."
+  cancelled-moved: "<red>You moved, and the fire went out of it. Stand still next time."
+  cancelled-hurt: "<red>Something hit you and the trip was called off."
+  already-travelling: "<red>You are already on your way somewhere — <white><name></white> will have to wait."
+  nowhere-safe: "<red>There is nowhere safe to stand at <white><name></white> right now. Have a look at what was built in front of it."
+  # ── buying more ────────────────────────────────────────────────────────────
+  bought: "<green>Bought a waystone for <white><price></white>. <gray>One more in each claim you own; <white><count></white> bought so far."
+  buy-off: "<gray>Buying waystones is switched off on this server."
+  buy-no-price: "<gray>No price is set for a waystone yet."
+  buy-maxed: "<gray>You have bought the most waystones anybody may: <white><most></white>."
+  buy-cannot-afford: "<red>A waystone costs <white><price></white> — you do not have that much."

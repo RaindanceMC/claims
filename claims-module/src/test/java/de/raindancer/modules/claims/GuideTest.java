@@ -15,6 +15,7 @@ class GuideTest {
         assertThat(HelpLint.of(Path.of("src/main/resources/rains-help"))
                 .module("claims")
                 .settings(ClaimSettings.class, ClaimSettings.DEFAULTS)
+                .settings(WaystoneSettings.class, WaystoneSettings.DEFAULTS)
                 .otherTopics("guilds", "staff-tools")
                 .commands(new ClaimsModule().commands().stream().map(ModuleCommand::name).toList())
                 .problems()).isEmpty();

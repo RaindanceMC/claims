@@ -110,7 +110,9 @@ public record ClaimServices(
         de.raindancer.modules.claims.service.ClaimWarpService claimWarps,
         /** What holding land costs, and who has not paid it. Idle while upkeep is off. */
         de.raindancer.modules.claims.service.UpkeepService upkeep,
-        de.raindancer.modules.claims.service.ClaimSlotService claimSlots) {
+        de.raindancer.modules.claims.service.ClaimSlotService claimSlots,
+        /** Travelling between the stones inside one claim. */
+        de.raindancer.modules.claims.service.WaystoneService waystones) {
 
     /**
      * The border tracker.

@@ -77,6 +77,8 @@ public enum ClaimFeature {
             Material.LADDER, FeaturePolicy.AVAILABLE, false, false, null, null),
     BORDER_PREVIEW("Border preview", "Showing the border on demand with /claim show",
             Material.GLOWSTONE_DUST, FeaturePolicy.AVAILABLE, false, false, null, null),
+    WAYSTONES("Waystones", "Stones to travel between, inside one claim only",
+            Material.LODESTONE, FeaturePolicy.AVAILABLE, false, false, null, null),
 
     // ---------------------------------------------------------------- arrival and departure
 

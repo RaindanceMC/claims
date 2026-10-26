@@ -41,4 +41,10 @@ public interface ClaimScreensOpener {
 
     /** The manual, opened and left in their inventory. */
     void manual(Player viewer);
+
+    /** A waystone somebody clicked: where it can take them, and its settings for whoever manages it. */
+    void waystone(Player viewer, Claim claim, de.raindancer.modules.claims.model.ClaimWaystone stone);
+
+    /** A claim's waystones, from inside it. */
+    void waystones(Player viewer, Claim claim);
 }

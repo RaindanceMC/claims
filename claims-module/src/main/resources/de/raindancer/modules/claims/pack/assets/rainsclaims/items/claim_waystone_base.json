@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "rainsclaims:block/claim_waystone_base"
+  }
+}
