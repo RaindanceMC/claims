@@ -2,6 +2,7 @@ package de.raindancer.modules.claims.screen;
 
 import de.raindancer.modules.claims.model.Claim;
 import de.raindancer.modules.claims.model.ClaimAdminPermission;
+import de.raindancer.core.ui.menu.Arrow;
 import de.raindancer.core.ui.menu.Icons;
 import de.raindancer.core.ui.menu.Menu;
 import de.raindancer.core.ui.menu.MenuLayout;
@@ -55,25 +56,25 @@ public final class ClaimHeightMenu extends ClaimScreen {
         int floor = world == null ? -64 : world.getMinHeight();
         int ceiling = world == null ? 319 : world.getMaxHeight() - 1;
 
-        band(MenuLayout.WHO, 2, allowed, Icons.of(Material.NETHERRACK, "<green>Deeper",
+        band(MenuLayout.WHO, 2, allowed, Icons.arrow(Arrow.DOWN, "<green>Deeper",
                         "<gray>Now reaches down to <white>y " + min,
                         "<dark_gray>−" + STEP + " blocks, floor is y " + floor),
                 "The owner's to change",
                 click -> move(Math.max(floor, min - STEP), max));
 
-        band(MenuLayout.WHO, 3, allowed, Icons.of(Material.DIRT, "<gray>Shallower",
+        band(MenuLayout.WHO, 3, allowed, Icons.arrow(Arrow.UP, "<gray>Shallower",
                         "<gray>Now reaches down to <white>y " + min,
                         "<dark_gray>+" + STEP + " blocks"),
                 "The owner's to change",
                 click -> move(Math.min(max - 1, min + STEP), max));
 
-        band(MenuLayout.WHO, 5, allowed, Icons.of(Material.GLASS, "<gray>Lower ceiling",
+        band(MenuLayout.WHO, 5, allowed, Icons.arrow(Arrow.DOWN, "<gray>Lower ceiling",
                         "<gray>Now reaches up to <white>y " + max,
                         "<dark_gray>−" + STEP + " blocks"),
                 "The owner's to change",
                 click -> move(min, Math.max(min + 1, max - STEP)));
 
-        band(MenuLayout.WHO, 6, allowed, Icons.of(Material.LIGHT_BLUE_STAINED_GLASS, "<green>Higher ceiling",
+        band(MenuLayout.WHO, 6, allowed, Icons.arrow(Arrow.UP, "<green>Higher ceiling",
                         "<gray>Now reaches up to <white>y " + max,
                         "<dark_gray>+" + STEP + " blocks, sky is y " + ceiling),
                 "The owner's to change",

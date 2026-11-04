@@ -3,7 +3,6 @@ package de.raindancer.modules.claims.screen;
 import de.raindancer.modules.claims.model.Claim;
 import de.raindancer.modules.claims.model.ClaimAdminPermission;
 import de.raindancer.modules.claims.model.ClaimFeature;
-import de.raindancer.modules.claims.util.Items;
 import de.raindancer.modules.claims.extension.ClaimMenuButton;
 import de.raindancer.modules.claims.extension.ClaimMenuExtension;
 import de.raindancer.modules.claims.extension.ClaimMenuExtensions;
