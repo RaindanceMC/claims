@@ -492,7 +492,7 @@ public final class ClaimStorage {
         yaml.set("group", claim.group().orElse(null));
         yaml.set("group-pays-upkeep", claim.groupPaysUpkeep() ? true : null);
         List<String> groupPermissions = new ArrayList<>();
-        claim.groupPermissions().forEach(permission -> groupPermissions.add(permission.key()));
+        claim.groupPermissionsView().forEach(permission -> groupPermissions.add(permission.key()));
         yaml.set("group-permissions", claim.group().isPresent() ? groupPermissions : null);
 
         for (ClaimMember member : claim.members().values()) {

@@ -75,6 +75,9 @@ public final class PlayerSessionListener implements IClaimListener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         UUID uuid = event.getPlayer().getUniqueId();
+        // A pantry they just ate from or a stock they were handed out of reaches the disk now, not at the
+        // next timer tick.
+        services.claimService().saveDirty();
         services.movement().forget(uuid);
         // Core forgets its own half — the bypass and the refusal throttle — from its quit handler.
         services.provider().forget(uuid);

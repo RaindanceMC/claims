@@ -92,6 +92,13 @@ public final class ClaimService implements IClaimService {
     /** Set after construction — the fence service needs this service, so the cycle is broken here. */
     private FenceService fences;
     private FeatureRules features;
+    /**
+     * Orders the writes of one claim. Saves run on whatever async thread is free, so two of them for the same
+     * claim can land in either order; the older snapshot arriving last would put old data back on disk.
+     */
+    private final java.util.concurrent.atomic.AtomicLong writeTickets = new java.util.concurrent.atomic.AtomicLong();
+    private final java.util.Map<UUID, Long> lastWritten = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Object writeLock = new Object();
 
     public ClaimService(Plugin plugin, ClaimRegistry registry, ZoneRegistry zones, ClaimStorage storage,
                         ClaimSettings settings, CostService costs, ClaimRightsRule rights) {
@@ -563,9 +570,13 @@ public final class ClaimService implements IClaimService {
             stones.deleted(claim);
         }
         UUID id = claim.id();
+        // Nothing queued for this claim may write it again, whenever it gets to run.
+        lastWritten.put(id, Long.MAX_VALUE);
         Scheduling.async(plugin, () -> {
             try {
-                storage.delete(id);
+                synchronized (writeLock) {
+                    storage.delete(id);
+                }
             } catch (IOException exception) {
                 logger.log(Level.SEVERE, "Could not delete claim file for " + id, exception);
             }
@@ -579,19 +590,23 @@ public final class ClaimService implements IClaimService {
         // Described here, on the thread that owns the claim, and written on another. Doing both over there
         // walks the claim's members and bans while a region thread is adding to them — and because the dirty
         // flag is cleared first, the lost save is silent.
+        long ticket = writeTickets.incrementAndGet();
+        // Cleared before looking, not after: a change made while the snapshot is being taken then leaves
+        // the flag set and is picked up by the next pass instead of being wiped with this one.
+        claim.clearDirty();
         org.bukkit.configuration.file.YamlConfiguration described;
         try {
             described = storage.describe(claim);
         } catch (RuntimeException cannot) {
+            claim.markDirty();
             logger.log(Level.SEVERE, "Could not describe claim " + claim.name(), cannot);
             return;
         }
-        claim.clearDirty();
-        java.util.UUID id = claim.id();
+        UUID id = claim.id();
         String name = claim.name();
         Scheduling.async(plugin, () -> {
             try {
-                storage.write(described, id);
+                write(described, id, ticket);
             } catch (IOException exception) {
                 claim.markDirty();
                 logger.log(Level.SEVERE, "Could not save claim " + name, exception);
@@ -599,18 +614,74 @@ public final class ClaimService implements IClaimService {
         });
     }
 
-    /** Writes every claim that changed since the last save. Returns how many were written. */
-    public int saveDirty() {
+    private void write(org.bukkit.configuration.file.YamlConfiguration described, UUID id, long ticket)
+            throws IOException {
+        synchronized (writeLock) {
+            Long last = lastWritten.get(id);
+            if (last != null && last > ticket) {
+                return;
+            }
+            storage.write(described, id);
+            lastWritten.put(id, ticket);
+        }
+    }
+
+    private List<Claim> dirtyClaims() {
         List<Claim> dirty = new ArrayList<>();
         for (Claim claim : registry.all()) {
             if (claim.dirty()) {
                 dirty.add(claim);
             }
         }
+        return dirty;
+    }
+
+    /** Writes every claim that changed since the last save, off-thread. Returns how many were queued. */
+    public int saveDirty() {
+        List<Claim> dirty = dirtyClaims();
         for (Claim claim : dirty) {
             saveAsync(claim);
         }
         return dirty.size();
+    }
+
+    /**
+     * Writes every changed claim before returning — for a shutdown, or a player leaving with a pantry they
+     * just emptied. Snapshots on the calling thread, then writes the lot in one pass.
+     *
+     * @return how many claims were written
+     */
+    public int flushDirty() {
+        return flush(dirtyClaims());
+    }
+
+    private int flush(java.util.Collection<Claim> claims) {
+        java.util.Map<Claim, org.bukkit.configuration.file.YamlConfiguration> snapshots = new java.util.LinkedHashMap<>();
+        java.util.Map<Claim, Long> tickets = new java.util.HashMap<>();
+        for (Claim claim : claims) {
+            long ticket = writeTickets.incrementAndGet();
+            claim.clearDirty();
+            try {
+                snapshots.put(claim, storage.describe(claim));
+                tickets.put(claim, ticket);
+            } catch (RuntimeException cannot) {
+                claim.markDirty();
+                logger.log(Level.SEVERE, "Could not describe claim " + claim.name(), cannot);
+            }
+        }
+        int written = 0;
+        for (var entry : snapshots.entrySet()) {
+            Claim claim = entry.getKey();
+            try {
+                write(entry.getValue(), claim.id(), tickets.get(claim));
+                written++;
+            } catch (IOException exception) {
+                // One claim that will not write must not stop the other two hundred.
+                claim.markDirty();
+                logger.log(Level.SEVERE, "Could not save claim " + claim.name(), exception);
+            }
+        }
+        return written;
     }
 
     /**
@@ -653,19 +724,9 @@ public final class ClaimService implements IClaimService {
         return changed;
     }
 
-    /** Blocking save of everything — only used on plugin disable. */
+    /** Blocking save of everything, changed or not — the admin's "save now" and the last act of a shutdown. */
     public int saveAllBlocking() {
-        int saved = 0;
-        for (Claim claim : registry.all()) {
-            try {
-                storage.save(claim);
-                claim.clearDirty();
-                saved++;
-            } catch (IOException exception) {
-                logger.log(Level.SEVERE, "Could not save claim " + claim.name() + " during shutdown", exception);
-            }
-        }
-        return saved;
+        return flush(new ArrayList<>(registry.all()));
     }
 
     public int loadAll() {

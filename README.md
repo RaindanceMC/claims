@@ -15,7 +15,7 @@ Needs Java 25 and read access to `packages.tstieh.de` (server ids `packages-rele
 
 ## Plugins
 
-- `claims-standalone/target/RainsExtendedClaims-2.19.0.jar` — also published as `de.raindancer.modules:claims-standalone:2.19.0`
+- `claims-standalone/target/RainsExtendedClaims-2.19.2.jar` — also published as `de.raindancer.modules:claims-standalone:2.19.2`
 
 ## Art
 

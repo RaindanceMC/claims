@@ -84,7 +84,7 @@ public final class EquipService implements IClaimService {
         }
         if (handedOut > 0) {
             claim.markDirty();
-            claimService.saveAsync(claim);
+
         }
         return handedOut;
     }

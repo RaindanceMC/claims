@@ -690,7 +690,6 @@ public final class AmbienceService implements IClaimService {
                 "claim", claimNames.possessive(claim)));
 
         claim.markDirty();
-        claimService.saveAsync(claim);
 
         if (pantry.isEmpty()) {
             notifyOwnersEmpty(claim);

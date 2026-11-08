@@ -102,7 +102,7 @@ public final class Claim {
             java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private long createdAt = System.currentTimeMillis();
-    private boolean dirty = true;
+    private volatile boolean dirty = true;
 
     /**
      * The item shown for this claim in every list. {@code null} falls back to the default per role.
@@ -334,6 +334,11 @@ public final class Claim {
     public EnumSet<LandAction> groupPermissions() {
         markDirty();
         return groupPermissions;
+    }
+
+    /** The same, for reading: looking at it must not count as a change, or a save would never end. */
+    public java.util.Set<LandAction> groupPermissionsView() {
+        return java.util.Collections.unmodifiableSet(groupPermissions);
     }
 
     private Optional<de.raindancer.core.social.team.Groups.Group> groupNow() {

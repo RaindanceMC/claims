@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.19.1")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.19.2")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -304,6 +304,7 @@ public final class ClaimsModule implements FlexModule {
             upkeep.refreshProtection();
         });
         startUpkeep(context);
+        startSafetyNet(context);
 
         context.listener(movement);
         context.listener(new PlayerSessionListener(services));
@@ -332,6 +333,19 @@ public final class ClaimsModule implements FlexModule {
         var task = Scheduling.globalTimer(context.plugin(), 20L * 30, 20L * 60, handle -> {
             UpkeepNotices.tellOwners(services, upkeep.settleAll());
         });
+        context.closeWith(task::cancel);
+    }
+
+    /**
+     * Writes whatever changed every 30 seconds.
+     *
+     * <p>The pantry, the auto-equip stock and the potion store mark their claim dirty instead of writing it
+     * per bite or per hand-out; this is what gets it to disk. The interval is the most a crash can undo, so it
+     * is kept short rather than configurable. The snapshot is taken here on the global thread and only the
+     * file writes run off it.
+     */
+    private void startSafetyNet(ModuleContext context) {
+        var task = Scheduling.globalTimer(context.plugin(), 20L * 30, 20L * 30, handle -> claimService.saveDirty());
         context.closeWith(task::cancel);
     }
 
@@ -458,20 +472,9 @@ public final class ClaimsModule implements FlexModule {
             ambience.releaseFlight();
         }
         if (storage != null && claims != null) {
-            int failed = 0;
-            for (Claim claim : claims.all()) {
-                try {
-                    storage.save(claim);
-                } catch (IOException cannot) {
-                    // One claim that will not write must not stop the other two hundred. A shutdown is the
-                    // last chance these have to reach the disk.
-                    failed++;
-                    log.error(cannot, "Could not write claim {}", claim.name());
-                }
-            }
-            if (failed > 0) {
-                log.error("{} claim(s) could not be written on shutdown.", failed);
-            }
+            // Every claim, changed or not, in one pass with each one's failure kept to itself; async writes
+            // still in flight are overtaken by ticket order, not by timing.
+            claimService.saveAllBlocking();
         }
         // The provider is stood down by the context, in the reverse order everything was registered — see
         // ModuleContext.closeWith. Doing it here as well would be the same call twice.
