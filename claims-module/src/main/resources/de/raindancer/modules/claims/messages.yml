@@ -86,8 +86,6 @@ claim:
   resize-charged: "<yellow>Took <white><amount></white> <type> for the extra ground in <white><claim></white>."
 
   # ── asking for something ─────────────────────────────────────────────────
-  ask-new-name: "<gray>Type a new name for <white><claim></white>, or <white>cancel</white>."
-  rename-aborted: "<gray>Left the name alone."
   ask-title: "<gray>Type the <white><what></white>, or <white>cancel</white>."
   title-set: "<green>Set the <what>."
   title-aborted: "<gray>Left it alone."
@@ -326,8 +324,6 @@ waystone:
   full: "<red><white><claim></white> already has all <white><limit></white> waystones it may. Take one down, or grow the claim."
   not-yours: "<red>Only those who manage <white><claim></white>'s waystones may do that."
   # ── names and who may use one ──────────────────────────────────────────────
-  ask-name: "<yellow>What should <white><name></white> be called? <gray>Type it in chat, or <white>cancel</white>."
-  rename-aborted: "<gray>Kept the old name."
   bad-name: "<red>A name needs 1 to 32 characters. Ambitious, but no."
   name-taken: "<red>This claim already has a waystone called <white><name></white>."
   renamed: "<green>It is called <white><name></white> now."

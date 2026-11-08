@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.time.Duration;
 import java.util.List;
 
 /**
@@ -27,7 +26,6 @@ import java.util.List;
  */
 public final class WaystoneMenu extends PaginatedMenu<ClaimWaystone> implements IClaimScreen {
 
-    private static final Duration TO_ANSWER = Duration.ofSeconds(60);
 
     private final ClaimServices services;
     private final Claim claim;
@@ -118,14 +116,13 @@ public final class WaystoneMenu extends PaginatedMenu<ClaimWaystone> implements 
     }
 
     private void askForName() {
-        viewer.closeInventory();
-        services.messages().send(viewer, "waystone.ask-name", "name", current().name());
-        boolean asked = services.prompts().ask(viewer.getUniqueId(), "Claims", TO_ANSWER,
-                typed -> services.waystones().rename(viewer, claim, current(), typed),
-                () -> services.messages().send(viewer, "waystone.rename-aborted"));
-        if (!asked) {
-            services.messages().send(viewer, "selection.already-being-asked");
-        }
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "A name for this waystone", current().name(),
+                de.raindancer.core.ui.prompt.Parsers.text(32),
+                typed -> {
+                    services.waystones().rename(viewer, claim, current(), typed);
+                    open();
+                },
+                this::open);
     }
 
     private int distance(ClaimWaystone to) {

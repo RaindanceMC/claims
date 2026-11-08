@@ -14,12 +14,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
 
 /** What this claim is called, what it looks like in a list, and what it says to somebody arriving. */
 public final class ClaimIdentityMenu extends ClaimScreen {
 
-    private static final Duration RENAME_TIMEOUT = Duration.ofSeconds(24);
 
     public ClaimIdentityMenu(ClaimServices services, Player viewer, Claim claim, Menu parent) {
         super(services, viewer, claim, parent, 3);
@@ -76,31 +74,25 @@ public final class ClaimIdentityMenu extends ClaimScreen {
     /**
      * Asks for a new name in chat.
      *
-     * <p>Chat rather than a sign or an anvil: a claim name may be longer than a sign line, and an anvil rename
-     * costs a level on some servers. The refusal cases — taken, invalid — come back from the same validation the
-     * command uses, so a name refused here is refused there for the same reason.
+     * <p>In the game's own dialog, so the player stays in the menus. The refusal cases — taken, invalid — come back
+     * from the same validation the command uses, so a name refused here is refused there for the same reason.
      */
     private void askForName() {
-        viewer.closeInventory();
-        tell("claim.ask-new-name", "claim", claim().name());
-        boolean asked = services().prompts().ask(viewer.getUniqueId(), "Claims", RENAME_TIMEOUT,
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "A new name for " + claim().name(), claim().name(),
+                de.raindancer.core.ui.prompt.Parsers.text(48),
                 typed -> {
                     if (!services().claimService().isValidName(typed)) {
                         tell("error.name-invalid");
-                        return;
-                    }
-                    if (!services().names().available(typed, claim().primaryOwner())) {
+                    } else if (!services().names().available(typed, claim().primaryOwner())) {
                         tell("error.name-taken");
-                        return;
+                    } else {
+                        String was = claim().name();
+                        services().claims().rename(claim(), typed);
+                        services().claimService().saveAsync(claim());
+                        tell("claim.renamed", "old", was, "claim", typed);
                     }
-                    String was = claim().name();
-                    services().claims().rename(claim(), typed);
-                    services().claimService().saveAsync(claim());
-                    tell("claim.renamed", "old", was, "claim", typed);
+                    open();
                 },
-                () -> tell("claim.rename-aborted"));
-        if (!asked) {
-            tell("selection.already-being-asked");
-        }
+                this::open);
     }
 }

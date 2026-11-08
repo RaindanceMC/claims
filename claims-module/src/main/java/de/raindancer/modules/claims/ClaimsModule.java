@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.20.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.21.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
