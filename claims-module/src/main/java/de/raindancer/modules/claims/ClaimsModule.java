@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.22.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.23.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -180,6 +180,22 @@ public final class ClaimsModule implements FlexModule {
         context.closeWith(() -> land.withdraw(provider));
 
         // ── the product layer ─────────────────────────────────────────────────────────────────────────
+        // Where the player stands, on their sidebar (Core 2.58.0): the claim's name and whose it is, or nothing in
+        // the wilderness. A player hides it or moves it on their sidebar page.
+        de.raindancer.core.ui.scoreboard.SidebarSections.register("claims", "Where you stand", 40, id -> {
+            org.bukkit.entity.Player online = org.bukkit.Bukkit.getPlayer(id);
+            if (online == null) {
+                return java.util.List.of();
+            }
+            return claims.at(online.getLocation()).map(claim -> java.util.List.of(
+                    net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize("<dark_gray>▪ <gray>Here"),
+                    net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize("   <white>"
+                            + de.raindancer.core.ui.text.Text.literal(claim.name())),
+                    net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize("   <dark_gray>"
+                            + de.raindancer.core.ui.text.Text.literal(names.primaryOwner(claim)) + "'s")))
+                    .orElse(java.util.List.of());
+        });
+        context.closeWith(() -> de.raindancer.core.ui.scoreboard.SidebarSections.unregister("claims"));
         rights = new ClaimRightsRule(land);
         settings = context.settings(ClaimSettings.class, ClaimSettings.DEFAULTS);
         zones = new ZoneRegistry();
