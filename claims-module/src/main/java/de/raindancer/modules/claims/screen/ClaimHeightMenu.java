@@ -149,36 +149,14 @@ public final class ClaimHeightMenu extends ClaimScreen {
      * meant something, and silently giving them 319 hides the fact that they were wrong about the world.
      */
     private void askFor(String which, int floor, int ceiling, java.util.function.IntConsumer apply) {
-        viewer.closeInventory();
-        tell("claim.ask-height", "which", which,
-                "min", String.valueOf(floor), "max", String.valueOf(ceiling));
-
-        boolean asked = services().prompts().ask(viewer.getUniqueId(), "Claims",
-                java.time.Duration.ofSeconds(24),
-                typed -> de.raindancer.core.platform.util.Scheduling.entity(
-                        services().plugin(), viewer, () -> {
-                            int value;
-                            try {
-                                value = Integer.parseInt(typed.strip());
-                            } catch (NumberFormatException notANumber) {
-                                tell("claim.height-not-a-number", "typed", typed.strip());
-                                reopen();
-                                return;
-                            }
-                            if (value < floor || value > ceiling) {
-                                tell("claim.height-out-of-range", "typed", String.valueOf(value),
-                                        "min", String.valueOf(floor), "max", String.valueOf(ceiling));
-                                reopen();
-                                return;
-                            }
-                            apply.accept(value);
-                        }),
-                () -> de.raindancer.core.platform.util.Scheduling.entity(
-                        services().plugin(), viewer, this::reopen));
-        if (!asked) {
-            // Already answering something else. Reopened rather than left staring at a closed inventory.
-            reopen();
-        }
+        // The game's dialog checks the range while the number is typed; the page comes back either way.
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "The " + which + ", from " + floor + " to " + ceiling, "",
+                de.raindancer.core.ui.prompt.Parsers.wholeNumber(floor, ceiling),
+                value -> {
+                    apply.accept(value);
+                    reopen();
+                },
+                this::reopen);
     }
 
     /** Applies a new vertical range and says what it became, so the numbers on screen are never stale. */

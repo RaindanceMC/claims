@@ -66,24 +66,16 @@ public final class TitleLineMenu extends ClaimScreen {
                 "<white>Colour: <yellow>" + text.colorKey()));
 
         band(MenuLayout.WHO, 2, allowed, Icons.of(Material.WRITABLE_BOOK, "<yellow>Change the text",
-                        "<gray>You will be asked in chat.",
-                        "<gray>Type <white>cancel<gray> to abort."),
+                        "<gray>Click to type it."),
                 "The owner's to change",
-                click -> {
-                    viewer.closeInventory();
-                    tell("claim.ask-title", "what", label);
-                    boolean asked = services().prompts().ask(viewer.getUniqueId(), "Claims",
-                            Duration.ofSeconds(30),
-                            typed -> {
-                                text.raw(typed);
-                                save();
-                                tell("claim.title-set", "what", label);
-                            },
-                            () -> tell("claim.title-aborted"));
-                    if (!asked) {
-                        tell("selection.already-being-asked");
-                    }
-                });
+                click -> de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "The " + label, text.raw(), de.raindancer.core.ui.prompt.Parsers.text(100),
+                        typed -> {
+                            text.raw(typed);
+                            save();
+                            tell("claim.title-set", "what", label);
+                            open();
+                        },
+                        this::open));
 
         band(MenuLayout.WHO, 5, allowed, Icons.of(Material.BARRIER, "<red>Clear this line",
                         "<gray>Empties the text; the styling stays."),
