@@ -120,10 +120,12 @@ class PickingPeopleTest {
 
         // Written as an assertion rather than left implicit: somebody tidying up later should be able to see
         // that these two prompts are deliberate, not leftovers from the conversion.
+        // They are typed in the game's dialog (Core's AnvilInput goes there), never in chat.
         assertThat(bans)
                 .as("'three days' and 'because you kept breaking my chests' have nothing to enumerate")
-                .contains("ask-timeout-duration")
-                .contains("ask-ban-reason");
+                .contains("How long, then why")
+                .contains("barred?")
+                .doesNotContain("prompts().ask(");
     }
 
     @Test

@@ -36,7 +36,6 @@ import java.util.UUID;
 public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScreen {
 
     /** How long somebody has to answer before the question is withdrawn. */
-    private static final Duration PROMPT_TIMEOUT = Duration.ofSeconds(20);
 
     private final ClaimServices services;
     private final Claim claim;
@@ -154,8 +153,9 @@ public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScr
     }
 
     private void askBanReason(PlayerEntry person) {
-        services.messages().send(viewer, "claim.ask-ban-reason");
-        boolean asked = services.prompts().ask(viewer.getUniqueId(), "Claims", PROMPT_TIMEOUT,
+        // In the game's own dialog, not in chat: the page comes back either way.
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "Why is " + person.name() + " barred? (- for no reason)", "",
+                de.raindancer.core.ui.prompt.Parsers.text(100),
                 typed -> {
                     String reason = typed.trim().equals("-") ? "" : typed.trim();
                     // Asked, not assumed. The chooser does not offer an owner, so this cannot refuse today —
@@ -174,9 +174,6 @@ public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScr
                     open();
                 },
                 this::open);
-        if (!asked) {
-            services.messages().send(viewer, "selection.already-being-asked");
-        }
     }
 
     private void askTimeout() {
@@ -186,8 +183,8 @@ public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScr
     }
 
     private void askTimeoutDuration(PlayerEntry person) {
-        services.messages().send(viewer, "claim.ask-timeout-duration");
-        boolean asked = services.prompts().ask(viewer.getUniqueId(), "Claims", PROMPT_TIMEOUT,
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "How long, then why — 10m griefing", "",
+                de.raindancer.core.ui.prompt.Parsers.text(100),
                 typed -> {
                     String[] parts = typed.trim().split("\\s+", 2);
                     Optional<Duration> duration = Durations.parse(parts[0]);
@@ -212,8 +209,5 @@ public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScr
                     open();
                 },
                 this::open);
-        if (!asked) {
-            services.messages().send(viewer, "selection.already-being-asked");
-        }
     }
 }
