@@ -60,6 +60,37 @@ public final class ClaimShape {
                 new ClaimPoint(loX, hiZ)), minY, maxY);
     }
 
+    /**
+     * A round shape: every block column whose centre lies within {@code radius} of the centre column.
+     *
+     * <p>Kept as an outline, so everything that reads a shape — storage, borders, fences, maps, overlap checks —
+     * reads this one too. Its corners sit on the radius, close enough together that an edge never bows in by
+     * more than a tenth of a block: nothing within the radius is left out, and nothing more than two blocks
+     * beyond it is taken in (corners sit on whole blocks, and the rim columns an edge passes through count as
+     * inside, as on any claim).
+     */
+    public static ClaimShape circle(int centreX, int centreZ, int radius, int minY, int maxY) {
+        if (radius < 1) {
+            throw new IllegalArgumentException("A round claim needs a radius of at least 1, got " + radius);
+        }
+        double outline = radius;
+        // As many corners as it takes for a straight edge to bow in by no more than a tenth of a block.
+        int corners = Math.max(8, (int) Math.ceil(Math.PI / Math.acos(1.0D - 0.1D / outline)));
+        List<ClaimPoint> points = new ArrayList<>(corners);
+        for (int at = 0; at < corners; at++) {
+            double angle = 2.0D * Math.PI * at / corners;
+            ClaimPoint point = new ClaimPoint(centreX + (int) Math.round(outline * Math.cos(angle)),
+                    centreZ + (int) Math.round(outline * Math.sin(angle)));
+            if (points.isEmpty() || !points.get(points.size() - 1).equals(point)) {
+                points.add(point);
+            }
+        }
+        if (points.size() > 1 && points.get(0).equals(points.get(points.size() - 1))) {
+            points.remove(points.size() - 1);
+        }
+        return new ClaimShape(points, minY, maxY);
+    }
+
     public List<ClaimPoint> vertices() {
         return vertices;
     }

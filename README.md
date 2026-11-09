@@ -15,7 +15,7 @@ Needs Java 25 and read access to `packages.tstieh.de` (server ids `packages-rele
 
 ## Plugins
 
-- `claims-standalone/target/RainsExtendedClaims-2.25.0.jar` — also published as `de.raindancer.modules:claims-standalone:2.25.0`
+- `claims-standalone/target/RainsExtendedClaims-2.26.0.jar` — also published as `de.raindancer.modules:claims-standalone:2.26.0`
 
 ## Server claims
 
@@ -25,8 +25,9 @@ lapse. Created fully protected — visitors may enter, craft and trade only; PvP
 and hostile spawning off (`Claim.SERVER_CLAIM_DENIED_FLAGS`). Overlaps with players' claims are refused unless forced.
 
 `/serverclaim` (also `/claimadmin server …`, permission `rainsclaims.admin.server`, implied by `rec.admin`):
-`create <name>` (marking tool, full height) or `create <name> <world> <x1> <z1> <x2> <z2> [force]` from the console,
-`resize`, `rename`, `delete`, `info`, `flag <name> <flag> <allow|deny|default>`, `public <name> <action> <allow|deny>`,
+`create <name>` (marking tool, full height) or `create <name> <world> <x1> <z1> <x2> <z2> [force]` from the console
+(round: `create <name> <world> circle <x> <z> <radius>` — `ClaimShape.circle`, an outline accurate to the block),
+`resize` (same shapes), `rename`, `delete`, `info`, `flag <name> <flag> <allow|deny|default>`, `public <name> <action> <allow|deny>`,
 `trust`/`untrust <name> <player>`, `open`. A rank is trusted by `rainsclaims.server.trust.<name>` or
 `rainsclaims.server.trust.*` (only when explicitly granted). The admin bypass still builds everywhere.
 In the menus: `/claimadmin` → *The server's own claims*.

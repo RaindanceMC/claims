@@ -160,7 +160,7 @@ public final class SelectionFlow {
             reportServerFailure(player, failure.get(), claim.name(), "");
             return false;
         }
-        messages.send(player, "admin.claim-reshaped",
+        messages.send(player, "server.reshaped",
                 "claim", claim.name(),
                 "area", String.valueOf(shape.areaBlocks()),
                 "min-y", String.valueOf(shape.minY()),

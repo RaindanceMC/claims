@@ -114,8 +114,7 @@ public final class ServerClaimCommand implements IClaimCommand {
      */
     private void create(ClaimServices claims, CommandSender sender, String[] args) {
         if (args.length < 2) {
-            claims.messages().send(sender, "claim.who",
-                    "usage", "/serverclaim create <name> [<world> <x1> <z1> <x2> <z2>] [force]");
+            claims.messages().send(sender, "claim.who", "usage", CREATE_USAGE);
             return;
         }
         String name = args[1];
@@ -135,8 +134,7 @@ public final class ServerClaimCommand implements IClaimCommand {
             return;
         }
         if (given != 7) {
-            claims.messages().send(sender, "claim.who",
-                    "usage", "/serverclaim create <name> [<world> <x1> <z1> <x2> <z2>] [force]");
+            claims.messages().send(sender, "claim.who", "usage", CREATE_USAGE);
             return;
         }
         World world = claims.server().getWorld(args[2]);
@@ -144,13 +142,12 @@ public final class ServerClaimCommand implements IClaimCommand {
             claims.messages().send(sender, "error.world-missing", "world", args[2]);
             return;
         }
-        Optional<int[]> corners = numbers(claims, sender, Arrays.copyOfRange(args, 3, 7));
-        if (corners.isEmpty()) {
+        Optional<ClaimShape> drawn = shapeFrom(claims, sender, Arrays.copyOfRange(args, 3, 7),
+                world.getMinHeight(), world.getMaxHeight() - 1);
+        if (drawn.isEmpty()) {
             return;
         }
-        int[] c = corners.get();
-        ClaimShape shape = ClaimShape.rectangle(c[0], c[1], c[2], c[3],
-                world.getMinHeight(), world.getMaxHeight() - 1);
+        ClaimShape shape = drawn.get();
         ClaimService.Result result = claims.claimService().createServerClaim(world, shape, name, force);
         if (!result.success()) {
             claims.selectionFlow().reportServerFailure(sender, result.failure(), name, result.detail());
@@ -165,7 +162,7 @@ public final class ServerClaimCommand implements IClaimCommand {
 
     /** {@code resize <name> [force]} with the tool, or {@code resize <name> <x1> <z1> <x2> <z2> [force]}. */
     private void resize(ClaimServices claims, CommandSender sender, String[] args) {
-        Optional<Claim> found = serverClaim(claims, sender, args, "/serverclaim resize <name> [<x1> <z1> <x2> <z2>] [force]");
+        Optional<Claim> found = serverClaim(claims, sender, args, RESIZE_USAGE);
         if (found.isEmpty()) {
             return;
         }
@@ -182,22 +179,21 @@ public final class ServerClaimCommand implements IClaimCommand {
             return;
         }
         if (given != 6) {
-            claims.messages().send(sender, "claim.who",
-                    "usage", "/serverclaim resize <name> [<x1> <z1> <x2> <z2>] [force]");
+            claims.messages().send(sender, "claim.who", "usage", RESIZE_USAGE);
             return;
         }
-        Optional<int[]> corners = numbers(claims, sender, Arrays.copyOfRange(args, 2, 6));
-        if (corners.isEmpty()) {
+        Optional<ClaimShape> drawn = shapeFrom(claims, sender, Arrays.copyOfRange(args, 2, 6),
+                claim.shape().minY(), claim.shape().maxY());
+        if (drawn.isEmpty()) {
             return;
         }
-        int[] c = corners.get();
-        ClaimShape shape = ClaimShape.rectangle(c[0], c[1], c[2], c[3], claim.shape().minY(), claim.shape().maxY());
+        ClaimShape shape = drawn.get();
         Optional<ClaimService.Failure> failure = claims.claimService().reshapeServerClaim(claim, shape, force);
         if (failure.isPresent()) {
             claims.selectionFlow().reportServerFailure(sender, failure.get(), claim.name(), "");
             return;
         }
-        claims.messages().send(sender, "admin.claim-reshaped",
+        claims.messages().send(sender, "server.reshaped",
                 "claim", claim.name(),
                 "area", String.valueOf(shape.areaBlocks()),
                 "min-y", String.valueOf(shape.minY()),
@@ -382,6 +378,30 @@ public final class ServerClaimCommand implements IClaimCommand {
         return claim;
     }
 
+    private static final String CREATE_USAGE =
+            "/serverclaim create <name> [<world> <x1> <z1> <x2> <z2> | <world> circle <x> <z> <radius>] [force]";
+    private static final String RESIZE_USAGE =
+            "/serverclaim resize <name> [<x1> <z1> <x2> <z2> | circle <x> <z> <radius>] [force]";
+
+    /** Four words: two opposite corners, or {@code circle <x> <z> <radius>} for a round claim. */
+    private static Optional<ClaimShape> shapeFrom(ClaimServices claims, CommandSender sender, String[] words,
+                                                  int minY, int maxY) {
+        boolean round = words[0].equalsIgnoreCase("circle") || words[0].equalsIgnoreCase("round");
+        Optional<int[]> numbers = numbers(claims, sender, round ? Arrays.copyOfRange(words, 1, 4) : words);
+        if (numbers.isEmpty()) {
+            return Optional.empty();
+        }
+        int[] n = numbers.get();
+        if (!round) {
+            return Optional.of(ClaimShape.rectangle(n[0], n[1], n[2], n[3], minY, maxY));
+        }
+        if (n[2] < 1) {
+            claims.messages().send(sender, "server.not-a-number", "input", words[3]);
+            return Optional.empty();
+        }
+        return Optional.of(ClaimShape.circle(n[0], n[1], n[2], minY, maxY));
+    }
+
     private static boolean endsWithForce(String[] args) {
         return args.length > 2 && args[args.length - 1].equalsIgnoreCase("force");
     }
@@ -440,7 +460,9 @@ public final class ServerClaimCommand implements IClaimCommand {
         } else if (args.length == 3 && (args[0].equalsIgnoreCase("trust") || args[0].equalsIgnoreCase("untrust"))) {
             return Subjects.suggest(services.get().server(), sender, args[2], who -> true);
         } else if (args.length == 3 && args[0].equalsIgnoreCase("resize")) {
-            words.add("force");
+            words.addAll(List.of("circle", "force"));
+        } else if (args.length == 4 && args[0].equalsIgnoreCase("create")) {
+            words.add("circle");
         }
         words.removeIf(word -> !word.toLowerCase(Locale.ROOT).startsWith(typed));
         return words;

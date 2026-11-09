@@ -16,7 +16,7 @@ sections:
   - question: How do I protect spawn?
     title: Making one
     text: |
-      {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
+      {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>} — or make it round: {cmd:/serverclaim create <name> <world> circle <x> <z> <radius>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
   - question: What does it protect?
     title: Fully protected
     text: |
@@ -32,7 +32,7 @@ sections:
   - question: How do I change or remove one?
     title: Redrawing, renaming, deleting
     text: |
-      {cmd:/serverclaim resize <name>} (with the tool, or with <x1> <z1> <x2> <z2>), {cmd:/serverclaim rename <name> <new name>}, {cmd:/serverclaim delete <name>}, and {cmd:/serverclaim list}. Handing one to a player from the claim browser makes it their ordinary claim.
+      {cmd:/serverclaim resize <name>} (with the tool, with <x1> <z1> <x2> <z2>, or round with circle <x> <z> <radius>), {cmd:/serverclaim rename <name> <new name>}, {cmd:/serverclaim delete <name>}, and {cmd:/serverclaim list}. Handing one to a player from the claim browser makes it their ordinary claim.
   - question: Which permission is it?
     title: Permission
     text: |
