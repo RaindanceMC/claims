@@ -269,6 +269,64 @@ public final class ClaimService implements IClaimService {
         return Result.ok(claim);
     }
 
+    // ------------------------------------------------------------ the server's own claims
+
+    /**
+     * Makes a claim the server holds — fully protected, see {@link Claim#server}.
+     *
+     * <p>None of a player's rules apply: no limit, no price, no size bounds, no no-claim zone (spawn usually is
+     * one, and that is exactly where staff want this). Two things still do: a usable name nobody else's server
+     * claim carries, and not overlapping anybody's claim — unless staff say {@code force}, knowing that inside
+     * an overlap the smaller claim is the one that applies.
+     */
+    public Result createServerClaim(World world, ClaimShape shape, String name, boolean force) {
+        if (!de.raindancer.modules.claims.model.ClaimNames.isValidName(name)) {
+            return Result.fail(Failure.NAME_INVALID, name == null ? "" : name);
+        }
+        if (registry.serverClaim(name).isPresent()) {
+            return Result.fail(Failure.NAME_TAKEN, name);
+        }
+        if (!force) {
+            Optional<Claim> overlap = firstOverlap(world.getUID(), shape, null);
+            if (overlap.isPresent()) {
+                return Result.fail(Failure.OVERLAPS_CLAIM, overlap.get().name());
+            }
+        }
+        Claim claim = Claim.server(UUID.randomUUID(), name, world.getUID(), world.getName(), shape);
+        claim.fence().material(settings.fenceDefaultMaterial());
+        registry.add(claim);
+        saveAsync(claim);
+        return Result.ok(claim);
+    }
+
+    /** Redraws a server claim; an overlap is refused unless forced. Empty when it worked. */
+    public Optional<Failure> reshapeServerClaim(Claim claim, ClaimShape shape, boolean force) {
+        if (!force && firstOverlap(claim.worldId(), shape, claim.id()).isPresent()) {
+            return Optional.of(Failure.OVERLAPS_CLAIM);
+        }
+        claim.shape(shape);
+        followShape(claim);
+        registry.reindex(claim);
+        if (fences != null) {
+            fences.sync(claim, null, "admin-reshape");
+        }
+        saveAsync(claim);
+        return Optional.empty();
+    }
+
+    /** Renames a server claim, keeping names unique among the server's claims. Empty when it worked. */
+    public Optional<Failure> renameServerClaim(Claim claim, String newName) {
+        if (!de.raindancer.modules.claims.model.ClaimNames.isValidName(newName)) {
+            return Optional.of(Failure.NAME_INVALID);
+        }
+        Optional<Claim> holder = registry.serverClaim(newName);
+        if (holder.isPresent() && !holder.get().id().equals(claim.id())) {
+            return Optional.of(Failure.NAME_TAKEN);
+        }
+        rename(claim, newName);
+        return Optional.empty();
+    }
+
     /** What finishing a selection would cost or refund, in words; empty when nothing changes hands. */
     public Optional<String> quote(Player player, Claim existing, ClaimShape shape) {
         if (rights.isBypassing(player)) {
@@ -748,6 +806,9 @@ public final class ClaimService implements IClaimService {
 
     /** Whether one of this claim's owners already has another claim by the same name. */
     private boolean clashesWithOwnClaim(Claim claim) {
+        if (claim.isServerClaim()) {
+            return registry.serverClaim(claim.name()).isPresent();
+        }
         for (Claim existing : registry.allByName(claim.name())) {
             for (java.util.UUID owner : claim.owners()) {
                 if (existing.isOwner(owner)) {

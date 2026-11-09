@@ -145,6 +145,8 @@ public final class SelectionStick {
             case RESIZE_CLAIM -> "resizing a claim";
             case NO_CLAIM_ZONE -> "a no-claim zone";
             case ADMIN_RESHAPE -> "an admin reshape";
+            case SERVER_CLAIM -> "a server claim";
+            case SERVER_RESHAPE -> "redrawing a server claim";
         };
     }
 

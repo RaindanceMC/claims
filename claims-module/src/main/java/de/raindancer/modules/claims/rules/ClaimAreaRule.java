@@ -8,8 +8,10 @@ import de.raindancer.core.world.protection.LandFlag;
 import de.raindancer.core.world.protection.ProtectedArea;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiPredicate;
 
 /**
  * A claim, seen as the piece of protected ground Core knows how to enforce.
@@ -38,6 +40,36 @@ import java.util.UUID;
  * so a region plugin cannot forget to honour it.
  */
 public record ClaimAreaRule(Claim claim) implements ProtectedArea, IClaimRule {
+
+    /**
+     * Who is trusted on a server claim by role rather than by name: a builders' rank carrying
+     * {@link #rolePermission}. Set by the module, which can ask the server about online players' permissions;
+     * nobody until then, which is what every test without a server wants.
+     */
+    private static volatile BiPredicate<UUID, Claim> roleTrust = (who, claim) -> false;
+
+    /** Replaces the role check; {@code null} goes back to trusting nobody by role. */
+    public static void roleTrust(BiPredicate<UUID, Claim> check) {
+        roleTrust = check == null ? (who, claim) -> false : check;
+    }
+
+    /** The node that trusts a role on this server claim, as if each holder were a trusted member. */
+    public static String rolePermission(Claim claim) {
+        return "rainsclaims.server.trust." + claim.name().toLowerCase(Locale.ROOT);
+    }
+
+    /** What a role trusted on a server claim may do — the same package {@code /claim trust} gives a person. */
+    private static final ClaimMember ROLE_MEMBER = roleMember();
+
+    private static ClaimMember roleMember() {
+        ClaimMember member = new ClaimMember(new UUID(0L, 0L));
+        member.applyDefaultTrust();
+        return member;
+    }
+
+    private boolean trustedByRole(UUID who) {
+        return claim.isServerClaim() && roleTrust.test(who, claim);
+    }
 
     @Override
     public String describe() {
@@ -80,7 +112,7 @@ public record ClaimAreaRule(Claim claim) implements ProtectedArea, IClaimRule {
         if (claim.isOwner(who)) {
             return LandAudience.OWNER;
         }
-        return claim.member(who).isPresent() ? LandAudience.TRUSTED : LandAudience.VISITOR;
+        return claim.member(who).isPresent() || trustedByRole(who) ? LandAudience.TRUSTED : LandAudience.VISITOR;
     }
 
     /**
@@ -116,6 +148,9 @@ public record ClaimAreaRule(Claim claim) implements ProtectedArea, IClaimRule {
                 return true;
             }
             return member.has(action);
+        }
+        if (trustedByRole(who)) {
+            return ROLE_MEMBER.has(action);
         }
         return claim.publicHas(action);
     }

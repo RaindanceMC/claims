@@ -55,7 +55,7 @@ sections:
   - question: Which permissions matter?
     title: Permissions
     text: |
-      <white>rec.use</white> — use /claim (everybody has it). <white>rec.admin</white> — all of /claimadmin, implies the other two. <white>rec.bypass</white> — may toggle the bypass. <white>rec.admin.nofee</white> — never pays entry fees. <white>rec.maxclaims.N</white> — raises the claim limit to N for that player (<white>rec.maxclaims.unlimited</white> removes it). <white>rainsclaims.upkeep.discount</white> — pays only the operators' share of the upkeep.
+      <white>rec.use</white> — use /claim (everybody has it). <white>rec.admin</white> — all of /claimadmin, implies the other two. <white>rec.bypass</white> — may toggle the bypass. <white>rec.admin.nofee</white> — never pays entry fees. <white>rec.maxclaims.N</white> — raises the claim limit to N for that player (<white>rec.maxclaims.unlimited</white> removes it). <white>rainsclaims.upkeep.discount</white> — pays only the operators' share of the upkeep. <white>rainsclaims.admin.server</white> — the server's own claims, see {cmd:/serverclaim}.
   - question: What can I tune?
     title: Settings
     permission: rainscore.settings

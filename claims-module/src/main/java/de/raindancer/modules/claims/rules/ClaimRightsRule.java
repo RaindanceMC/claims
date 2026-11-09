@@ -52,11 +52,22 @@ public final class ClaimRightsRule implements IClaimRule {
      * <p>Server admins may. Owners may. Anybody else needs the specific right delegated to them, which is what
      * makes a claim admin useful without making them a second owner.
      */
+    /** Whether this player looks after the server's own claims — see {@code ClaimPermissions.SERVER_CLAIMS}. */
+    public boolean isServerClaimStaff(Player player) {
+        return player != null && (isServerAdmin(player)
+                || player.hasPermission(de.raindancer.modules.claims.util.ClaimPermissions.SERVER_CLAIMS));
+    }
+
+    /** Server admins everywhere; on a server claim, whoever looks after the server's claims stands in for an owner. */
+    private boolean standsInForOwner(Claim claim, Player player) {
+        return isServerAdmin(player) || claim.isServerClaim() && isServerClaimStaff(player);
+    }
+
     public boolean canManage(Claim claim, Player player, ClaimAdminPermission permission) {
         if (claim == null || player == null) {
             return false;
         }
-        if (isServerAdmin(player)) {
+        if (standsInForOwner(claim, player)) {
             return true;
         }
         if (claim.isOwner(player.getUniqueId())) {
@@ -76,7 +87,7 @@ public final class ClaimRightsRule implements IClaimRule {
         if (claim == null || player == null) {
             return false;
         }
-        if (isServerAdmin(player) || claim.isOwner(player.getUniqueId())) {
+        if (standsInForOwner(claim, player) || claim.isOwner(player.getUniqueId())) {
             return true;
         }
         return claim.member(player.getUniqueId())
@@ -95,6 +106,6 @@ public final class ClaimRightsRule implements IClaimRule {
         if (claim == null || player == null) {
             return false;
         }
-        return isServerAdmin(player) || claim.isOwner(player.getUniqueId());
+        return standsInForOwner(claim, player) || claim.isOwner(player.getUniqueId());
     }
 }

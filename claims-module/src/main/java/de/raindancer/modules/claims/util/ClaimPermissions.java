@@ -45,6 +45,8 @@ import java.util.Map;
 public final class ClaimPermissions {
 
     public static final String UPKEEP_DISCOUNT = "rainsclaims.upkeep.discount";
+    /** Making, redrawing, renaming, deleting and running the server's own claims — spawn and the like. */
+    public static final String SERVER_CLAIMS = "rainsclaims.admin.server";
 
     private ClaimPermissions() {
     }
@@ -68,9 +70,15 @@ public final class ClaimPermissions {
         Map<String, Boolean> adminImplies = new LinkedHashMap<>();
         adminImplies.put("rec.use", true);
         adminImplies.put("rec.bypass", true);
+        adminImplies.put(SERVER_CLAIMS, true);
         permissions.add(new Permission("rec.admin",
                 "Full administrative access to every claim and setting",
                 PermissionDefault.OP, adminImplies));
+
+        // On its own for staff who look after spawn and the like without running everybody's claims.
+        permissions.add(new Permission(SERVER_CLAIMS,
+                "Create, redraw, rename, delete and configure the server's own claims (/claimadmin server)",
+                PermissionDefault.OP));
 
         permissions.add(new Permission("rec.bypass",
                 "Allows toggling the protection bypass with /claimadmin bypass, which is also what "

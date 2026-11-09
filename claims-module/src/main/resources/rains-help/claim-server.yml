@@ -1,0 +1,39 @@
+id: claim-server
+title: Server claims
+summary: Land the server itself holds — spawn, a market square — fully protected, owned by nobody.
+intro: |
+  A server claim has no player owner. It reads as <b>Server</b> wherever an owner would be named, is never counted against anybody's limit, and pays no price, upkeep or entry fee — and it never lapses.
+icon: BEACON
+category: Staff
+order: 31
+module: claims
+permission: rainsclaims.admin.server
+aliases: [serverclaim, serverclaims, sclaim, server-claim, spawn-claim]
+keywords: [spawn, server, protect, grief, builders, trust, force, overlap]
+commands: [serverclaim]
+related: [claim-staff, claim-rules]
+sections:
+  - question: How do I protect spawn?
+    title: Making one
+    text: |
+      {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
+  - question: What does it protect?
+    title: Fully protected
+    text: |
+      Visitors may walk in, craft and trade, and nothing else: no building or breaking, no chests, doors, buttons or redstone. PvP, fire spread, explosions, mob and enderman griefing, pistons and fluids from outside, and hostile mob spawning are switched off. Change any of it in the claim's rules from its page, or with {cmd:/serverclaim flag <name> <flag> <allow|deny|default>} and {cmd:/serverclaim public <name> <action> <allow|deny>}. {cmd:/serverclaim info <name>} prints what a visitor may do there and every flag's verdict.
+  - question: Who may build there?
+    title: Builders
+    text: |
+      Staff in {run:/claimadmin bypass} build anywhere. Trust a person with {cmd:/serverclaim trust <name> <player>}, or a whole rank by giving it <white>rainsclaims.server.trust.<name></white> (lowercase claim name) or <white>rainsclaims.server.trust.*</white> — they count as trusted while they hold it.
+  - question: What if it covers somebody's claim?
+    title: Overlaps
+    text: |
+      Refused, as with players' claims. Add <white>force</white> to {cmd:/serverclaim create} or {cmd:/serverclaim resize} to claim over it anyway; inside the overlap the smaller claim is the one that applies.
+  - question: How do I change or remove one?
+    title: Redrawing, renaming, deleting
+    text: |
+      {cmd:/serverclaim resize <name>} (with the tool, or with <x1> <z1> <x2> <z2>), {cmd:/serverclaim rename <name> <new name>}, {cmd:/serverclaim delete <name>}, and {cmd:/serverclaim list}. Handing one to a player from the claim browser makes it their ordinary claim.
+  - question: Which permission is it?
+    title: Permission
+    text: |
+      <white>rainsclaims.admin.server</white> — everything on this page; operators have it, and <white>rec.admin</white> implies it.

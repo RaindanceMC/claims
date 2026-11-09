@@ -96,8 +96,7 @@ public final class EntryFeeService implements IClaimService {
         if (!features.isOffered(ClaimFeature.ENTRY_FEE)) {
             return false;
         }
-        EntryFee fee = claim.entryFee();
-        if (!fee.enabled()) {
+        if (!claim.chargesEntry()) {
             return false;
         }
         UUID uuid = player.getUniqueId();

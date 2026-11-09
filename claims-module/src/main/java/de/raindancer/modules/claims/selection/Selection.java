@@ -36,7 +36,11 @@ public final class Selection {
          * admin who is reaching for this precisely because the ordinary rules are in the way. See
          * {@code ClaimService.adminReshape}, which this purpose is the only caller of.
          */
-        ADMIN_RESHAPE
+        ADMIN_RESHAPE,
+        /** Staff marking out a claim the server holds; full world height, named before the tool is handed out. */
+        SERVER_CLAIM,
+        /** Staff redrawing a server claim; keeps its height. */
+        SERVER_RESHAPE
     }
 
     private final UUID worldId;
@@ -114,6 +118,17 @@ public final class Selection {
     }
 
 
+
+    /** Whether staff said the server claim may overlap players' claims. */
+    private boolean forceOverlap;
+
+    public boolean forceOverlap() {
+        return forceOverlap;
+    }
+
+    public void forceOverlap(boolean force) {
+        this.forceOverlap = force;
+    }
 
     public String pendingName() {
         return pendingName;

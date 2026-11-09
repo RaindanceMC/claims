@@ -454,7 +454,9 @@ public final class MovementListener implements IClaimListener {
             player.showTitle(claim.titles().buildEnter());
         }
         if (services.features().appliesTo(claim, ClaimFeature.ENTER_MESSAGE, player)) {
-            var message = services.messages().prefixed("notify.entered", 
+            var message = claim.isServerClaim()
+                    ? services.messages().prefixed("notify.entered-server", "claim", claim.name())
+                    : services.messages().prefixed("notify.entered",
                     "claim", claim.name(),
                     "owner", ownerNames(claim));
             if (services.config().enterMessageActionBar()) {

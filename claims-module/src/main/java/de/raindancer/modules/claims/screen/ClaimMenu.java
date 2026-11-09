@@ -104,9 +104,12 @@ public final class ClaimMenu extends ClaimScreen {
                 "The owner's to change",
                 click -> {
                     viewer.closeInventory();
+                    // The server's claim is redrawn by staff without a player's limits or prices.
                     services().selectionFlow().begin(viewer,
                             de.raindancer.modules.claims.selection.Selection.Mode.RECTANGLE,
-                            de.raindancer.modules.claims.selection.Selection.Purpose.RESIZE_CLAIM,
+                            claim.isServerClaim()
+                                    ? de.raindancer.modules.claims.selection.Selection.Purpose.SERVER_RESHAPE
+                                    : de.raindancer.modules.claims.selection.Selection.Purpose.RESIZE_CLAIM,
                             null, claim, null);
                 });
 
@@ -129,7 +132,7 @@ public final class ClaimMenu extends ClaimScreen {
                 click -> {
                     if (click.isRightClick()) {
                         services().claimWarps().clear(viewer.getUniqueId(),
-                                services().rights().isServerAdmin(viewer), claim);
+                                services().rights().isOwnerOrServerAdmin(claim, viewer), claim);
                         services().claimService().saveAsync(claim);
                         services().messages().send(viewer, "claim.warp-removed", "claim", claim.name());
                         refresh();
@@ -137,7 +140,7 @@ public final class ClaimMenu extends ClaimScreen {
                     }
                     org.bukkit.Location at = viewer.getLocation();
                     var outcome = services().claimWarps().set(viewer.getUniqueId(),
-                            services().rights().isServerAdmin(viewer), claim, at.getWorld().getName(),
+                            services().rights().isOwnerOrServerAdmin(claim, viewer), claim, at.getWorld().getName(),
                             at.getX(), at.getY(), at.getZ(), at.getYaw(), at.getPitch());
                     if (outcome == de.raindancer.modules.claims.service.ClaimWarpService.Outcome.SET) {
                         services().claimService().saveAsync(claim);
@@ -198,7 +201,7 @@ public final class ClaimMenu extends ClaimScreen {
                     click -> new UpkeepMenu(services(), viewer, claim, this, payer).open());
         }
 
-        if (services().features().isOffered(ClaimFeature.ENTRY_FEE)) {
+        if (services().features().isOffered(ClaimFeature.ENTRY_FEE) && !claim.isServerClaim()) {
             toolbar(3, Icons.of(Material.GOLD_NUGGET, "<white>Entry fee",
                             "<gray>What a visitor pays at the border.",
                             "<dark_gray>" + (claim.entryFee().enabled() ? "charging" : "free")),

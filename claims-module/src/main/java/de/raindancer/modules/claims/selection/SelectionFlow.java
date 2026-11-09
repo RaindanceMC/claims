@@ -107,7 +107,78 @@ public final class SelectionFlow {
             case RESIZE_CLAIM -> finishResize(player, selection, world, shape);
             case NO_CLAIM_ZONE -> finishZone(player, selection, world, shape);
             case ADMIN_RESHAPE -> finishAdminReshape(player, selection, world, shape);
+            case SERVER_CLAIM -> finishServerClaim(player, selection, world,
+                    selection.toShape(world.getMinHeight(), world.getMaxHeight() - 1));
+            case SERVER_RESHAPE -> finishServerReshape(player, selection, world);
         };
+    }
+
+    /** Staff finishing a server claim: the name was given with the command, so nothing is asked here. */
+    private boolean finishServerClaim(Player player, Selection selection, World world, ClaimShape shape) {
+        if (!rights.isServerClaimStaff(player)) {
+            messages.send(player, "error.no-permission");
+            cleanUp(player);
+            return false;
+        }
+        ClaimService.Result result = claimService.createServerClaim(world, shape, selection.pendingName(),
+                selection.forceOverlap());
+        if (!result.success()) {
+            reportServerFailure(player, result.failure(), selection.pendingName(), result.detail());
+            return false;
+        }
+        messages.send(player, "server.created",
+                "claim", result.claim().name(),
+                "area", String.valueOf(shape.areaBlocks()),
+                "min-y", String.valueOf(shape.minY()),
+                "max-y", String.valueOf(shape.maxY()));
+        cleanUp(player);
+        visualizer.showClaim(player, result.claim(), settings.get().visualDurationSeconds());
+        return true;
+    }
+
+    private boolean finishServerReshape(Player player, Selection selection, World world) {
+        Optional<Claim> maybeClaim = claims.byId(selection.targetClaimId());
+        if (maybeClaim.isEmpty() || !maybeClaim.get().isServerClaim()) {
+            messages.send(player, "claim.gone");
+            cleanUp(player);
+            return false;
+        }
+        if (!rights.isServerClaimStaff(player)) {
+            messages.send(player, "error.no-permission");
+            cleanUp(player);
+            return false;
+        }
+        Claim claim = maybeClaim.get();
+        if (!claim.worldId().equals(world.getUID())) {
+            messages.send(player, "selection.wrong-world", "claim", claim.name());
+            return false;
+        }
+        ClaimShape shape = selection.toShape(claim.shape().minY(), claim.shape().maxY());
+        Optional<ClaimService.Failure> failure = claimService.reshapeServerClaim(claim, shape,
+                selection.forceOverlap());
+        if (failure.isPresent()) {
+            reportServerFailure(player, failure.get(), claim.name(), "");
+            return false;
+        }
+        messages.send(player, "admin.claim-reshaped",
+                "claim", claim.name(),
+                "area", String.valueOf(shape.areaBlocks()),
+                "min-y", String.valueOf(shape.minY()),
+                "max-y", String.valueOf(shape.maxY()));
+        cleanUp(player);
+        visualizer.showClaim(player, claim, settings.get().visualDurationSeconds());
+        return true;
+    }
+
+    /** Why a server claim was refused, to whoever asked — a player or the console. */
+    public void reportServerFailure(org.bukkit.command.CommandSender to, ClaimService.Failure failure, String name,
+                                    String detail) {
+        switch (failure) {
+            case NAME_INVALID -> messages.send(to, "error.name-invalid");
+            case NAME_TAKEN -> messages.send(to, "server.name-taken", "claim", name == null ? "" : name);
+            case OVERLAPS_CLAIM -> messages.send(to, "server.overlaps", "detail", detail == null ? "" : detail);
+            default -> messages.send(to, "error.generic", "detail", failure.name());
+        }
     }
 
     private boolean finishNewClaim(Player player, Selection selection, World world, ClaimShape shape) {
@@ -357,6 +428,12 @@ public final class SelectionFlow {
 
     public void atLimit(java.util.function.Consumer<Player> hint) {
         this.atLimit = hint == null ? player -> { } : hint;
+    }
+
+    /** Starts marking out, or redrawing, a server claim; {@code force} lets it overlap players' claims. */
+    public void beginServer(Player player, Selection.Purpose purpose, String name, Claim target, boolean force) {
+        begin(player, Selection.Mode.RECTANGLE, purpose, name, target, null);
+        selections.selection(player).ifPresent(selection -> selection.forceOverlap(force));
     }
 
     /** Starts a fresh selection and hands out the tool. */

@@ -98,7 +98,7 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
             case NAME -> Comparator.comparing(Claim::name, String.CASE_INSENSITIVE_ORDER);
             case AGE -> Comparator.<Claim>comparingLong(Claim::createdAt).reversed();
             case OWNER -> Comparator.comparing(
-                    (Claim claim) -> services.names().nameOfOwner(claim.primaryOwner()),
+                    (Claim claim) -> services.names().primaryOwner(claim),
                     String.CASE_INSENSITIVE_ORDER);
         };
         claims.sort(comparator);
@@ -135,7 +135,7 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
 
     @Override
     protected void onClick(Claim claim, InventoryClickEvent event) {
-        if (!services.rights().isServerAdmin(viewer)) {
+        if (!AdminClaimMenu.mayRun(services, viewer, claim)) {
             services.messages().send(viewer, "error.no-permission");
             return;
         }
@@ -219,6 +219,12 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
             super(services, viewer, claim, parent);
         }
 
+        /** Server admins on any claim; on the server's own, whoever looks after the server's claims too. */
+        static boolean mayRun(ClaimServices services, Player viewer, Claim claim) {
+            return services.rights().isServerAdmin(viewer)
+                    || claim.isServerClaim() && services.rights().isServerClaimStaff(viewer);
+        }
+
         @Override
         protected Component title() {
             return Component.text(claim().name() + " — staff view");
@@ -250,13 +256,18 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
                             "<gray>The usual size and overlap limits do not apply —",
                             "<gray>this is for a claim that is already out of bounds."),
                     click -> {
-                        if (!services().rights().isServerAdmin(viewer)) {
+                        if (!mayRun(services(), viewer, claim)) {
                             services().messages().send(viewer, "error.no-permission");
                             return;
                         }
                         viewer.closeInventory();
-                        services().selectionFlow().begin(viewer, Selection.Mode.RECTANGLE,
-                                Selection.Purpose.ADMIN_RESHAPE, null, claim, null);
+                        if (claim.isServerClaim()) {
+                            services().selectionFlow().beginServer(viewer, Selection.Purpose.SERVER_RESHAPE,
+                                    null, claim, false);
+                        } else {
+                            services().selectionFlow().begin(viewer, Selection.Mode.RECTANGLE,
+                                    Selection.Purpose.ADMIN_RESHAPE, null, claim, null);
+                        }
                     });
 
             band(MenuLayout.WHO, 7, Icons.of(Material.ENDER_PEARL, "<aqua>Teleport to the centre",
@@ -281,7 +292,7 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
                             "<gray>Replaces every current owner.",
                             "<dark_gray>click to choose the new owner"),
                     click -> {
-                        if (!services().rights().isServerAdmin(viewer)) {
+                        if (!mayRun(services(), viewer, claim)) {
                             services().messages().send(viewer, "error.no-permission");
                             return;
                         }
@@ -313,9 +324,10 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
                     "<gold>Hand \"" + claim.name() + "\" to " + person.name() + "?",
                     List.of("<gray>All current owners lose the claim."),
                     () -> {
-                        List<UUID> previous = new ArrayList<>(claim.owners());
-                        claim.addOwner(person.id());
-                        previous.forEach(claim::removeOwner);
+                        // transferTo, not addOwner and removeOwner: removeOwner refuses the primary owner, so
+                        // that left the old owner on the claim — and a server claim takes no owner at all.
+                        claim.transferTo(person.id());
+                        services().claimWarps().transferred(claim);
                         services().claims().reindex(claim);
                         services().claimService().saveAsync(claim);
                         services().messages().send(viewer, "admin.ownership-transferred",

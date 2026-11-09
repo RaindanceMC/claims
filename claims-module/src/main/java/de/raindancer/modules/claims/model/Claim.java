@@ -38,6 +38,12 @@ public final class Claim {
     // reads as. There are never more than a handful, and they change almost never, which is
     // exactly the shape copy-on-write is for.
     private final Set<UUID> owners = new java.util.concurrent.CopyOnWriteArraySet<>();
+    /**
+     * Held by the server itself rather than by a player — spawn, a market square. Such a claim has no owners at
+     * all: no uuid stands in for "the server", so nothing that counts, bills or names owners can mistake it for
+     * somebody's claim. Staff manage it through their permission instead of through ownership.
+     */
+    private volatile boolean serverOwned;
     /** The group (a guild) this claim belongs to as well — {@code guild:<id>} — or null. */
     private volatile String group;
     private volatile boolean groupPaysUpkeep;
@@ -148,6 +154,50 @@ public final class Claim {
                 publicPermissions.add(permission);
             }
         }
+    }
+
+    /**
+     * The rules a server claim starts with switched off for everybody: it is ground nobody may grief, so
+     * nothing burns, blows up, gets fought over or is spawned into hostile.
+     */
+    public static final Set<LandFlag> SERVER_CLAIM_DENIED_FLAGS = Collections.unmodifiableSet(EnumSet.of(
+            LandFlag.PVP, LandFlag.MONSTER_SPAWNING, LandFlag.FIRE_SPREAD, LandFlag.EXPLOSIONS,
+            LandFlag.EXPLOSION_DAMAGE, LandFlag.MOB_GRIEF, LandFlag.ENDERMAN_GRIEF,
+            LandFlag.PISTONS_FROM_OUTSIDE, LandFlag.FLUIDS_FROM_OUTSIDE));
+
+    /**
+     * A claim held by the server, fully protected: visitors may walk in and use what is public by default
+     * (crafting tables, trading), and nothing else; {@link #SERVER_CLAIM_DENIED_FLAGS} are off for everybody.
+     */
+    public static Claim server(UUID id, String name, UUID worldId, String worldName, ClaimShape shape) {
+        Claim claim = new Claim(id, name, worldId, worldName, shape, null);
+        claim.markServerClaim();
+        for (LandFlag flag : SERVER_CLAIM_DENIED_FLAGS) {
+            claim.setFlagOverride(flag, null, false);
+        }
+        return claim;
+    }
+
+    /**
+     * Makes this the server's: every owner goes, and with them anything only an owner had. Used by
+     * {@link #server} and by the loader; a player's claim becomes the server's only through those.
+     */
+    public void markServerClaim() {
+        owners.clear();
+        ignoringOwnRules.clear();
+        groupPaysUpkeep = false;
+        lapsed = false;
+        serverOwned = true;
+        markDirty();
+    }
+
+    public boolean isServerClaim() {
+        return serverOwned;
+    }
+
+    /** Whether a visitor is charged at the border. Never on a server claim, whatever its fee page says. */
+    public boolean chargesEntry() {
+        return !serverOwned && entryFee.enabled();
     }
 
     /**
@@ -347,6 +397,11 @@ public final class Claim {
     }
 
     public boolean addOwner(UUID uuid) {
+        // A server claim is handed over whole with transferTo, never shared: an owner next to the server
+        // would be a player who may do anything on spawn.
+        if (serverOwned || uuid == null) {
+            return false;
+        }
         boolean added = owners.add(uuid);
         if (added) {
             members.remove(uuid);
@@ -396,6 +451,7 @@ public final class Claim {
         }
         owners.clear();
         owners.add(newOwner);
+        serverOwned = false;
         members.remove(newOwner);
         bans.remove(newOwner);
         ignoringOwnRules.clear();
@@ -835,7 +891,8 @@ public final class Claim {
     }
 
     public void lapsed(boolean lapsed) {
-        this.lapsed = lapsed;
+        // Nobody pays upkeep on the server's ground, so it has nothing to fall behind on.
+        this.lapsed = lapsed && !serverOwned;
     }
 
     public boolean dirty() {

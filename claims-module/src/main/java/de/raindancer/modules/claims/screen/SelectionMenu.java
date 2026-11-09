@@ -68,7 +68,8 @@ public final class SelectionMenu extends ClaimScreen {
                 });
 
         List<String> finish = new ArrayList<>();
-        finish.add(selection.purpose() == Selection.Purpose.NEW_CLAIM ? "<gray>Make the claim." : "<gray>Apply the new outline.");
+        finish.add(selection.purpose() == Selection.Purpose.NEW_CLAIM || selection.purpose() == Selection.Purpose.SERVER_CLAIM
+                ? "<gray>Make the claim." : "<gray>Apply the new outline.");
         if (selection.isComplete()
                 && (selection.purpose() == Selection.Purpose.NEW_CLAIM
                 || selection.purpose() == Selection.Purpose.RESIZE_CLAIM)) {
@@ -112,6 +113,8 @@ public final class SelectionMenu extends ClaimScreen {
             case RESIZE_CLAIM -> "redrawing an existing claim";
             case NO_CLAIM_ZONE -> "an area nobody may claim";
             case ADMIN_RESHAPE -> "an admin reshape";
+            case SERVER_CLAIM -> "a server claim";
+            case SERVER_RESHAPE -> "redrawing a server claim";
         };
     }
 }

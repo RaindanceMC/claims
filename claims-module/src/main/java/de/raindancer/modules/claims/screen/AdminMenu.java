@@ -71,6 +71,12 @@ public final class AdminMenu extends ClaimScreen {
                         "<dark_gray>" + services().claims().size() + " claim(s) on the server"),
                 click -> new AdminClaimBrowserMenu(services(), viewer, this).open());
 
+        band(MenuLayout.RULES, 2, Icons.of(Material.BEACON, "<gold>The server's own claims",
+                        "<gray>Spawn and the like: no owner, fully protected,",
+                        "<gray>never counted, billed or charged for.",
+                        "<dark_gray>" + services().claims().serverClaims().size() + " held by the server"),
+                click -> new ServerClaimsMenu(services(), viewer, this).open());
+
         // The money: Core's generated settings pages, one door each, so an owner who wants to charge for claims
         // does not have to know the page exists. Status in the lore, because a door that does not say whether the
         // thing behind it is on is a door nobody opens.

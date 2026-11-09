@@ -35,6 +35,9 @@ public final class ClaimNames {
     /** Separates the owner from the claim in a qualified name. */
     public static final char SEPARATOR = '/';
 
+    /** How the server reads where an owner's name would: in "Server/Spawn", on the sidebar, in a claim's info. */
+    public static final String SERVER = "Server";
+
     private final ClaimRegistry claims;
     /**
      * How a uuid becomes a name people recognise.
@@ -65,6 +68,9 @@ public final class ClaimNames {
      * A name already ending in s takes the bare apostrophe, so Linus keeps his one s.
      */
     public String possessive(Claim claim) {
+        if (claim.isServerClaim()) {
+            return claim.name();   // "Server's Spawn" says nothing "Spawn" does not
+        }
         String owner = primaryOwner(claim);
         String suffix = owner.endsWith("s") || owner.endsWith("S") ? "'" : "'s";
         return owner + suffix + " " + claim.name();
@@ -106,6 +112,9 @@ public final class ClaimNames {
     }
 
     public String primaryOwner(Claim claim) {
+        if (claim.isServerClaim()) {
+            return SERVER;
+        }
         for (UUID owner : claim.owners()) {
             return nameFor(owner);
         }
@@ -114,6 +123,9 @@ public final class ClaimNames {
 
     /** Every owner of the claim, comma separated. */
     public String allOwners(Claim claim) {
+        if (claim.isServerClaim()) {
+            return SERVER;
+        }
         StringBuilder builder = new StringBuilder();
         for (UUID owner : claim.owners()) {
             if (builder.length() > 0) {
@@ -174,6 +186,9 @@ public final class ClaimNames {
     }
 
     private boolean ownedByName(Claim claim, String ownerName) {
+        if (claim.isServerClaim()) {
+            return SERVER.equalsIgnoreCase(ownerName);
+        }
         for (UUID owner : claim.owners()) {
             if (nameFor(owner).equalsIgnoreCase(ownerName)) {
                 return true;

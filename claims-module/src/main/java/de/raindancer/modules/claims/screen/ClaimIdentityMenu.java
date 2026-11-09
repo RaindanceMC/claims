@@ -81,7 +81,16 @@ public final class ClaimIdentityMenu extends ClaimScreen {
         de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "A new name for " + claim().name(), claim().name(),
                 de.raindancer.core.ui.prompt.Parsers.text(48),
                 typed -> {
-                    if (!services().claimService().isValidName(typed)) {
+                    if (claim().isServerClaim()) {
+                        String was = claim().name();
+                        var refused = services().claimService().renameServerClaim(claim(), typed);
+                        if (refused.isEmpty()) {
+                            tell("claim.renamed", "old", was, "claim", typed);
+                        } else {
+                            tell(refused.get() == de.raindancer.modules.claims.service.ClaimService.Failure.NAME_TAKEN
+                                    ? "server.name-taken" : "error.name-invalid", "claim", typed);
+                        }
+                    } else if (!services().claimService().isValidName(typed)) {
                         tell("error.name-invalid");
                     } else if (!services().names().available(typed, claim().primaryOwner())) {
                         tell("error.name-taken");

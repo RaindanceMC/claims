@@ -51,7 +51,12 @@ public final class ClaimInfoMenu extends ClaimScreen {
                 + claim.bans().size() + " barred");
         // The owner's own face, not a generic head — on a page about who this belongs to, whose face it
         // is carries the answer better than the line underneath it does.
-        band(MenuLayout.WHO, 4, Icons.head(claim.primaryOwner(), "<white>Whose it is", people));
+        if (claim.isServerClaim()) {
+            people.add("<dark_gray>no limit, price, upkeep or entry fee");
+            band(MenuLayout.WHO, 4, Icons.of(Material.BEACON, "<white>Whose it is", people));
+        } else {
+            band(MenuLayout.WHO, 4, Icons.head(claim.primaryOwner(), "<white>Whose it is", people));
+        }
 
         band(MenuLayout.WHO, 6, Icons.of(Material.CLOCK, "<white>How long it has stood",
                 "<gray>" + age(claim),
@@ -101,6 +106,10 @@ public final class ClaimInfoMenu extends ClaimScreen {
      */
     private List<String> costLines(Claim claim) {
         List<String> lines = new ArrayList<>();
+        if (claim.isServerClaim()) {
+            lines.add("<gray>Nothing — the server holds it.");
+            return lines;
+        }
         if (claim.paidCostType() == CostType.NONE || !claim.hasRecordedPayment()) {
             lines.add("<gray>Nothing — claims are free on this server,");
             lines.add("<gray>or this one predates the charge.");

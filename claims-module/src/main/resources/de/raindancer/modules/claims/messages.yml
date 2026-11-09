@@ -111,6 +111,7 @@ claim:
 
 notify:
   entered: "<gray>You are entering <white><claim></white>, owned by <white><owner></white>."
+  entered-server: "<gray>You are entering <white><claim></white>, protected by the server."
   left: "<dark_gray>You are leaving <gray><claim><dark_gray>."
   trusted: "<green><white><player></white> trusted you in <white><claim></white>."
   permission-granted: "<green><white><player></white> let you <white><action></white> in <white><claim></white>."
@@ -268,6 +269,29 @@ admin:
   inspect-header: "<gold>── <white><claim></white>, staff view ──"
   diagnose-header: "<gold>── why, here ──"
   ask-owner-filter: "<gray>Show only whose claims? <white>(type a name, or cancel)"
+
+server:
+  # ── /serverclaim, also /claimadmin server: the server's own claims ──────
+  usage: "<gray>/serverclaim <white>list</white>, <white>create</white>, <white>resize</white>, <white>rename</white>, <white>delete</white>, <white>info</white>, <white>flag</white>, <white>public</white>, <white>trust</white>, <white>untrust</white>, <white>open</white>."
+  list-header: "<gray>The server holds <white><count></white> claim(s):"
+  list-line: "<dark_gray>· <white><claim></white> <dark_gray>in <gray><world></gray>, <gray><area></gray> blocks, x <x1>..<x2> z <z1>..<z2>"
+  console-needs-coordinates: "<gray>From here, give the rectangle too: <white>create name world x1 z1 x2 z2</white>, or <white>resize name x1 z1 x2 z2</white>."
+  name-taken: "<gray>The server already has a claim called <white><claim></white>."
+  overlaps: "<gray>That overlaps <white><detail></white>. <dark_gray>Add <white>force</white> to claim it anyway — inside the overlap the smaller claim applies."
+  mark-out: "<green>Mark out <white><claim></white> with the tool. <gray>It reaches the full height of the world."
+  created: "<green>The server now holds <white><claim></white> — <gray><area> blocks, y <min-y> to <max-y>, fully protected."
+  no-such-claim: "<gray>The server holds no claim called <white><claim></white>."
+  info-bounds: "<dark_gray>From x <gray><x1></gray> z <gray><z1></gray> to x <gray><x2></gray> z <gray><z2>"
+  info-trusted: "<dark_gray>Trusted by name: <gray><people></gray><dark_gray> · by role: <gray><permission>"
+  info-visitors: "<dark_gray>Visitors may: <green><allowed></green><dark_gray> · may not: <red><denied>"
+  info-flag: "<dark_gray>· <white><flag><dark_gray> — claim <gray><override><dark_gray>, so <white><verdict>"
+  no-such-flag: "<gray>No flag called <white><flag></white>. <dark_gray>Tab completes them."
+  flag-set: "<green><white><flag></white> on <white><claim></white> set to <white><value></white> — <gray>visitors: <verdict>."
+  public-set: "<green>Visitors on <white><claim></white> are now <white><value></white> <white><action></white>."
+  trusted: "<green><white><player></white> may now build on <white><claim></white>."
+  untrusted: "<yellow><white><player></white> is no longer trusted on <white><claim></white>."
+  not-trusted: "<gray><white><player></white> was not trusted on <white><claim></white>."
+  not-a-number: "<gray><white><input></white> is not a whole number."
 
 upkeep:
   disabled: "<gray>This server charges no claim upkeep."

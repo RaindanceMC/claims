@@ -39,9 +39,11 @@ public final class ClaimAdminCommand implements IClaimCommand {
     private static final String ADMIN = "rec.admin";
 
     private final Supplier<ClaimServices> services;
+    private final ServerClaimCommand serverClaims;
 
     public ClaimAdminCommand(Supplier<ClaimServices> services) {
         this.services = services;
+        this.serverClaims = new ServerClaimCommand(services);
     }
 
     @Override
@@ -81,6 +83,7 @@ public final class ClaimAdminCommand implements IClaimCommand {
             case "save" -> save(claims, sender);
             case "manual", "book", "guide" -> manual(claims, sender);
             case "upkeep", "rent" -> upkeep(claims, sender, args);
+            case "server" -> serverClaims.run(sender, java.util.Arrays.copyOfRange(args, 1, args.length));
             default -> {
                 if (!MistypedCommand.subcommand(sender, "claimadmin", args, 0, suggest(source, new String[]{""}))) {
                     claims.messages().send(sender, "claim.unknown-subcommand", "word", args[0]);
@@ -277,7 +280,7 @@ public final class ClaimAdminCommand implements IClaimCommand {
             claims.messages().sendPlain(player, "admin.here-bans", "count", String.valueOf(activeBans));
         }
 
-        if (claim.entryFee().enabled()) {
+        if (claim.chargesEntry()) {
             claims.messages().sendPlain(player, "admin.here-entry-fee",
                     "amount", String.valueOf(claim.entryFee().amount()));
         }
@@ -499,7 +502,7 @@ public final class ClaimAdminCommand implements IClaimCommand {
         if (args.length <= 1) {
             List<String> words = new ArrayList<>(List.of(
                     "bypass", "overview", "flags", "zone", "reload", "delete", "transfer", "why",
-                    "here", "alignvisitors", "stick", "save", "manual", "upkeep"));
+                    "here", "alignvisitors", "stick", "save", "manual", "upkeep", "server"));
             if (args.length == 1) {
                 String prefix = args[0].toLowerCase(Locale.ROOT);
                 words.removeIf(word -> !word.startsWith(prefix));
@@ -511,6 +514,9 @@ public final class ClaimAdminCommand implements IClaimCommand {
             List<String> claims = new ArrayList<>(services.get().names().suggestions(null));
             claims.removeIf(claim -> !claim.toLowerCase(Locale.ROOT).startsWith(prefix));
             return claims;
+        }
+        if (args[0].equalsIgnoreCase("server")) {
+            return serverClaims.suggest(source.getSender(), java.util.Arrays.copyOfRange(args, 1, args.length));
         }
         if (args[0].equalsIgnoreCase("upkeep")) {
             if (args.length == 2) {

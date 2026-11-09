@@ -102,6 +102,17 @@ class PermissionDefaultsTest {
     }
 
     @Test
+    @DisplayName("the server's own claims have a node of their own, for operators and implied by rec.admin")
+    void serverClaimsNode() {
+        assertThat(defaultOf("rainsclaims.admin.server")).isEqualTo(PermissionDefault.OP);
+        Map<String, Boolean> children = declared.stream()
+                .filter(permission -> permission.getName().equals("rec.admin"))
+                .findFirst().orElseThrow()
+                .getChildren();
+        assertThat(children).containsEntry("rainsclaims.admin.server", true);
+    }
+
+    @Test
     @DisplayName("every node the commands actually check is declared")
     void nothingTheCodeUsesIsMissing() {
         // The failure this catches is the original one, one node at a time: something gates on a string

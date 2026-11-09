@@ -15,7 +15,21 @@ Needs Java 25 and read access to `packages.tstieh.de` (server ids `packages-rele
 
 ## Plugins
 
-- `claims-standalone/target/RainsExtendedClaims-2.19.2.jar` — also published as `de.raindancer.modules:claims-standalone:2.19.2`
+- `claims-standalone/target/RainsExtendedClaims-2.25.0.jar` — also published as `de.raindancer.modules:claims-standalone:2.25.0`
+
+## Server claims
+
+Land the server itself holds (spawn, a market square): a claim with no owners and `server: true` in its stored
+document, read as "Server" wherever an owner is named. Never counted against a limit, no price, upkeep, entry fee or
+lapse. Created fully protected — visitors may enter, craft and trade only; PvP, fire spread, explosions, mob griefing
+and hostile spawning off (`Claim.SERVER_CLAIM_DENIED_FLAGS`). Overlaps with players' claims are refused unless forced.
+
+`/serverclaim` (also `/claimadmin server …`, permission `rainsclaims.admin.server`, implied by `rec.admin`):
+`create <name>` (marking tool, full height) or `create <name> <world> <x1> <z1> <x2> <z2> [force]` from the console,
+`resize`, `rename`, `delete`, `info`, `flag <name> <flag> <allow|deny|default>`, `public <name> <action> <allow|deny>`,
+`trust`/`untrust <name> <player>`, `open`. A rank is trusted by `rainsclaims.server.trust.<name>` or
+`rainsclaims.server.trust.*` (only when explicitly granted). The admin bypass still builds everywhere.
+In the menus: `/claimadmin` → *The server's own claims*.
 
 ## Art
 

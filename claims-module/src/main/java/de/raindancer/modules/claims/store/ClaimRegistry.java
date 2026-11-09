@@ -170,6 +170,28 @@ public final class ClaimRegistry {
         return false;
     }
 
+    /** Every claim the server itself holds, by name. */
+    public List<Claim> serverClaims() {
+        List<Claim> claims = new ArrayList<>();
+        for (Claim claim : byId.values()) {
+            if (claim.isServerClaim()) {
+                claims.add(claim);
+            }
+        }
+        claims.sort((left, right) -> left.name().compareToIgnoreCase(right.name()));
+        return claims;
+    }
+
+    /** The server claim of this name, ignoring case; a player's claim of the same name is not it. */
+    public Optional<Claim> serverClaim(String name) {
+        for (Claim claim : allByName(name)) {
+            if (claim.isServerClaim()) {
+                return Optional.of(claim);
+            }
+        }
+        return Optional.empty();
+    }
+
     /** Claims a player co-owns. */
     public List<Claim> ownedBy(UUID owner) {
         Set<UUID> ids = claimsByOwner.get(owner);

@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.24.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.25.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -194,11 +194,29 @@ public final class ClaimsModule implements FlexModule {
                 return java.util.List.of(
                         mini.deserialize("<dark_gray>▪ <gray>Here"),
                         mini.deserialize("   <white>" + de.raindancer.core.ui.text.Text.literal(claim.name())),
-                        mini.deserialize("   <dark_gray>" + de.raindancer.core.ui.text.Text.literal(names.primaryOwner(claim)) + "'s"
+                        mini.deserialize("   <dark_gray>" + (claim.isServerClaim() ? names.primaryOwner(claim)
+                                : de.raindancer.core.ui.text.Text.literal(names.primaryOwner(claim)) + "'s")
                                 + (pvp ? " <dark_gray>· <red>⚔ PvP" : " <dark_gray>· <green>safe")));
             }).orElse(java.util.List.of());
         });
         context.closeWith(() -> de.raindancer.core.ui.scoreboard.SidebarSections.unregister("claims"));
+        // A builders' rank trusted on a server claim by a node rather than name by name. Only a node somebody was
+        // actually given counts: an unregistered node reads as true for every operator, which would quietly
+        // trust every op on spawn without the bypass.
+        de.raindancer.modules.claims.rules.ClaimAreaRule.roleTrust((who, claim) -> {
+            org.bukkit.entity.Player online = org.bukkit.Bukkit.getPlayer(who);
+            if (online == null) {
+                return false;
+            }
+            for (String node : java.util.List.of(de.raindancer.modules.claims.rules.ClaimAreaRule.rolePermission(claim),
+                    "rainsclaims.server.trust.*")) {
+                if (online.isPermissionSet(node) && online.hasPermission(node)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        context.closeWith(() -> de.raindancer.modules.claims.rules.ClaimAreaRule.roleTrust(null));
         rights = new ClaimRightsRule(land);
         settings = context.settings(ClaimSettings.class, ClaimSettings.DEFAULTS);
         zones = new ZoneRegistry();
@@ -435,6 +453,11 @@ public final class ClaimsModule implements FlexModule {
         @Override
         public void admin(org.bukkit.entity.Player viewer) {
             new de.raindancer.modules.claims.screen.AdminMenu(services, viewer, null).open();
+        }
+
+        @Override
+        public void serverClaims(org.bukkit.entity.Player viewer) {
+            new de.raindancer.modules.claims.screen.ServerClaimsMenu(services, viewer, null).open();
         }
 
         @Override
