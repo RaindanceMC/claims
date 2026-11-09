@@ -28,6 +28,7 @@ and hostile spawning off (`Claim.SERVER_CLAIM_DENIED_FLAGS`). Overlaps with play
 `create <name>` (marking tool, full height) or `create <name> <world> <x1> <z1> <x2> <z2> [force]` from the console
 (round: `create <name> <world> circle <x> <z> <radius>` — `ClaimShape.circle`, an outline accurate to the block),
 `resize` (same shapes), `rename`, `delete`, `info`, `flag <name> <flag> <allow|deny|default>`, `public <name> <action> <allow|deny>`,
+`border <name> <on|off>` (border drawn as particles for everybody within the visual radius, all the time),
 `trust`/`untrust <name> <player>`, `open`. A rank is trusted by `rainsclaims.server.trust.<name>` or
 `rainsclaims.server.trust.*` (only when explicitly granted). The admin bypass still builds everywhere.
 In the menus: `/claimadmin` → *The server's own claims*.

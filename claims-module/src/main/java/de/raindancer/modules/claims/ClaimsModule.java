@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.26.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.27.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -241,6 +241,11 @@ public final class ClaimsModule implements FlexModule {
         claimService.rules(de.raindancer.modules.claims.rules.ClaimRules.standard(
                 settings::current, claims, zones, names, rights::isBypassing, upkeep::owed));
         visualizer = new BorderVisualizer(context.plugin(), settings.current());
+        visualizer.alwaysShown(claims);
+        // Anybody already online — a module reload — gets spawn's border back without rejoining.
+        for (org.bukkit.entity.Player online : context.plugin().getServer().getOnlinePlayers()) {
+            visualizer.trackAlwaysShown(online);
+        }
         selections = new SelectionService(settings.current());
         stick = new SelectionStick(context.plugin(), settings.current(), context.core().messages());
         de.raindancer.modules.claims.selection.ClaimsPack.contribute(context.plugin(), context.core());
@@ -510,6 +515,9 @@ public final class ClaimsModule implements FlexModule {
     @Override
     public void disable() {
         ClaimCommands.stopped();
+        if (visualizer != null) {
+            visualizer.stopAll();
+        }
         if (ambience != null) {
             ambience.releaseFlight();
         }

@@ -42,7 +42,7 @@ public final class ServerClaimCommand implements IClaimCommand {
     }
 
     private static final List<String> WORDS = List.of("list", "create", "resize", "rename", "delete", "info",
-            "flag", "public", "trust", "untrust", "open");
+            "flag", "public", "border", "trust", "untrust", "open");
 
     private final Supplier<ClaimServices> services;
 
@@ -89,6 +89,7 @@ public final class ServerClaimCommand implements IClaimCommand {
             case "info" -> info(claims, sender, args);
             case "flag" -> flag(claims, sender, args);
             case "public" -> publicAction(claims, sender, args);
+            case "border" -> border(claims, sender, args);
             case "trust" -> trust(claims, sender, args, true);
             case "untrust" -> trust(claims, sender, args, false);
             case "open", "menu" -> open(claims, sender, args);
@@ -245,6 +246,8 @@ public final class ServerClaimCommand implements IClaimCommand {
         claims.messages().sendPlain(sender, "server.info-bounds",
                 "x1", String.valueOf(claim.shape().minX()), "z1", String.valueOf(claim.shape().minZ()),
                 "x2", String.valueOf(claim.shape().maxX()), "z2", String.valueOf(claim.shape().maxZ()));
+        claims.messages().sendPlain(sender, "server.info-border",
+                "border", claim.borderAlwaysShown() ? "always shown" : "shown on entering");
         claims.messages().sendPlain(sender, "server.info-trusted",
                 "people", String.valueOf(claim.members().size()),
                 "permission", ClaimAreaRule.rolePermission(claim));
@@ -321,6 +324,25 @@ public final class ServerClaimCommand implements IClaimCommand {
         claims.claimService().saveAsync(claim);
         claims.messages().send(sender, "server.public-set", "claim", claim.name(), "action", action.get().key(),
                 "value", value.get().get() ? "allowed" : "denied");
+    }
+
+    /** {@code border <name> <on|off>} — whether everybody near it sees its border all the time. */
+    private void border(ClaimServices claims, CommandSender sender, String[] args) {
+        String usage = "/serverclaim border <name> <on|off>";
+        Optional<Claim> found = serverClaim(claims, sender, args, usage);
+        if (found.isEmpty()) {
+            return;
+        }
+        Optional<Optional<Boolean>> value = args.length < 3 ? Optional.empty() : switchWord(args[2]);
+        if (value.isEmpty() || value.get().isEmpty()) {
+            claims.messages().send(sender, "claim.who", "usage", usage);
+            return;
+        }
+        Claim claim = found.get();
+        claim.borderAlwaysShown(value.get().get());
+        claims.claimService().saveAsync(claim);
+        claims.messages().send(sender, value.get().get() ? "server.border-on" : "server.border-off",
+                "claim", claim.name());
     }
 
     /** Trusts a named person — a builder — with the usual package, or takes it away again. */
@@ -455,6 +477,8 @@ public final class ServerClaimCommand implements IClaimCommand {
             }
         } else if (args.length == 4 && args[0].equalsIgnoreCase("flag")) {
             words.addAll(List.of("allow", "deny", "default"));
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("border")) {
+            words.addAll(List.of("on", "off"));
         } else if (args.length == 4 && args[0].equalsIgnoreCase("public")) {
             words.addAll(List.of("allow", "deny"));
         } else if (args.length == 3 && (args[0].equalsIgnoreCase("trust") || args[0].equalsIgnoreCase("untrust"))) {

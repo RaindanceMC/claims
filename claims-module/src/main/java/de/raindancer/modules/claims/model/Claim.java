@@ -44,6 +44,8 @@ public final class Claim {
      * somebody's claim. Staff manage it through their permission instead of through ownership.
      */
     private volatile boolean serverOwned;
+    /** The border is drawn for everybody near it, all the time, not only on entering or on asking. */
+    private volatile boolean borderAlwaysShown;
     /** The group (a guild) this claim belongs to as well — {@code guild:<id>} — or null. */
     private volatile String group;
     private volatile boolean groupPaysUpkeep;
@@ -193,6 +195,15 @@ public final class Claim {
 
     public boolean isServerClaim() {
         return serverOwned;
+    }
+
+    public boolean borderAlwaysShown() {
+        return borderAlwaysShown;
+    }
+
+    public void borderAlwaysShown(boolean shown) {
+        this.borderAlwaysShown = shown;
+        markDirty();
     }
 
     /** Whether a visitor is charged at the border. Never on a server claim, whatever its fee page says. */

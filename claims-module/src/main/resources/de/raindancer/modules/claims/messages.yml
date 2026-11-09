@@ -272,7 +272,7 @@ admin:
 
 server:
   # ── /serverclaim, also /claimadmin server: the server's own claims ──────
-  usage: "<gray>/serverclaim <white>list</white>, <white>create</white>, <white>resize</white>, <white>rename</white>, <white>delete</white>, <white>info</white>, <white>flag</white>, <white>public</white>, <white>trust</white>, <white>untrust</white>, <white>open</white>."
+  usage: "<gray>/serverclaim <white>list</white>, <white>create</white>, <white>resize</white>, <white>rename</white>, <white>delete</white>, <white>info</white>, <white>flag</white>, <white>public</white>, <white>border</white>, <white>trust</white>, <white>untrust</white>, <white>open</white>."
   list-header: "<gray>The server holds <white><count></white> claim(s):"
   list-line: "<dark_gray>· <white><claim></white> <dark_gray>in <gray><world></gray>, <gray><area></gray> blocks, x <x1>..<x2> z <z1>..<z2>"
   console-needs-coordinates: "<gray>From here, give the shape too: <white>create name world x1 z1 x2 z2</white> or <white>create name world circle x z radius</white>; <white>resize name x1 z1 x2 z2</white> or <white>resize name circle x z radius</white>."
@@ -283,6 +283,9 @@ server:
   created: "<green>The server now holds <white><claim></white> — <gray><area> blocks, y <min-y> to <max-y>, fully protected."
   no-such-claim: "<gray>The server holds no claim called <white><claim></white>."
   info-bounds: "<dark_gray>From x <gray><x1></gray> z <gray><z1></gray> to x <gray><x2></gray> z <gray><z2>"
+  info-border: "<dark_gray>Border: <gray><border>"
+  border-on: "<green>The border of <white><claim></white> is now shown to everybody near it, all the time."
+  border-off: "<yellow>The border of <white><claim></white> is shown on entering again, not all the time."
   info-trusted: "<dark_gray>Trusted by name: <gray><people></gray><dark_gray> · by role: <gray><permission>"
   info-visitors: "<dark_gray>Visitors may: <green><allowed></green><dark_gray> · may not: <red><denied>"
   info-flag: "<dark_gray>· <white><flag><dark_gray> — claim <gray><override><dark_gray>, so <white><verdict>"

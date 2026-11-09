@@ -6,6 +6,7 @@ import de.raindancer.modules.claims.model.ClaimPoint;
 import de.raindancer.modules.claims.model.ClaimShape;
 import de.raindancer.modules.claims.model.NoClaimZone;
 import de.raindancer.modules.claims.selection.Selection;
+import de.raindancer.modules.claims.store.ClaimRegistry;
 import de.raindancer.core.platform.util.Scheduling;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Color;
@@ -62,6 +63,16 @@ public final class BorderVisualizer {
     private volatile ClaimSettings settings;
     private final Map<UUID, Session> sessions = new ConcurrentHashMap<>();
     private final Map<UUID, Markers> markers = new ConcurrentHashMap<>();
+
+    /** One outline per always-shown claim, redrawn only when its shape or the spacing changes. */
+    private record CachedOutline(ClaimShape shape, int spacing, List<ClaimPoint> columns) {
+    }
+
+    /** How often an always-shown border is redrawn — about as long as a dust particle lives. */
+    private static final long CONSTANT_INTERVAL_TICKS = 10L;
+    private volatile ClaimRegistry alwaysShownSource;
+    private final Map<UUID, ScheduledTask> constantTasks = new ConcurrentHashMap<>();
+    private final Map<UUID, CachedOutline> outlines = new ConcurrentHashMap<>();
 
     public BorderVisualizer(Plugin plugin, ClaimSettings settings) {
         this.plugin = plugin;
@@ -240,10 +251,102 @@ public final class BorderVisualizer {
         if (active != null && active.task != null) {
             active.task.cancel();
         }
+        ScheduledTask constant = constantTasks.remove(uuid);
+        if (constant != null) {
+            constant.cancel();
+        }
     }
 
     public boolean isShowing(Player player) {
         return sessions.containsKey(player.getUniqueId());
+    }
+
+    // ------------------------------------------------------------ always shown borders
+
+    /** Where the claims come from whose border never goes out; set once the registry exists. */
+    public void alwaysShown(ClaimRegistry claims) {
+        this.alwaysShownSource = claims;
+    }
+
+    /**
+     * Starts drawing every always-shown border near this player, for as long as they are online.
+     * <p>
+     * A loop of its own rather than a {@link Session}: a preview from {@code /claim show} or from walking into a
+     * claim replaces the session, and must not switch spawn's border off with it. Call again after a respawn —
+     * the new entity does not inherit the old one's tasks.
+     */
+    public void trackAlwaysShown(Player player) {
+        UUID uuid = player.getUniqueId();
+        ScheduledTask old = constantTasks.remove(uuid);
+        if (old != null) {
+            old.cancel();
+        }
+        ScheduledTask task = Scheduling.entityTimer(plugin, player, CONSTANT_INTERVAL_TICKS, CONSTANT_INTERVAL_TICKS,
+                scheduled -> {
+                    if (!player.isOnline()) {
+                        scheduled.cancel();
+                        constantTasks.remove(uuid, scheduled);
+                        return;
+                    }
+                    drawAlwaysShown(player);
+                },
+                () -> constantTasks.remove(uuid));
+        if (task != null) {
+            constantTasks.put(uuid, task);
+        }
+    }
+
+    public void stopAll() {
+        constantTasks.values().forEach(ScheduledTask::cancel);
+        constantTasks.clear();
+    }
+
+    private void drawAlwaysShown(Player player) {
+        ClaimRegistry claims = alwaysShownSource;
+        if (claims == null) {
+            return;
+        }
+        Location at = player.getLocation();
+        int x = at.getBlockX();
+        int z = at.getBlockZ();
+        int radius = settings.visualRadius();
+        int budget = settings.visualMaxPointsPerTick();
+        int drawn = 0;
+        for (Claim claim : claims.nearby(player.getWorld(), x, z, (radius >> 4) + 1)) {
+            if (!claim.borderAlwaysShown()) {
+                continue;
+            }
+            ClaimShape shape = claim.shape();
+            List<ClaimPoint> near = OutlineGeometry.within(outline(claim), x, z, radius);
+            if (near.isEmpty()) {
+                continue;
+            }
+            Palette palette = claim.isOwner(player.getUniqueId()) ? ownClaimPalette() : claimPalette();
+            Particle.DustOptions dust = new Particle.DustOptions(palette.particleColor(), 1.0f);
+            // Feet and eye level: a low fence of light, not the full-height cage of a preview.
+            int feet = Math.max(shape.minY(), Math.min(shape.maxY(), at.getBlockY()));
+            int eyes = Math.max(shape.minY(), Math.min(shape.maxY(), at.getBlockY() + 1));
+            for (ClaimPoint column : near) {
+                for (int y = feet; y <= eyes; y++) {
+                    if (drawn++ > budget) {
+                        return;
+                    }
+                    player.spawnParticle(Particle.DUST, column.x() + 0.5D, y + 0.5D, column.z() + 0.5D,
+                            1, 0.0D, 0.0D, 0.0D, 0.0D, dust);
+                }
+            }
+        }
+    }
+
+    private List<ClaimPoint> outline(Claim claim) {
+        int spacing = Math.max(1, settings.visualSpacing());
+        ClaimShape shape = claim.shape();
+        CachedOutline cached = outlines.get(claim.id());
+        if (cached == null || cached.spacing() != spacing || !cached.shape().equals(shape)) {
+            cached = new CachedOutline(shape, spacing, OutlineGeometry.outlineColumns(shape, spacing));
+            outlines.put(claim.id(), cached);
+        }
+        return cached.columns();
     }
 
     // ------------------------------------------------------------ rendering

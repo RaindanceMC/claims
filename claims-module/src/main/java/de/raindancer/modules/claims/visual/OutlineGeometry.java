@@ -32,6 +32,18 @@ public final class OutlineGeometry {
         return new ArrayList<>(columns);
     }
 
+    /** The columns of an outline within {@code radius} blocks of a point, for drawing only what is in view. */
+    public static List<ClaimPoint> within(List<ClaimPoint> outline, int x, int z, int radius) {
+        double radiusSquared = (double) radius * radius;
+        List<ClaimPoint> near = new ArrayList<>();
+        for (ClaimPoint column : outline) {
+            if (column.distanceSquared(x, z) <= radiusSquared) {
+                near.add(column);
+            }
+        }
+        return near;
+    }
+
     /** Corners only — they get the highlight block and the vertical pillars. */
     public static List<ClaimPoint> corners(ClaimShape shape) {
         return shape.vertices();

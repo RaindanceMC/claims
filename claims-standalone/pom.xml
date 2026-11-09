@@ -69,7 +69,8 @@
         <!-- 2.19.0: waystones — stones to travel between inside one claim. -->
         <!-- 2.25.0: server claims — land the server holds (spawn), no owner, fully protected, never counted, billed or charged; /serverclaim and /claimadmin server. -->
         <!-- 2.26.0: round claims — ClaimShape.circle; /serverclaim create|resize … circle <x> <z> <radius>. -->
-        <plugin.version>2.26.0</plugin.version>
+        <!-- 2.27.0: a claim's border always shown near it — /serverclaim border <name> on|off. -->
+        <plugin.version>2.27.0</plugin.version>
     </properties>
 
     <dependencies>
