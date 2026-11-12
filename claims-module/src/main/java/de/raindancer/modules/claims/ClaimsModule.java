@@ -65,7 +65,7 @@ import java.io.IOException;
  */
 public final class ClaimsModule implements FlexModule {
 
-    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.27.0")
+    private static final ModuleInfo INFO = ModuleInfo.of("claims", "Claims", "2.28.0")
             .describedAs("Land claims: who owns what, who may do what there, and the screens for it")
             .by("Raindancer118");
 
@@ -237,6 +237,7 @@ public final class ClaimsModule implements FlexModule {
         context.closeWith(() -> Debts.retract(upkeep));
         claimService = new ClaimService(context.plugin(), claims, zones, storage, settings.current(),
                 costs, rights);
+        provider.serverClaims(claimService);
         claimService.features(features);
         claimService.rules(de.raindancer.modules.claims.rules.ClaimRules.standard(
                 settings::current, claims, zones, names, rights::isBypassing, upkeep::owed));

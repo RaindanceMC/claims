@@ -70,7 +70,8 @@
         <!-- 2.25.0: server claims — land the server holds (spawn), no owner, fully protected, never counted, billed or charged; /serverclaim and /claimadmin server. -->
         <!-- 2.26.0: round claims — ClaimShape.circle; /serverclaim create|resize … circle <x> <z> <radius>. -->
         <!-- 2.27.0: a claim's border always shown near it — /serverclaim border <name> on|off. -->
-        <plugin.version>2.27.0</plugin.version>
+        <!-- 2.28.0: another plugin can ask Core to hold ground for the server (LandProvider.holdForServer, RainsCore 2.86.0) — answered with a server claim of that name, moved if it exists, never over somebody's claim; releaseForServer deletes it. -->
+        <plugin.version>2.28.0</plugin.version>
     </properties>
 
     <dependencies>
