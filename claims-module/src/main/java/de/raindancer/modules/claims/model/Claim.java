@@ -160,12 +160,14 @@ public final class Claim {
 
     /**
      * The rules a server claim starts with switched off for everybody: it is ground nobody may grief, so
-     * nothing burns, blows up, gets fought over or is spawned into hostile.
+     * nothing burns, blows up, gets fought over or is spawned into hostile — and monsters neither walk in nor go
+     * for anybody inside.
      */
     public static final Set<LandFlag> SERVER_CLAIM_DENIED_FLAGS = Collections.unmodifiableSet(EnumSet.of(
             LandFlag.PVP, LandFlag.MONSTER_SPAWNING, LandFlag.FIRE_SPREAD, LandFlag.EXPLOSIONS,
             LandFlag.EXPLOSION_DAMAGE, LandFlag.MOB_GRIEF, LandFlag.ENDERMAN_GRIEF,
-            LandFlag.PISTONS_FROM_OUTSIDE, LandFlag.FLUIDS_FROM_OUTSIDE));
+            LandFlag.PISTONS_FROM_OUTSIDE, LandFlag.FLUIDS_FROM_OUTSIDE, LandFlag.MONSTER_ENTRY,
+            LandFlag.MONSTER_TARGETING));
 
     /**
      * A claim held by the server, fully protected: visitors may walk in and use what is public by default

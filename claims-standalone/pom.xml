@@ -71,7 +71,8 @@
         <!-- 2.26.0: round claims — ClaimShape.circle; /serverclaim create|resize … circle <x> <z> <radius>. -->
         <!-- 2.27.0: a claim's border always shown near it — /serverclaim border <name> on|off. -->
         <!-- 2.28.0: another plugin can ask Core to hold ground for the server (LandProvider.holdForServer, RainsCore 2.86.0) — answered with a server claim of that name, moved if it exists, never over somebody's claim; releaseForServer deletes it. -->
-        <plugin.version>2.28.0</plugin.version>
+        <!-- 2.29.0: a new server claim keeps monsters out and stops them going for anybody inside. -->
+        <plugin.version>2.29.0</plugin.version>
     </properties>
 
     <dependencies>
