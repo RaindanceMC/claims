@@ -19,9 +19,9 @@ public final class EquipRule {
     /** Where a restocked item is placed. */
     public enum Target {
         AUTO("Where it belongs", "Armour to its slot, elytra to the chest, anything else to the hotbar"),
-        OFF_HAND("Off hand", "The shield slot — totems, shields, a spare map"),
+        OFF_HAND("Off hand", "The shield slot, for totems, shields or a spare map"),
         HEAD("Helmet", "The helmet slot"),
-        CHEST("Chestplate", "The chest slot — also where an elytra goes"),
+        CHEST("Chestplate", "The chest slot, also used for an elytra"),
         LEGS("Leggings", "The leggings slot"),
         FEET("Boots", "The boots slot"),
         HOTBAR("Hotbar slot", "A specific hotbar key you choose");

@@ -63,7 +63,7 @@ public final class FeaturePolicyStore {
         // Empty and unreadable look identical from here, so the difference has to come from the store.
         if (!store.problems().isEmpty()) {
             log.warn("feature-policies.yml could not be read ({}). Every feature is at its built-in "
-                            + "policy until this is fixed — your saved feature decisions are NOT being applied.",
+                            + "policy until this is fixed. Your saved feature decisions are NOT being applied.",
                     String.join("; ", store.problems()));
             return policies;
         }
@@ -111,7 +111,7 @@ public final class FeaturePolicyStore {
                     "What this server decided about the claim features.",
                     "",
                     "Only decisions that differ from the built-in behaviour are written here, so a",
-                    "feature that is absent behaves as it ships — and improving a built-in default in a",
+                    "feature that is absent behaves as it ships, so improving a built-in default in a",
                     "later release reaches this server rather than being overruled by a line nobody",
                     "meant to write.",
                     "",

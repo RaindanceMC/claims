@@ -43,7 +43,7 @@ public final class ClaimScreens {
         List<Claim> mine = claims.ownedBy(viewer.id());
         StringBuilder text = new StringBuilder("<gold><bold>Your land</bold></gold>");
         if (mine.isEmpty()) {
-            return MINI.deserialize(text + "\n<gray>No claims yet — <white>/claim");
+            return MINI.deserialize(text + "\n<gray>No claims yet. <white>/claim");
         }
         text.append("\n<gray>Claims <white>").append(mine.size());
         text.append("\n<gray>Ground <white>").append(number(rule.blocks(mine))).append(" blocks");

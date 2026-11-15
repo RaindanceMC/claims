@@ -39,7 +39,7 @@ public final class ZoneStorage {
         YamlConfiguration yaml = store.read();
         if (!store.problems().isEmpty()) {
             // Not written over: the next save sets the unreadable document aside first.
-            log.error("The no-claim zones could not be read ({}) — no zone is being enforced until this is fixed.",
+            log.error("The no-claim zones could not be read ({}). No zone is enforced until this is fixed.",
                     String.join("; ", store.problems()));
             return zones;
         }
@@ -58,7 +58,7 @@ public final class ZoneStorage {
                     vertices.add(ClaimPoint.deserialize(raw));
                 }
                 if (vertices.size() < 3) {
-                    log.warn("No-claim zone '" + name + "' has a degenerate shape — skipping.");
+                    log.warn("No-claim zone '" + name + "' has a degenerate shape and is skipped.");
                     continue;
                 }
                 ClaimShape shape = new ClaimShape(vertices, section.getInt("min-y"), section.getInt("max-y"));

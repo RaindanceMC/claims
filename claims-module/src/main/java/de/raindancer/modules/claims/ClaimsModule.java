@@ -564,7 +564,7 @@ public final class ClaimsModule implements FlexModule {
         // Named in the log, once each. These are somebody's claims and they are being removed without anybody
         // asking — so the one thing owed is a record of exactly what went and which world took it.
         for (Claim claim : stale) {
-            log.warn("'{}' was in '{}', which has been generated again since — the claim is gone with it.",
+            log.warn("'{}' was in '{}', which has been generated again since, so the claim was removed with it.",
                     claim.name(), claim.worldName());
             claims.remove(claim);
             try {

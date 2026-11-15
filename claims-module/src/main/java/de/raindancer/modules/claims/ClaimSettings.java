@@ -373,7 +373,7 @@ public record ClaimSettings(
         List<String> disabledWorlds,
 
         @In("management/cost") @Title("The item somebody hands over")
-        @Describe("Encoded. Set through the menu rather than by hand — an item is more than a material.")
+        @Describe("Encoded. Set it through the menu: an item is more than a material.")
         @Key("creation-cost.item")
         String creationCostItemEncoded,
 

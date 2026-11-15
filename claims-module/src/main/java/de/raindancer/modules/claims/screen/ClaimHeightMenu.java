@@ -100,7 +100,7 @@ public final class ClaimHeightMenu extends ClaimScreen {
 
         // The four shapes people actually mean, worked out from where they are standing.
         band(MenuLayout.LAND, 1, allowed, Icons.of(Material.BEACON, "<green>Full world height",
-                        "<gray>Bedrock to the build limit — nothing above",
+                        "<gray>Bedrock to the build limit. Nothing above",
                         "<gray>or below the claim is left unprotected.",
                         "<dark_gray>y " + floor + " to y " + ceiling),
                 "The owner's to change",
@@ -115,7 +115,7 @@ public final class ClaimHeightMenu extends ClaimScreen {
 
         band(MenuLayout.LAND, 5, allowed, Icons.of(Material.SCULK_CATALYST, "<green>Hidden underground",
                         "<gray>From bedrock up to 8 blocks above your",
-                        "<gray>feet — nobody on the surface notices.",
+                        "<gray>feet. Nobody on the surface notices.",
                         "<dark_gray>y " + floor + " to y " + Math.min(ceiling, standingAt() + 8)),
                 "The owner's to change",
                 click -> move(floor, Math.min(ceiling, standingAt() + 8)));

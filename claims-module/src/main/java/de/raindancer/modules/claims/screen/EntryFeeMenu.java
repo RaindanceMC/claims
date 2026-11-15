@@ -75,7 +75,7 @@ public final class EntryFeeMenu extends ClaimScreen {
                     + "% of every toll; you receive the rest.");
         }
         howMuch.add("");
-        howMuch.add("<dark_gray>click to set it — up to " + services().config().entryFeeMaxAmount());
+        howMuch.add("<dark_gray>click to set it, up to " + services().config().entryFeeMaxAmount());
         band(MenuLayout.WHO, 5, allowed,
                 Icons.of(fee.type().icon(), "<white>How much: <green>" + fee.amount(), howMuch),
                 "The owner's to change",

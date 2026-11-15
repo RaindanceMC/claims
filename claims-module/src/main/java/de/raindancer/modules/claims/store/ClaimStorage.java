@@ -94,7 +94,7 @@ public final class ClaimStorage {
             } catch (RuntimeException exception) {
                 unreadable.add(name);
                 log.error(exception, "Could not load claim " + name
-                        + " — it is being skipped, the document was left untouched.");
+                        + ". It is skipped and the document was left untouched.");
             }
         }
         if (!unreadable.isEmpty()) {
@@ -104,7 +104,7 @@ public final class ClaimStorage {
             log.error("=".repeat(78));
             log.error(unreadable.size() + " claim file(s) could not be read: "
                     + String.join(", ", unreadable));
-            log.error("THAT LAND IS CURRENTLY UNPROTECTED. The files were left untouched — restore "
+            log.error("THAT LAND IS CURRENTLY UNPROTECTED. The files were left untouched. Restore "
                     + "them from a backup, or delete them deliberately once you have looked at them.");
             log.error("=".repeat(78));
         }
@@ -139,7 +139,7 @@ public final class ClaimStorage {
         String idRaw = yaml.getString("id");
         String worldIdRaw = yaml.getString("world-id");
         if (idRaw == null || worldIdRaw == null) {
-            log.warn("Claim file " + label + " has no id or world — skipping.");
+            log.warn("Claim file " + label + " has no id or world and is skipped.");
             return null;
         }
         int fileVersion = yaml.getInt("data-version", 1);
@@ -154,7 +154,7 @@ public final class ClaimStorage {
         }
         if (vertices.size() < 3) {
             log.warn("Claim " + name + " has a degenerate shape (" + vertices.size()
-                    + " vertices) — skipping.");
+                    + " vertices) and is skipped.");
             return null;
         }
         ClaimShape shape = new ClaimShape(vertices, yaml.getInt("shape.min-y"), yaml.getInt("shape.max-y"));

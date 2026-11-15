@@ -36,7 +36,7 @@ public final class MemberAdminMenu extends ClaimScreen {
 
     @Override
     protected Component title() {
-        return Component.text(services().names().nameOfOwner(subject) + " — admin rights");
+        return Component.text(services().names().nameOfOwner(subject) + ": admin rights");
     }
 
     @Override
@@ -70,7 +70,7 @@ public final class MemberAdminMenu extends ClaimScreen {
                 });
             } else {
                 String reason = subject.equals(viewer.getUniqueId())
-                        ? "Your own entry — somebody else's to change"
+                        ? "Your own entry. Somebody else has to change it."
                         : "The owner's to change";
                 cell(row, column, Icons.locked(icon, reason), click -> {
                 });

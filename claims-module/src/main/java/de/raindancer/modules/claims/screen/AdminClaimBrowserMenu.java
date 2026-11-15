@@ -79,8 +79,8 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
     @Override
     protected Component title() {
         return Component.text(ownerFilter == null
-                ? "Claims — every claim on the server"
-                : "Claims — " + services.names().nameOfOwner(ownerFilter) + "'s");
+                ? "Claims: every claim on the server"
+                : "Claims: " + services.names().nameOfOwner(ownerFilter) + "'s");
     }
 
     @Override
@@ -227,7 +227,7 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
 
         @Override
         protected Component title() {
-            return Component.text(claim().name() + " — staff view");
+            return Component.text(claim().name() + ": staff view");
         }
 
         @Override
@@ -253,8 +253,8 @@ public final class AdminClaimBrowserMenu extends PaginatedMenu<Claim> implements
 
             band(MenuLayout.WHO, 5, Icons.of(Material.GOLDEN_HOE, "<aqua>Reshape this claim",
                             "<gray>Hands you the selection stick.",
-                            "<gray>The usual size and overlap limits do not apply —",
-                            "<gray>this is for a claim that is already out of bounds."),
+                            "<gray>The usual size and overlap limits do not apply.",
+                            "<gray>Use it for a claim that is already out of bounds."),
                     click -> {
                         if (!mayRun(services(), viewer, claim)) {
                             services().messages().send(viewer, "error.no-permission");

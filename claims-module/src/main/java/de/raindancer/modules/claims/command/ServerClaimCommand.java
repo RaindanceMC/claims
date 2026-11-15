@@ -266,7 +266,7 @@ public final class ServerClaimCommand implements IClaimCommand {
             Optional<Boolean> override = claim.flagOverride(flag, LandAudience.VISITOR);
             claims.messages().sendPlain(sender, "server.info-flag",
                     "flag", flag.key(),
-                    "override", override.map(value -> value ? "allowed" : "denied").orElse("—"),
+                    "override", override.map(value -> value ? "allowed" : "denied").orElse("none"),
                     "verdict", claims.flags().isAllowed(claim.area(), flag, LandAudience.VISITOR)
                             ? "allowed" : "denied");
         }

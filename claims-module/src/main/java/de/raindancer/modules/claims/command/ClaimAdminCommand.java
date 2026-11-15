@@ -303,7 +303,7 @@ public final class ClaimAdminCommand implements IClaimCommand {
                 boolean verdict = flags.isAllowed(claim.area(), flag);
                 claims.messages().sendPlain(player, "admin.here-flag-line",
                         "flag", claims.messages().raw(flag.nameKey()),
-                        "override", override.map(value -> value ? "allowed" : "denied").orElse("—"),
+                        "override", override.map(value -> value ? "allowed" : "denied").orElse("none"),
                         "verdict", verdict ? "allowed" : "denied");
                 continue;
             }
@@ -374,7 +374,7 @@ public final class ClaimAdminCommand implements IClaimCommand {
             claims.messages().sendPlain(player, "admin.why-line",
                     "flag", claims.messages().raw(flag.nameKey()),
                     "policy", policy.displayName(),
-                    "override", override.map(value -> value ? "allowed" : "denied").orElse("—"),
+                    "override", override.map(value -> value ? "allowed" : "denied").orElse("none"),
                     "verdict", flags.isAllowedFor(claim.area(), flag, player) ? "allowed" : "denied");
         }
     }

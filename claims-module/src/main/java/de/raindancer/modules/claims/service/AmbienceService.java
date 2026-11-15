@@ -417,7 +417,7 @@ public final class AmbienceService implements IClaimService {
      */
     public List<String> diagnose(Player player) {
         List<String> report = new ArrayList<>();
-        report.add("tracked: " + (isTracked(player) ? "yes" : "NO — not ticking"));
+        report.add("tracked: " + (isTracked(player) ? "yes" : "NO (not ticking)"));
 
         Optional<Claim> claim = resolve(player);
         if (claim.isEmpty()) {
@@ -444,7 +444,7 @@ public final class AmbienceService implements IClaimService {
         report.add("your client time: " + player.getPlayerTime()
                 + (player.isPlayerTimeRelative() ? " (relative)" : " (fixed)"));
         report.add("rain intensity packets: "
-                + (RainPackets.available(plugin.getLogger()) ? "available" : "NO — rain stays invisible"));
+                + (RainPackets.available(plugin.getLogger()) ? "available" : "NO (rain stays invisible)"));
         return report;
     }
 

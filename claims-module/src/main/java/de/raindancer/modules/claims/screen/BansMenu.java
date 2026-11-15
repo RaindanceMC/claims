@@ -183,7 +183,7 @@ public final class BansMenu extends PaginatedMenu<ClaimBan> implements IClaimScr
     }
 
     private void askTimeoutDuration(PlayerEntry person) {
-        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "How long, then why — 10m griefing", "",
+        de.raindancer.core.ui.prompt.AnvilInput.open(viewer, "How long, then why: 10m griefing", "",
                 de.raindancer.core.ui.prompt.Parsers.text(100),
                 typed -> {
                     String[] parts = typed.trim().split("\\s+", 2);

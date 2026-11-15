@@ -15,7 +15,7 @@ import java.util.Optional;
 public enum ClaimAdminPermission {
 
     MANAGE_MEMBERS("Manage Members", "Add and remove trusted players", Material.PLAYER_HEAD),
-    MANAGE_PERMISSIONS("Grant Permissions", "Give or take permissions — limited to the grantable list",
+    MANAGE_PERMISSIONS("Grant Permissions", "Give or take permissions, limited to the grantable list",
             Material.WRITABLE_BOOK),
     MANAGE_PUBLIC("Manage Public Access", "Change what outsiders may do", Material.OAK_SIGN),
     MANAGE_FLAGS("Manage Flags", "Toggle protection flags", Material.REDSTONE_TORCH),

@@ -57,7 +57,7 @@ public final class MemberMenu extends PermissionGrid {
     @Override
     protected String refusal(LandAction action) {
         if (subject.equals(viewer.getUniqueId())) {
-            return "Your own entry — somebody else's to change";
+            return "Your own entry. Somebody else has to change it.";
         }
         return may(ClaimAdminPermission.MANAGE_PERMISSIONS)
                 ? "Not one you may hand out"

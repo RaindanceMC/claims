@@ -45,8 +45,8 @@ public final class ConfigMenu extends ClaimScreen {
 
         band(MenuLayout.WHO, 2, may(ClaimAdminPermission.MANAGE_FLAGS),
                 Icons.of(Material.REDSTONE_TORCH, "<gold>Claim flags",
-                        "<gray>Fire, mobs, explosions, PvP —",
-                        "<gray>what the world does inside your border.",
+                        "<gray>Fire, mobs, explosions and PvP:",
+                        "<gray>what happens inside your border.",
                         "<dark_gray>" + changedFlags + " changed from the server default"),
                 "The owner's to change",
                 click -> openTheFlags.accept(claim));

@@ -32,7 +32,7 @@ public final class MemberGrantableMenu extends PermissionGrid {
 
     @Override
     protected Component title() {
-        return Component.text(services().names().nameOfOwner(subject) + " — may grant");
+        return Component.text(services().names().nameOfOwner(subject) + ": may grant");
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class MemberGrantableMenu extends PermissionGrid {
     @Override
     protected String refusal(LandAction action) {
         if (subject.equals(viewer.getUniqueId())) {
-            return "Your own entry — somebody else's to change";
+            return "Your own entry. Somebody else has to change it.";
         }
         return "The owner's to change";
     }

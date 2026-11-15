@@ -155,7 +155,7 @@ public final class MembersMenu extends PaginatedMenu<MembersMenu.Entry> implemen
         // same kind of irreversible.
         if (services.rights().isOwnerOrServerAdmin(claim, viewer)) {
             danger(Icons.of(Material.NAME_TAG, "<red>Hand this claim over",
-                            "<gray>Somebody else owns it afterward — not you.",
+                            "<gray>Somebody else owns it afterward, not you.",
                             "<dark_gray>asks first"),
                     click -> askToTransfer());
         }
@@ -223,7 +223,7 @@ public final class MembersMenu extends PaginatedMenu<MembersMenu.Entry> implemen
     private void onTransferChosen(PlayerEntry person) {
         new ConfirmScreen(services, viewer, claim, this,
                 "<red>Hand " + claim.name() + " over to " + person.name() + "?",
-                List.of("<gray>They own it entirely afterward — you do not, not even as a co-owner.",
+                List.of("<gray>They own it entirely afterward. You do not, not even as a co-owner.",
                         "<gray>This cannot be undone from here."),
                 () -> {
                     claim.transferTo(person.id());

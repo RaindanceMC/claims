@@ -116,7 +116,7 @@ public final class ClaimListMenu extends PaginatedMenu<Claim> implements IClaimS
     @Override
     protected ItemStack emptyIcon() {
         return Icons.of(Material.COBWEB, "<gray>You have no claims yet",
-                "<gray>Pick the stick to create one!");
+                "<gray>Pick the stick to create one.");
     }
 
     @Override

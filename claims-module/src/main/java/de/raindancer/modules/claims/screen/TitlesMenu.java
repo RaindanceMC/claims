@@ -36,16 +36,16 @@ public final class TitlesMenu extends ClaimScreen {
         boolean allowed = may(ClaimAdminPermission.MANAGE_TITLES);
         var titles = claim().titles();
 
-        line(MenuLayout.WHO, 2, allowed, Material.NAME_TAG, "Arriving — big line",
+        line(MenuLayout.WHO, 2, allowed, Material.NAME_TAG, "Arriving: big line",
                 titles.enterTitle());
-        line(MenuLayout.WHO, 5, allowed, Material.PAPER, "Arriving — small line",
+        line(MenuLayout.WHO, 5, allowed, Material.PAPER, "Arriving: small line",
                 titles.enterSubtitle());
-        line(MenuLayout.RULES, 2, allowed, Material.NAME_TAG, "Leaving — big line",
+        line(MenuLayout.RULES, 2, allowed, Material.NAME_TAG, "Leaving: big line",
                 titles.leaveTitle());
-        line(MenuLayout.RULES, 5, allowed, Material.PAPER, "Leaving — small line",
+        line(MenuLayout.RULES, 5, allowed, Material.PAPER, "Leaving: small line",
                 titles.leaveSubtitle());
 
-        toolbar(3, Icons.of(Material.ENDER_EYE, "<white>Show me — arriving",
+        toolbar(3, Icons.of(Material.ENDER_EYE, "<white>Show me: arriving",
                         "<gray>Play the arrival titles at yourself."),
                 click -> {
                     viewer.closeInventory();
@@ -56,7 +56,7 @@ public final class TitlesMenu extends ClaimScreen {
                     }
                 });
 
-        toolbar(5, Icons.of(Material.ENDER_PEARL, "<white>Show me — leaving",
+        toolbar(5, Icons.of(Material.ENDER_PEARL, "<white>Show me: leaving",
                         "<gray>Play the leaving titles at yourself."),
                 click -> {
                     viewer.closeInventory();

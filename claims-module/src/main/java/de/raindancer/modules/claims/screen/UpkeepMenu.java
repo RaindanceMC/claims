@@ -44,7 +44,7 @@ public final class UpkeepMenu extends ClaimScreen {
 
     @Override
     protected Component title() {
-        return Component.text(own() ? "Upkeep" : "Upkeep — " + services().names().nameOfOwner(owner));
+        return Component.text(own() ? "Upkeep" : "Upkeep: " + services().names().nameOfOwner(owner));
     }
 
     @Override

@@ -107,11 +107,11 @@ public final class ClaimInfoMenu extends ClaimScreen {
     private List<String> costLines(Claim claim) {
         List<String> lines = new ArrayList<>();
         if (claim.isServerClaim()) {
-            lines.add("<gray>Nothing — the server holds it.");
+            lines.add("<gray>Nothing. The server holds it.");
             return lines;
         }
         if (claim.paidCostType() == CostType.NONE || !claim.hasRecordedPayment()) {
-            lines.add("<gray>Nothing — claims are free on this server,");
+            lines.add("<gray>Nothing. Claims are free on this server,");
             lines.add("<gray>or this one predates the charge.");
             addUpkeep(claim, lines);
             return lines;

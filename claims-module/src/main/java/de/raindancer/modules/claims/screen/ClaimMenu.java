@@ -191,7 +191,7 @@ public final class ClaimMenu extends ClaimScreen {
             var owed = services().upkeep().owed(payer);
             String who = ownUpkeep ? "You owe " : services().names().nameOfOwner(payer) + " owes ";
             toolbar(6, Icons.of(owed.isPositive() ? Material.REDSTONE : Material.CLOCK,
-                            ownUpkeep ? "<white>Upkeep" : "<white>Upkeep — " + services().names().nameOfOwner(payer),
+                            ownUpkeep ? "<white>Upkeep" : "<white>Upkeep: " + services().names().nameOfOwner(payer),
                             ownUpkeep ? "<gray>Next bill, what it is made of, pay arrears."
                                     : "<gray>The owner's next bill, what it is made of, arrears.",
                             owed.isPositive() ? "<red>" + who

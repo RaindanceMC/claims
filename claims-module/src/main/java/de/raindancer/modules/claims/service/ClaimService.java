@@ -796,7 +796,7 @@ public final class ClaimService implements IClaimService {
             if (clashesWithOwnClaim(claim)) {
                 String unique = claim.name() + "-" + claim.id().toString().substring(0, 4);
                 logger.warning("Duplicate claim name '" + claim.name()
-                        + "' for the same owner — renaming to '" + unique + "'.");
+                        + "' for the same owner, renaming to '" + unique + "'.");
                 claim.name(unique);
             }
             registry.add(claim);

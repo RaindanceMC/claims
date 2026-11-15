@@ -32,9 +32,9 @@ public final class ClaimCommands {
                 ModuleCommand.of("claim", "Your land: mark it out, trust people, keep others out",
                                 new ClaimCommand(ClaimCommands::require))
                         .aliased("claims", "rec")
-                        .taking("with no words — the claims page",
-                                "manual — the book",
-                                "trust <player> — let them build")
+                        .taking("with no words: the claims page",
+                                "manual: the book",
+                                "trust <player>: let them build")
                         .needing("rec.use"),
                 ModuleCommand.of("claimadmin", "Land administration for the server owner",
                                 new ClaimAdminCommand(ClaimCommands::require))
@@ -43,10 +43,10 @@ public final class ClaimCommands {
                 ModuleCommand.of("serverclaim", "The server's own claims: spawn and the like",
                                 new de.raindancer.modules.claims.command.ServerClaimCommand(ClaimCommands::require))
                         .aliased("serverclaims", "sclaim")
-                        .taking("with no words — the server's claims",
-                                "create <name> — mark one out with the tool",
-                                "create <name> <world> <x1> <z1> <x2> <z2> [force] — claim that rectangle",
-                                "info <name> — what it protects")
+                        .taking("with no words: the server's claims",
+                                "create <name>: mark one out with the tool",
+                                "create <name> <world> <x1> <z1> <x2> <z2> [force]: claim that rectangle",
+                                "info <name>: what it protects")
                         .needing(de.raindancer.modules.claims.util.ClaimPermissions.SERVER_CLAIMS));
     }
 

@@ -46,7 +46,7 @@ public final class FlagPolicyMenu extends PaginatedMenu<LandFlagGroup> implement
 
     @Override
     protected Component title() {
-        return Component.text("Flags — what owners may change");
+        return Component.text("Flags: what owners may change");
     }
 
     @Override
@@ -98,7 +98,7 @@ public final class FlagPolicyMenu extends PaginatedMenu<LandFlagGroup> implement
 
         @Override
         protected Component title() {
-            return Component.text(services.messages().raw(group.nameKey()) + " — flags");
+            return Component.text(services.messages().raw(group.nameKey()) + ": flags");
         }
 
         @Override
