@@ -1,8 +1,8 @@
 id: claim-staff
 title: Claim administration
-summary: Staff tools for claims — bypass, policies, deleting and handing over claims, no-claim zones, diagnostics and upkeep.
+summary: "Staff tools for claims: bypass, policies, deleting and handing over claims, no-claim zones, diagnostics and upkeep."
 intro: |
-  So you run the place. Everything below hangs off {cmd:/claimadmin}; most of it is a click away in its menu.
+  Everything here starts from {cmd:/claimadmin}. Most of it is also available in its menu.
 icon: COMMAND_BLOCK
 category: Staff
 order: 30
@@ -21,11 +21,11 @@ sections:
     title: Bypass
     permission: rec.bypass
     text: |
-      {run:/claimadmin bypass} switches the bypass on or off for you. While it is on you ignore every claim restriction — and also the claim limit, claim and fence costs, and no-claim zones. Being an operator is not the same: without bypass you obey claims like everybody. Turn it off when you are done.
+      {run:/claimadmin bypass} switches the bypass on or off for you. While it is on you ignore every claim restriction, and also the claim limit, claim and fence costs, and no-claim zones. Being an operator is not the same: without bypass you obey claims like everybody. Turn it off when you are done.
   - question: What can owners do at all?
     title: Features and flag policies
     text: |
-      <b>Features</b> (the menu button <b>What owners may do</b>): each perk and capability — effects, pantry, auto-equip, flight, own weather and time, entry fees, fences, bank, co-owners, kick, bans, announcements, renaming, icons, resizing, height, border preview, titles, notices — can be <b>available</b> (owners decide), <b>forced on</b> or <b>forced off</b>. A feature switched off vanishes from the menus and commands. Forced-on appears only for perks that have an owner switch.
+      <b>Features</b> (the menu button <b>What owners may do</b>): each perk and capability (effects, pantry, auto-equip, flight, own weather and time, entry fees, fences, bank, co-owners, kick, bans, announcements, renaming, icons, resizing, height, border preview, titles, notices) can be <b>available</b> (owners decide), <b>forced on</b> or <b>forced off</b>. A feature switched off vanishes from the menus and commands. Forced-on appears only for perks that have an owner switch.
       <b>Flags</b> ({run:/claimadmin flags}): left-click a flag to cycle <b>available / forced on / forced off / disabled</b> (disabled means vanilla behaviour, not enforced). Right-click flips what new claims start with. The policy and default of a flag about people apply to owners, trusted and visitors alike.
   - question: How do I find out why something happens?
     title: Diagnosing
@@ -42,11 +42,11 @@ sections:
   - question: Can I make a claim for somebody?
     title: Sticks
     text: |
-      {cmd:/claimadmin stick <player>} gives a player the marking stick — handy for helping a new player out. They are told who gave it. When you reshape a claim from the admin browser, the ordinary size and overlap limits do not apply.
+      {cmd:/claimadmin stick <player>} gives a player the marking stick, which helps when you set up a new player. They are told who gave it. When you reshape a claim from the admin browser, the ordinary size and overlap limits do not apply.
   - question: What do the housekeeping commands do?
     title: Housekeeping
     text: |
-      {cmd:/claimadmin overview}: claims, zones and tracked players. {cmd:/claimadmin save}: writes every changed claim to disk now (it also happens on a timer, every {setting:claims:storage.auto-save-seconds|seconds}, and on shutdown). {cmd:/claimadmin reload}: refreshes world names. {cmd:/claimadmin alignvisitors}: sets every claim's visitor rules to match the trusted rules — a one-off tidy-up after a policy change.
+      {cmd:/claimadmin overview}: claims, zones and tracked players. {cmd:/claimadmin save}: writes every changed claim to disk now (it also happens on a timer, every {setting:claims:storage.auto-save-seconds|seconds}, and on shutdown). {cmd:/claimadmin reload}: refreshes world names. {cmd:/claimadmin alignvisitors}: sets every claim's visitor rules to match the trusted rules. Use it once after a policy change.
   - question: How do I handle upkeep?
     title: Upkeep admin
     when: claims:upkeep.enabled
@@ -55,9 +55,9 @@ sections:
   - question: Which permissions matter?
     title: Permissions
     text: |
-      <white>rec.use</white> — use /claim (everybody has it). <white>rec.admin</white> — all of /claimadmin, implies the other two. <white>rec.bypass</white> — may toggle the bypass. <white>rec.admin.nofee</white> — never pays entry fees. <white>rec.maxclaims.N</white> — raises the claim limit to N for that player (<white>rec.maxclaims.unlimited</white> removes it). <white>rainsclaims.upkeep.discount</white> — pays only the operators' share of the upkeep. <white>rainsclaims.admin.server</white> — the server's own claims, see {cmd:/serverclaim}.
+      <white>rec.use</white>: use /claim (everybody has it). <white>rec.admin</white>: all of /claimadmin, implies the other two. <white>rec.bypass</white>: may toggle the bypass. <white>rec.admin.nofee</white>: never pays entry fees. <white>rec.maxclaims.N</white>: raises the claim limit to N for that player (<white>rec.maxclaims.unlimited</white> removes it). <white>rainsclaims.upkeep.discount</white>: pays only the operators' share of the upkeep. <white>rainsclaims.admin.server</white>: the server's own claims, see {cmd:/serverclaim}.
   - question: What can I tune?
     title: Settings
     permission: rainscore.settings
     text: |
-      Everything numeric on these pages — limits, costs, fences, borders, tolls, upkeep, slots — lives in {run:/settings} under <b>Claims</b>. Changes apply at once, and these pages follow.
+      Every number on these pages (limits, costs, fences, borders, tolls, upkeep, slots) is set in {run:/settings} under <b>Claims</b>. Changes apply at once, and these pages follow.

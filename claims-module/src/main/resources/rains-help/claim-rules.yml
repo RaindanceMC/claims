@@ -1,8 +1,8 @@
 id: claim-rules
 title: Claim rules (flags)
-summary: PvP, fire, mobs, explosions, fall damage, hunger and more — what happens inside your border is yours to set.
+summary: "PvP, fire, mobs, explosions, fall damage, hunger and more: what happens inside your border is yours to set."
 intro: |
-  Protection is the boring half of a claim. The fun half is deciding that nobody burns, nobody fights, or that everybody keeps their inventory.
+  Rules decide what happens inside a claim: whether anything burns, whether players fight, whether everybody keeps their inventory.
 icon: REDSTONE_TORCH
 category: Land & building
 order: 4
@@ -14,18 +14,18 @@ sections:
   - question: What are rules?
     title: Rules and flags
     text: |
-      A rule (staff call it a <i>flag</i>) decides what happens inside a claim: can players hurt each other, does fire spread, do monsters spawn, do creepers break blocks, do you take fall damage. Each one is on or off, and the owner decides — as far as the server lets them.
+      A rule (staff call it a <i>flag</i>) decides what happens inside a claim: can players hurt each other, does fire spread, do monsters spawn, do creepers break blocks, do you take fall damage. Each one is on or off, and the owner decides, as far as the server allows.
   - question: Where do I set them?
     title: Setting a rule
     text: |
-      Open the claim ({run:/claim here} while standing in it), click <b>Configuration</b>, then <b>Claim flags</b>. Rules are sorted into groups — players, nature, creatures, pickups, travel, the border, machinery and death — and a group shows how many of its rules you changed.
+      Open the claim ({run:/claim here} while standing in it), click <b>Configuration</b>, then <b>Claim flags</b>. Rules are sorted into groups (players, nature, creatures, pickups, travel, the border, machinery and death), and a group shows how many of its rules you changed.
       <b>Left-click</b> a rule to set it for everybody at once. A rule about people can also differ by audience: <b>right-click</b> it to set owners, trusted players and visitors separately. A half-filled symbol means the three groups disagree.
       <b>Follow the server again</b> forgets your choice and goes back to the default.
   - question: Which rules are about people?
     title: Per audience
     text: |
-      Rules that concern what players do — PvP, damage from mobs and explosions, fall damage, hunger, potions, picking up items and experience, handling animals, walking in, teleporting in, ender pearls, keeping your inventory on death, totems, equipment wear and being seen from outside — carry one value each for owners, trusted players and visitors. So you can let your friends fight each other but not strangers.
-      Rules about the <i>world</i> — fire, leaf decay, pistons, fluids, spawning — are the same for everybody. A patch of leaves cannot decay for visitors only.
+      Rules that concern what players do carry one value each for owners, trusted players and visitors. These are PvP, damage from mobs and explosions, fall damage, hunger, potions, picking up items and experience, handling animals, walking in, teleporting in, ender pearls, keeping your inventory on death, totems, equipment wear and being seen from outside. So you can let your friends fight each other but not strangers.
+      Rules about the <i>world</i> (fire, leaf decay, pistons, fluids, spawning) are the same for everybody. Leaves cannot decay for visitors only.
   - question: Can I make a claim PvP-free?
     title: PvP
     text: |
@@ -37,7 +37,7 @@ sections:
   - question: What about fire, explosions and water?
     title: Nature
     text: |
-      Nature rules: fire spreading, leaves decaying, snow and ice forming, explosions damaging blocks, and fluids flowing at all. In the border group: whether pistons and fluids from <i>outside</i> may push into your claim. A claim that is safe from creepers and lava griefers is a pleasant claim.
+      Nature rules: fire spreading, leaves decaying, snow and ice forming, explosions damaging blocks, and fluids flowing at all. In the border group: whether pistons and fluids from <i>outside</i> may push into your claim. This keeps a claim safe from creepers and lava.
   - question: Can I keep my inventory when I die?
     title: Death
     text: |
@@ -45,13 +45,13 @@ sections:
   - question: What do the travel rules do?
     title: Travel
     text: |
-      Walk in (can anyone cross the border), teleport in, ender pearls in, elytra flying and riptide tridents. Turning off walk-in is how you build a claim nobody can enter by foot — combine with the trusted list and you have a private club. Teleporting in also decides whether people can use your claim's warp (see {topic:claim-warps}).
+      Walk in (can anyone cross the border), teleport in, ender pearls in, elytra flying and riptide tridents. Turning off walk-in makes a claim nobody can enter by foot. Combined with the trusted list, it is private. Teleporting in also decides whether people can use your claim's warp (see {topic:claim-warps}).
   - question: Why can't I change some rules?
     title: Locked rules
     text: |
-      The server has three ways to take a rule away from owners: <b>forced on</b> (always allowed), <b>forced off</b> (always denied) and <b>disabled</b> (not enforced — vanilla behaviour, and it simply does not appear). A locked rule says "decided by the server". Everything else is <b>available</b>: yours to change.
-      Every rule also has a default that new claims start with; owners can only change it for their own claim, existing claims are not touched when staff change the default.
+      The server has three ways to take a rule away from owners: <b>forced on</b> (always allowed), <b>forced off</b> (always denied) and <b>disabled</b> (not enforced, vanilla behaviour, and not shown). A locked rule says "decided by the server". Everything else is <b>available</b>: yours to change.
+      Every rule also has a default that new claims start with; owners can only change it for their own claim, and existing claims are not touched when staff change the default.
   - question: What is "ignoring my own rules"?
     title: Ignore my rules
     text: |
-      The claim menu, if you are an owner, has a switch that excuses <i>you</i> from the claim's rules while you work on it — handy when a rule would otherwise get in your own way. It applies to this claim only and ends when the server restarts. Click again to follow your own rules once more.
+      The claim menu, if you are an owner, has a switch that excuses <i>you</i> from the claim's rules while you work on it. This is useful when a rule would get in your own way. It applies to this claim only and ends when the server restarts. Click again to follow your own rules once more.

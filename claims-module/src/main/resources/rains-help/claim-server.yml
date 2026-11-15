@@ -1,8 +1,8 @@
 id: claim-server
 title: Server claims
-summary: Land the server itself holds — spawn, a market square — fully protected, owned by nobody.
+summary: Land the server itself holds, such as spawn or a market square. It is fully protected and owned by nobody.
 intro: |
-  A server claim has no player owner. It reads as <b>Server</b> wherever an owner would be named, is never counted against anybody's limit, and pays no price, upkeep or entry fee — and it never lapses.
+  A server claim has no player owner. It reads as <b>Server</b> wherever an owner would be named, is never counted against anybody's limit, and pays no price, upkeep or entry fee, and never lapses.
 icon: BEACON
 category: Staff
 order: 31
@@ -16,7 +16,7 @@ sections:
   - question: How do I protect spawn?
     title: Making one
     text: |
-      {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>} — or make it round: {cmd:/serverclaim create <name> <world> circle <x> <z> <radius>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
+      {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>}, or make it round: {cmd:/serverclaim create <name> <world> circle <x> <z> <radius>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
   - question: What does it protect?
     title: Fully protected
     text: |
@@ -24,7 +24,7 @@ sections:
   - question: Who may build there?
     title: Builders
     text: |
-      Staff in {run:/claimadmin bypass} build anywhere. Trust a person with {cmd:/serverclaim trust <name> <player>}, or a whole rank by giving it <white>rainsclaims.server.trust.<name></white> (lowercase claim name) or <white>rainsclaims.server.trust.*</white> — they count as trusted while they hold it.
+      Staff in {run:/claimadmin bypass} build anywhere. Trust a person with {cmd:/serverclaim trust <name> <player>}, or a whole rank by giving it <white>rainsclaims.server.trust.<name></white> (lowercase claim name) or <white>rainsclaims.server.trust.*</white>. They count as trusted while they hold it.
   - question: What if it covers somebody's claim?
     title: Overlaps
     text: |
@@ -36,4 +36,4 @@ sections:
   - question: Which permission is it?
     title: Permission
     text: |
-      <white>rainsclaims.admin.server</white> — everything on this page; operators have it, and <white>rec.admin</white> implies it.
+      <white>rainsclaims.admin.server</white> covers everything on this page; operators have it, and <white>rec.admin</white> implies it.
