@@ -13,27 +13,27 @@ prefix: "<dark_gray>[<gradient:#4ade80:#22d3ee>Claims</gradient><dark_gray>] "
 
 claim:
   # ── the everyday ones ────────────────────────────────────────────────────
-  created: "<green>Claimed <white><claim></white> — <gray><area> blocks, y <min-y> to <max-y>."
+  created: "<green>Claimed <white><claim></white>: <gray><area> blocks, y <min-y> to <max-y>."
   resized: "<green><white><claim></white> redrawn: <gray><area> blocks, y <min-y> to <max-y>."
   renamed: "<green>Renamed <gray><old></gray> to <white><claim></white>."
   help: |
     <gradient:#4ade80:#22d3ee>Your land</gradient>
-    <gray>/claim<dark_gray> — your claims
-    <gray>/claim stick<dark_gray> — the marking-out tool
-    <gray>/claim new<dark_gray> — mark out a new one
-    <gray>/claim here<dark_gray> — the claim you are standing in
-    <gray>/claim show<dark_gray> · <gray>hide<dark_gray> — draw the borders
+    <gray>/claim<dark_gray>: your claims
+    <gray>/claim stick<dark_gray>: the marking-out tool
+    <gray>/claim new<dark_gray>: mark out a new one
+    <gray>/claim here<dark_gray>: the claim you are standing in
+    <gray>/claim show<dark_gray> · <gray>hide<dark_gray>: draw the borders
     <gray>/claim trust <white>somebody<dark_gray> · <gray>untrust<dark_gray>
     <gray>/claim ban <white>somebody<dark_gray> · <gray>unban<dark_gray>
     <gray>/claim rename <white>a new name<dark_gray> · <gray>delete<dark_gray>
-    <gray>/claim transfer <white>somebody<dark_gray> — hand it over entirely
-    <gray>/claim warp<dark_gray> · <gray>home<dark_gray> — its warp where you stand, your main home
-    <gray>/claim waystones<dark_gray> — travel between the waystones of the claim you are in
-    <gray>/claim upkeep<dark_gray> · <gray>pay<dark_gray> — what holding land costs, if the server charges
+    <gray>/claim transfer <white>somebody<dark_gray>: hand it over entirely
+    <gray>/claim warp<dark_gray> · <gray>home<dark_gray>: its warp where you stand, your main home
+    <gray>/claim waystones<dark_gray>: travel between the waystones of the claim you are in
+    <gray>/claim upkeep<dark_gray> · <gray>pay<dark_gray>: what holding land costs, if the server charges
     <dark_gray>everything else is in the menus
   manual-given: "<green>The manual is in your inventory. <gray>Read it any time."
-  stick-given: "<green>There is your marking-out tool. <gray>Left click one corner, right click the other."
-  border-hidden: "<gray>Borders hidden. Out of sight, still yours."
+  stick-given: "<green>Here is your marking-out tool. <gray>Left click one corner, right click the other."
+  border-hidden: "<gray>Borders hidden."
   rename-needs-a-name: "<red>Give it a name: <gray>/claim rename <new name>"
   group:
     given: "<green><white><claim></white> belongs to <white><group></white> <gray>[<tag>]</gray> now as well: its leader owns it, its officers manage it, its members may build. <gray>/claim guild off takes it back."
@@ -47,17 +47,17 @@ claim:
   none-here: "<gray>You are not standing in a claim."
   gone: "<red>That claim no longer exists."
   belongs-to: "<gray>This is <white><claim></white>."
-  border-elsewhere: "<gray><claim> is in <white><world></white> — the border can only be shown there."
+  border-elsewhere: "<gray><claim> is in <white><world></white>. The border can only be shown there."
 
   # ── its warp, and your main home ───────────────────────────────────────────
   warp-set: "<green><white><claim></white>'s warp is here now. People arrive right where you stand, if the claim lets them teleport in."
-  warp-removed: "<green><white><claim></white> has no warp any more."
+  warp-removed: "<green><white><claim></white> has no warp now."
   warp-outside: "<red>Stand inside <white><claim></white> to set its warp."
   warp-not-yours: "<red>Only the owners of <white><claim></white> set its warp."
   home-set: "<green><white><claim></white> is your main home now. Others reach it with <white>/warp home</white> and your name."
   home-needs-a-warp: "<red><white><claim></white> has no warp yet. Set one with <white>/claim warp</white> first."
   home-not-yours: "<red><white><claim></white> is not yours to call home."
-  home-cleared: "<green>You have no main home any more."
+  home-cleared: "<green>You no longer have a main home."
   no-home: "<gray>You have no main home to clear."
 
   # ── people ───────────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ claim:
   untrusted: "<yellow>Took <white><player></white>'s trust in <white><claim></white>."
   not-trusted: "<gray><player> is not trusted here."
   already-an-owner: "<gray><player> owns this claim, so they already may do everything."
-  owner-holds-everything: "<gray>An owner may do everything — there is nothing to set."
+  owner-holds-everything: "<gray>An owner may do everything. There is nothing to set."
   banned: "<red>Barred <white><player></white> from <white><claim></white>."
   ban-lifted: "<green><white><player></white> may come back to <white><claim></white>."
   not-banned: "<gray><player> is not barred from here."
@@ -75,7 +75,7 @@ claim:
   cannot-kick-an-owner: "<red>You cannot kick <white><player></white> out of a claim they own."
   owner-added: "<green>Added <white><player></white> as a co-owner of <white><claim></white>."
   owner-removed: "<yellow>Removed <white><player></white> as a co-owner of <white><claim></white>."
-  owner-cannot-remove: "<gray><player> cannot be removed that way — the last owner, and whoever first claimed it, always stay."
+  owner-cannot-remove: "<gray><player> cannot be removed that way. The last owner and whoever first claimed it always stay."
   transferred: "<green>Handed <white><claim></white> over to <white><player></white> entirely."
   transferred-to-you: "<green>You have been given <white><claim></white>."
 
@@ -89,24 +89,24 @@ claim:
   ask-title: "<gray>Type the <white><what></white>, or <white>cancel</white>."
   title-set: "<green>Set the <what>."
   title-aborted: "<gray>Left it alone."
-  titles-empty: "<gray>Nothing is set to show on arrival. A silent welcome."
+  titles-empty: "<gray>Nothing is set to show on arrival."
   hold-an-item: "<gray>Hold the item you mean and click again."
   ask-kick: "<gray>Type who to kick out, or <white>cancel</white>."
-  ask-ban: "<gray>Type a name, then a reason if you like — <white>name [reason]</white>, or <white>cancel</white>."
-  ask-timeout: "<gray>Type a name and how long — <white>name duration [reason]</white>, or <white>cancel</white>."
+  ask-ban: "<gray>Type a name and optionally a reason: <white>name [reason]</white>, or <white>cancel</white>."
+  ask-timeout: "<gray>Type a name and how long: <white>name duration [reason]</white>, or <white>cancel</white>."
   ask-co-owner: "<gray>Type who should own this claim too, or <white>cancel</white>."
 
   # ── refusals that are somebody else's decision ───────────────────────────
   flag-not-yours: "<gray><flag> is decided by the server, not by you."
   feature-is-the-servers: "<gray>Whether claims may use <white><feature></white> is the server's decision."
-  store-full: "<gray>That store is full — <white><cap></white> stacks is the limit."
+  store-full: "<gray>That store is full. The limit is <white><cap></white> stacks."
   bank-inventory-full: "<yellow>Your inventory was full, so the rest went back into the claim."
-  pantry-food-only: "<gray>The pantry takes food. Only food. It is not a junk drawer."
+  pantry-food-only: "<gray>The pantry takes food only."
   potions-only: "<gray>That store takes potions only."
 
   # ── commands ─────────────────────────────────────────────────────────────
   who: "<gray>Who do you mean? <white><usage>"
-  unknown-subcommand: "<gray>Unknown subcommand <white><word></white>. Try <white>/claim</white> on its own."
+  unknown-subcommand: "<gray>Unknown subcommand <white><word></white>. Type <white>/claim</white> on its own for help."
   info-header: "<gold>── <white><claim></white> ──"
 
 notify:
@@ -129,47 +129,47 @@ protection:
   pvp-refused: "<red>Fighting is not allowed in <white><claim></white>."
 
 selection:
-  started: "<green>Marking out a <white><mode></white>. <gray>Right click the corners; sneak + right click the air to finish."
+  started: "<green>Marking out a <white><mode></white>. <gray>Right click the corners. Sneak and right click the air to finish."
   point-added: "<gray>Corner <white><index></white> at <gray><x>, <y>, <z><gray>."
-  point-removed: "<gray>Took the last corner back — <white><count></white> left."
+  point-removed: "<gray>Removed the last corner. <white><count></white> left."
   nothing-to-undo: "<gray>Nothing marked yet."
-  incomplete: "<gray>Mark <white><needed></white> corners — you have <white><have></white>."
+  incomplete: "<gray>Mark <white><needed></white> corners. You have <white><have></white>."
   none: "<gray>You are not marking anything out."
-  cancelled: "<gray>Forgotten. Never happened."
+  cancelled: "<gray>Selection cancelled."
   ask-name: "<gray>What should it be called? <dark_gray>(<suggestion>)"
   name-aborted: "<gray>Cancelled. Without a name, no claim is created."
-  already-being-asked: "<gray>Something else is already waiting for you to type. Answer that first."
+  already-being-asked: "<gray>You are already answering another question. Finish that one first."
   world-gone: "<red>That world is not loaded any more."
   world-mismatch: "<gray>All the corners have to be in one world."
   wrong-world: "<gray><claim> is in another world."
-  stick-dropped: "<gray>The marking tool goes back when you are done with it."
+  stick-dropped: "<gray>The marking tool is returned when you are done with it."
 
 zone:
   ask-name: "<gray>What should this no-claim area be called?"
-  name-aborted: "<gray>Never mind."
-  created: "<green>Nobody may claim in <white><zone></white> — <gray><area> blocks, y <min-y> to <max-y>."
+  name-aborted: "<gray>Cancelled."
+  created: "<green>Nobody may claim in <white><zone></white>. <gray><area> blocks, y <min-y> to <max-y>."
   replaced: "<yellow>Replaced the old <white><zone></white>."
   deleted: "<yellow>Removed the no-claim area <white><zone></white>."
   unknown: "<gray>No no-claim area called <white><zone></white>."
   list-header: "<gray><count> no-claim area(s):"
   here: "<gray>You are standing in <white><zone></white>."
-  none-here: "<gray>Nothing stops a claim here. Go wild."
+  none-here: "<gray>Nothing stops a claim here."
 
 entry-fee:
-  offer: "<gray><claim> charges <white><price></white> to come in. <white>/claim accept</white> to hand it over — <gray><seconds>s to decide."
+  offer: "<gray><claim> charges <white><price></white> to come in. <white>/claim accept</white> pays it. <gray><seconds>s to decide."
   paid: "<green>Paid <white><price></white> to enter <white><claim></white>."
   declined: "<gray>You declined to pay. The entry stays closed."
-  cannot-afford: "<red>You are <white><missing></white> short of the toll for <white><claim></white>. The troll under the bridge is unmoved."
-  nothing-pending: "<gray>Nobody is asking you for anything. Rare, enjoy it."
+  cannot-afford: "<red>You are <white><missing></white> short of the toll for <white><claim></white>."
+  nothing-pending: "<gray>There is no entry fee waiting for your answer."
   claim-gone: "<gray>That claim is gone."
   owner-notified: "<gray><player> paid to come into <white><claim></white>."
 
 flight:
-  ending: "<yellow>Flight ends in <white><seconds>s</white> — fly back in to keep it."
+  ending: "<yellow>Flight ends in <white><seconds>s</white>. Fly back in to keep it."
 
 pantry:
   fed: "<gray><claim>'s pantry fed you <white><food></white>."
-  empty-notice: "<yellow><white><claim></white>'s pantry is empty. <gray>Visitors will have to bring their own snacks."
+  empty-notice: "<yellow><white><claim></white>'s pantry is empty."
 
 equip:
   given: "<gray><claim> handed you <white><amount>x <item></white> for your <white><where></white>."
@@ -192,13 +192,13 @@ error:
   too-many-players: "<gray><white><selector></white> matches <white><count></white> players, and this takes one. Pick one."
   players-only: "<gray>Somebody standing in the world has to run that."
   world-disabled: "<gray>Claims are switched off in this world."
-  name-invalid: "<gray>Letters, digits, dashes and underscores — up to 32 of them. Emoji and poetry will have to wait."
+  name-invalid: "<gray>Letters, digits, dashes and underscores, up to 32 in all."
   name-taken: "<gray>You already have a claim called that."
   too-many-claims: "<gray>You are at your limit of <white><detail></white> claims."
-  claim-too-small: "<gray>Too small — the least is <white><detail></white> blocks."
-  claim-too-large: "<gray>Too big — the most is <white><detail></white> blocks."
+  claim-too-small: "<gray>Too small. The minimum is <white><detail></white> blocks."
+  claim-too-large: "<gray>Too big. The maximum is <white><detail></white> blocks."
   claim-too-short: "<gray>A claim has to be at least <white><minimum></white> blocks tall."
-  too-many-vertices: "<gray>Too many corners — <white><detail></white> at most."
+  too-many-vertices: "<gray>Too many corners. The most allowed is <white><detail></white>."
   overlaps-claim: "<gray>That overlaps <white><detail></white>."
   in-no-claim-zone: "<gray>Nobody may claim in <white><detail></white>."
   cannot-afford: "<gray>You cannot afford that: <white><detail></white>."
@@ -210,7 +210,7 @@ error:
   ambiguous-claim: "<gray>Several claims are called that: <white><candidates></white>."
   player-offline: "<gray><player> has to be online for that."
   world-missing: "<gray>That claim's world (<white><world></white>) is not loaded."
-  bad-duration: "<gray>Not a length of time I understand: <white><input></white>. Try something like <white>2h</white>."
+  bad-duration: "<gray>Not a valid length of time: <white><input></white>. Try something like <white>2h</white>."
 
 feature:
   unavailable: "<gray><feature> is switched off on this server."
@@ -219,33 +219,33 @@ broadcast:
   kicked: "<gray><player> was removed from <claim> by <by>."
   banned: "<gray><player> was barred from <claim> by <by>. <reason>"
   timed-out: "<gray><player> was timed out of <claim> for <duration> by <by>."
-  lifted: "<gray><player> may come back to <claim> now — <by> lifted it."
+  lifted: "<gray><player> may come back to <claim>. <by> lifted the ban."
 
 admin:
   # ── the flags, from the server's side ────────────────────────────────────
   flag-policy-changed: "<green><flag> is now <white><policy></white>."
   flag-default-changed: "<green>New claims will start with <white><flag></white> <value>."
   flag-default-not-used: "<gray><flag> is not left to owners, so its starting value is never asked."
-  flag-not-saved: "<red>Changed for now, but it could not be written down — check the console. It will be back as it was after a restart."
+  flag-not-saved: "<red>Changed for now, but it could not be saved. Check the console. It will revert after a restart."
   why-header: "<gradient:#4ade80:#22d3ee>Why things happen in <claim></gradient> <dark_gray>· you are <white><audience></white> here"
-  why-line: "<dark_gray>· <white><flag><dark_gray> — server <gray><policy><dark_gray>, claim <gray><override><dark_gray>, so <white><verdict>"
+  why-line: "<dark_gray>· <white><flag><dark_gray>: server <gray><policy><dark_gray>, claim <gray><override><dark_gray>, so <white><verdict>"
 
   # ── /claimadmin here ─────────────────────────────────────────────────────
   here-header: "<gradient:#4ade80:#22d3ee>── <claim> ──</gradient>"
   here-owners: "<dark_gray>Owner(s): <gray><owners>"
   here-shape: "<dark_gray>World <gray><world><dark_gray> · <gray><area></gray> blocks, y <min-y> to <max-y><dark_gray> · <gray><corners></gray> corner(s)"
-  here-not-covered: "<yellow>You are at y <white><y></white>, which this claim's own range does not reach — nothing here is protected."
+  here-not-covered: "<yellow>You are at y <white><y></white>, which this claim's height range does not reach. Nothing here is protected."
   here-members: "<dark_gray>Trusted: <gray><count></gray><dark_gray>, <gray><admins></gray> claim admin(s)"
   here-bans: "<dark_gray>Active bans: <gray><count>"
   here-entry-fee: "<dark_gray>Entry fee: <gray><amount>"
   here-bank: "<dark_gray>Bank: <gray><items></gray> item stack(s), <gray><xp></gray> xp"
   here-flags-header: "<dark_gray>── flags (enforced ones only) ──"
-  here-flag-line: "<dark_gray>· <white><flag><dark_gray> — claim <gray><override><dark_gray>, so <white><verdict>"
-  here-flag-tiers: "<dark_gray>· <white><flag><dark_gray> — owner <gray><owner><dark_gray>, trusted <gray><trusted><dark_gray>, visitor <gray><visitor>"
+  here-flag-line: "<dark_gray>· <white><flag><dark_gray>: claim <gray><override><dark_gray>, so <white><verdict>"
+  here-flag-tiers: "<dark_gray>· <white><flag><dark_gray>: owner <gray><owner><dark_gray>, trusted <gray><trusted><dark_gray>, visitor <gray><visitor>"
   stick-received: "<green><admin> gave you a marking-out tool. <gray>Left click one corner, right click the other."
   open-flags: "<gray>Opening the flag settings."
   overview: "<gray><claims> claim(s), <zones> zone(s), <tracked> player(s) tracked. <dark_gray>land answered by <answering>"
-  bypass-on: "<green>Bypass on — you can ignore every claim."
+  bypass-on: "<green>Bypass on. You ignore every claim."
   bypass-off: "<gray>Bypass off. Claims apply to you again."
   reloaded: "<green>Reloaded."
   visitors-aligned: "<green>Aligned visitors to trusted on <white><count></white> claim(s)."
@@ -253,19 +253,19 @@ admin:
   claim-transferred: "<green>Transferred <white><claim></white> to <white><player></white>."
   claim-transferred-to-you: "<green>You have been given <white><claim></white>."
   feature-changed: "<green><white><feature></white> is now <white><policy></white>."
-  feature-not-saved: "<red>Changed for now, but it could not be written down — check the console. It will be back as it was after a restart."
+  feature-not-saved: "<red>Changed for now, but it could not be saved. Check the console. It will revert after a restart."
   zone-removed: "<yellow>Removed the no-claim area <white><zone></white>."
   zone-shift-to-remove: "<gray>Shift + click to remove <white><zone></white>."
 
   # ── restored operational surface ─────────────────────────────────────────
   saved: "<green>Saved <white><count></white> changed claim(s), and the no-claim zones."
   list-header: "<gray><count> claim(s) on the server:"
-  reshape-started: "<green>There is your stick. <gray>Redraw <white><claim></white> — the ordinary size and overlap limits do not apply."
+  reshape-started: "<green>Here is your stick. <gray>Redraw <white><claim></white>. The usual size and overlap limits do not apply."
   claim-reshaped: "<green><white><claim></white> forced into a new shape: <gray><area> blocks, y <min-y> to <max-y>."
   stick-given: "<green>Gave <white><player></white> a marking-out stick."
   ask-transfer-target: "<gray>Who should <white><claim></white> belong to now? <white>(type a name, or cancel)"
   ownership-transferred: "<green><white><claim></white> now belongs to <white><player></white>."
-  teleport-unsafe: "<red>Nowhere safe was found near <white><claim></white> — nobody was moved."
+  teleport-unsafe: "<red>No safe place was found near <white><claim></white>. Nobody was moved."
   inspect-header: "<gold>── <white><claim></white>, staff view ──"
   diagnose-header: "<gold>── why, here ──"
   ask-owner-filter: "<gray>Show only whose claims? <white>(type a name, or cancel)"
@@ -277,10 +277,10 @@ server:
   list-line: "<dark_gray>· <white><claim></white> <dark_gray>in <gray><world></gray>, <gray><area></gray> blocks, x <x1>..<x2> z <z1>..<z2>"
   console-needs-coordinates: "<gray>From here, give the shape too: <white>create name world x1 z1 x2 z2</white> or <white>create name world circle x z radius</white>; <white>resize name x1 z1 x2 z2</white> or <white>resize name circle x z radius</white>."
   name-taken: "<gray>The server already has a claim called <white><claim></white>."
-  overlaps: "<gray>That overlaps <white><detail></white>. <dark_gray>Add <white>force</white> to claim it anyway — inside the overlap the smaller claim applies."
+  overlaps: "<gray>That overlaps <white><detail></white>. <dark_gray>Add <white>force</white> to claim it anyway. Inside the overlap the smaller claim applies."
   mark-out: "<green>Mark out <white><claim></white> with the tool. <gray>It reaches the full height of the world."
   reshaped: "<green><white><claim></white> redrawn: <gray><area> blocks, y <min-y> to <max-y>."
-  created: "<green>The server now holds <white><claim></white> — <gray><area> blocks, y <min-y> to <max-y>, fully protected."
+  created: "<green>The server now holds <white><claim></white>: <gray><area> blocks, y <min-y> to <max-y>, fully protected."
   no-such-claim: "<gray>The server holds no claim called <white><claim></white>."
   info-bounds: "<dark_gray>From x <gray><x1></gray> z <gray><z1></gray> to x <gray><x2></gray> z <gray><z2>"
   info-border: "<dark_gray>Border: <gray><border>"
@@ -288,9 +288,9 @@ server:
   border-off: "<yellow>The border of <white><claim></white> is shown on entering again, not all the time."
   info-trusted: "<dark_gray>Trusted by name: <gray><people></gray><dark_gray> · by role: <gray><permission>"
   info-visitors: "<dark_gray>Visitors may: <green><allowed></green><dark_gray> · may not: <red><denied>"
-  info-flag: "<dark_gray>· <white><flag><dark_gray> — claim <gray><override><dark_gray>, so <white><verdict>"
+  info-flag: "<dark_gray>· <white><flag><dark_gray>: claim <gray><override><dark_gray>, so <white><verdict>"
   no-such-flag: "<gray>No flag called <white><flag></white>. <dark_gray>Tab completes them."
-  flag-set: "<green><white><flag></white> on <white><claim></white> set to <white><value></white> — <gray>visitors: <verdict>."
+  flag-set: "<green><white><flag></white> on <white><claim></white> set to <white><value></white>. <gray>Visitors: <verdict>."
   public-set: "<green>Visitors on <white><claim></white> are now <white><value></white> <white><action></white>."
   trusted: "<green><white><player></white> may now build on <white><claim></white>."
   untrusted: "<yellow><white><player></white> is no longer trusted on <white><claim></white>."
@@ -304,16 +304,16 @@ upkeep:
   discounted: "<gray>  You pay <white><percent>%</white> of the full bill."
   guild-pays: "<gray>  of that <white><group></white> pays <white><amount></white> from its bank."
   nothing-held: "<gray>You hold no land, so there is no upkeep to pay."
-  owed: "<red>You are in arrears: <white><owed></white>. <gray>You cannot make or enlarge claims until it is paid — <white>/claim upkeep pay</white>."
-  lapsed: "<red>Your claims have stopped protecting because the upkeep has gone unpaid for too long. Paying brings the protection back."
+  owed: "<red>You are in arrears: <white><owed></white>. <gray>You cannot make or enlarge claims until it is paid. Use <white>/claim upkeep pay</white>."
+  lapsed: "<red>Your claims have stopped protecting because the upkeep has gone unpaid for too long. Paying restores the protection."
   paid-bill: "<gray>Claim upkeep: <white><amount></white> paid for <white><chunks></white> chunk(s)."
   missed: "<red>You could not pay your claim upkeep of <white><amount></white>. <gray>You cannot make or enlarge claims until you pay it with <white>/claim upkeep pay</white>."
   join-warning: "<red>You owe <white><owed></white> in claim upkeep. <gray>Pay it with <white>/claim upkeep pay</white>; until then you cannot make or enlarge claims."
   nothing-owed: "<gray>You owe no upkeep."
   paid-all: "<green>Paid <white><paid></white>. Your upkeep is clear."
   paid-part: "<yellow>Paid <white><paid></white>; <white><left></white> is still owed."
-  cannot-pay: "<gray>You cannot afford to pay any of the <white><owed></white> you owe."
-  no-economy: "<gray>There is no economy to pay with right now. Try again later."
+  cannot-pay: "<gray>You cannot pay any of the <white><owed></white> you owe."
+  no-economy: "<gray>There is no economy to pay with at the moment. Try again later."
   info-line: "<gray>Upkeep: <white><bill></white> every <white><period></white> for this owner's land."
   owner-only: "<gray>Only the owner and staff can see what this claim's upkeep is made of."
   admin-off: "<gray>Upkeep is switched off, so nobody can be billed. <dark_gray>/claimadmin → Upkeep"
@@ -321,7 +321,7 @@ upkeep:
   admin-holds-nothing: "<gray><white><player></white> holds no land, so there is nothing to bill."
   admin-billed: "<green>Billed <white><count></white> owner(s): <white><paid></white> paid <white><took></white>, <white><missed></white> could not pay and now owe <white><owing></white>."
   admin-totals: "<gold>Upkeep (<white><state></white>): <white><owners></white> owner(s), <white><bills></white> a round, <white><owed></white> unpaid."
-  admin-line: "<gray> <white><player></white> — <white><bill></white> for <chunks> chunk(s), owes <white><owed></white>, next in <white><next></white>"
+  admin-line: "<gray> <white><player></white>: <white><bill></white> for <chunks> chunk(s), owes <white><owed></white>, next in <white><next></white>"
 
 slot:
   offer: "<gray>You can buy one more claim for <white><price></white>: <white>/claim buyslot</white>, or the button in <white>/claim</white>."
@@ -330,7 +330,7 @@ slot:
   "off": "<gray>Buying claim slots is switched off on this server."
   no-price: "<gray>No price is set for a claim slot yet."
   maxed: "<gray>You have bought the most claim slots anybody may: <white><most></white>."
-  cannot-afford: "<red>A claim slot costs <white><price></white> — you do not have that much."
+  cannot-afford: "<red>A claim slot costs <white><price></white>, and you do not have enough."
   no-economy: "<red>There is no economy on this server to pay with."
   not-saved: "<red>The slot could not be saved, so your money was given back."
   refused: "<red>That payment was refused, and nothing was taken."
@@ -340,33 +340,33 @@ waystone:
   item-name: "<gold>Waystone"
   item-lore-1: "<gray>Put it down inside your claim,"
   item-lore-2: "<gray>then travel between your waystones there."
-  given: "<green>Here is a waystone for <white><claim></white>. <gray><count> of <limit> are down — put it anywhere inside."
-  placed: "<green><white><name></white> is lit. <gray><count> of <limit> in <white><claim></white>. Click it to travel or to rename it."
-  taken-down: "<green><white><name></white> is out, and back in your pocket."
+  given: "<green>Here is a waystone for <white><claim></white>. <gray><count> of <limit> are placed. Put it anywhere inside."
+  placed: "<green><white><name></white> is placed. <gray><count> of <limit> in <white><claim></white>. Click it to travel or to rename it."
+  taken-down: "<green><white><name></white> was removed and returned to you."
   # ── putting one down, refused ──────────────────────────────────────────────
   "off": "<gray>Waystones are switched off on this server."
-  outside: "<red>A waystone only works inside a claim. Out here it would just be a very fancy rock."
-  outside-height: "<red>That would stick out of <white><claim></white>. Waystones are two blocks tall — put it lower."
-  no-room: "<red>It needs the block above it free. Waystones are two blocks tall, not shy."
+  outside: "<red>A waystone works only inside a claim."
+  outside-height: "<red>That would stick out of <white><claim></white>. Waystones are two blocks tall. Place it lower."
+  no-room: "<red>A waystone needs the block above it free."
   too-close: "<red>Too close to another waystone. Leave <white><blocks></white> blocks between them."
   full: "<red><white><claim></white> already has all <white><limit></white> waystones it may. Take one down, or grow the claim."
   not-yours: "<red>Only those who manage <white><claim></white>'s waystones may do that."
   # ── names and who may use one ──────────────────────────────────────────────
-  bad-name: "<red>A name needs 1 to 32 characters. Ambitious, but no."
+  bad-name: "<red>A name needs 1 to 32 characters."
   name-taken: "<red>This claim already has a waystone called <white><name></white>."
   renamed: "<green>It is called <white><name></white> now."
   # ── travelling ─────────────────────────────────────────────────────────────
   counting: "<gold>To <white><name></white> in <white><seconds></white>…"
-  not-here: "<red>Stand in <white><claim></white>, at one of its waystones, to travel. These paths do not reach outside."
+  not-here: "<red>Stand in <white><claim></white>, at one of its waystones, to travel. Waystones only lead to other waystones of the same claim."
   not-for-you: "<red><white><name></white> is not open to you."
   gone: "<red>That waystone is gone."
-  cancelled-moved: "<red>You moved, and the fire went out of it. Stand still next time."
-  cancelled-hurt: "<red>Something hit you and the trip was called off."
-  already-travelling: "<red>You are already on your way somewhere — <white><name></white> will have to wait."
-  nowhere-safe: "<red>There is nowhere safe to stand at <white><name></white> right now. Have a look at what was built in front of it."
+  cancelled-moved: "<red>You moved, so the trip was cancelled."
+  cancelled-hurt: "<red>You were hit, so the trip was cancelled."
+  already-travelling: "<red>You are already travelling. <white><name></white> will have to wait."
+  nowhere-safe: "<red>There is no safe place to arrive at <white><name></white> right now."
   # ── buying more ────────────────────────────────────────────────────────────
   bought: "<green>Bought a waystone for <white><price></white>. <gray>One more in each claim you own; <white><count></white> bought so far."
   buy-off: "<gray>Buying waystones is switched off on this server."
   buy-no-price: "<gray>No price is set for a waystone yet."
   buy-maxed: "<gray>You have bought the most waystones anybody may: <white><most></white>."
-  buy-cannot-afford: "<red>A waystone costs <white><price></white> — you do not have that much."
+  buy-cannot-afford: "<red>A waystone costs <white><price></white>, and you do not have enough."
