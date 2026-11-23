@@ -336,9 +336,8 @@ public final class MovementListener implements IClaimListener {
     /**
      * Riding across a border a player's own feet could not cross.
      *
-     * <p>{@link PlayerMoveEvent} does not fire for a passenger — the boat, horse or Happy Ghast under them
-     * moves and the passenger's position moves with it, but only {@link org.bukkit.event.vehicle.VehicleMoveEvent}
-     * reports it. Without this, a player banned from a claim, or one it merely refuses entry to, only had to
+     * <p>{@link PlayerMoveEvent} does not fire for a passenger. For a boat or minecart only
+     * {@link org.bukkit.event.vehicle.VehicleMoveEvent} reports the move; living mounts go through {@link #onMountMove}. Without this, a player banned from a claim, or one it merely refuses entry to, only had to
      * bring a mount along to sit inside it undisturbed — the gate that stops walking and teleporting never
      * ran at all.
      *
@@ -348,20 +347,49 @@ public final class MovementListener implements IClaimListener {
      */
     @EventHandler(priority = EventPriority.NORMAL)
     public void onVehicleMove(org.bukkit.event.vehicle.VehicleMoveEvent event) {
-        Location from = event.getFrom();
-        Location to = event.getTo();
-        if (from.getBlockX() == to.getBlockX() && from.getBlockY() == to.getBlockY()
-                && from.getBlockZ() == to.getBlockZ()) {
+        if (rideRefused(event.getVehicle(), event.getFrom(), event.getTo())) {
+            turnBack(event.getVehicle(), event.getFrom());
+        }
+    }
+
+    /**
+     * The same border for anything alive that can be ridden: camel, horse, pig, strider, Happy Ghast.
+     *
+     * <p>Paper fires {@link org.bukkit.event.vehicle.VehicleMoveEvent} only for boats and minecarts. A living
+     * mount reports its moves through {@link io.papermc.paper.event.entity.EntityMoveEvent} alone, so riding a
+     * camel used to skip the gate completely.
+     *
+     * <p>Cancelling only snaps the mount back on the server. The rider steers it from their own client, which
+     * never hears about that, so {@link #turnBack} still has to move the rider too.
+     */
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onMountMove(io.papermc.paper.event.entity.EntityMoveEvent event) {
+        if (!event.hasChangedBlock()) {
             return;
         }
+        if (rideRefused(event.getEntity(), event.getFrom(), event.getTo())) {
+            event.setCancelled(true);
+            turnBack(event.getEntity(), event.getFrom());
+        }
+    }
+
+    /**
+     * Runs the walking gate for every player riding this entity and, if they all may pass, moves the border
+     * tracker along with them. True when the crossing is refused; one refused rider refuses the whole ride.
+     */
+    private boolean rideRefused(org.bukkit.entity.Entity mount, Location from, Location to) {
+        if (from.getBlockX() == to.getBlockX() && from.getBlockY() == to.getBlockY()
+                && from.getBlockZ() == to.getBlockZ()) {
+            return false;
+        }
         java.util.List<Player> riders = new java.util.ArrayList<>(2);
-        for (org.bukkit.entity.Entity passenger : event.getVehicle().getPassengers()) {
+        for (org.bukkit.entity.Entity passenger : mount.getPassengers()) {
             if (passenger instanceof Player player) {
                 riders.add(player);
             }
         }
         if (riders.isEmpty()) {
-            return;
+            return false;
         }
 
         Optional<Claim> toClaim = services.claims().at(to);
@@ -369,9 +397,7 @@ public final class MovementListener implements IClaimListener {
             Claim claim = toClaim.get();
             for (Player rider : riders) {
                 if (checkGate(rider, claim, to, false) != Gate.OPEN) {
-                    event.getVehicle().teleport(from);
-                    event.getVehicle().setVelocity(new org.bukkit.util.Vector(0, 0, 0));
-                    return;
+                    return true;
                 }
             }
         }
@@ -390,6 +416,37 @@ public final class MovementListener implements IClaimListener {
             if (targetId != null) {
                 toClaim.ifPresent(claim -> onEnter(rider, claim));
             }
+        }
+        return false;
+    }
+
+    /**
+     * Puts a refused ride back where it came from, riders included, and seats them again a tick later.
+     *
+     * <p>Moving only the mount is not enough: whoever steers it does so from their own client, which ignores a
+     * server-side move of the mount and keeps riding on. A player teleport is the one correction a client
+     * always takes, and it unseats them, so they go back on afterwards.
+     */
+    private void turnBack(org.bukkit.entity.Entity mount, Location from) {
+        java.util.List<org.bukkit.entity.Entity> passengers = new java.util.ArrayList<>(mount.getPassengers());
+        mount.teleport(from);
+        mount.setVelocity(new org.bukkit.util.Vector(0, 0, 0));
+        for (org.bukkit.entity.Entity passenger : passengers) {
+            if (!(passenger instanceof Player rider)) {
+                continue;
+            }
+            Location back = from.clone();
+            Location facing = rider.getLocation();
+            if (facing != null) {
+                back.setYaw(facing.getYaw());
+                back.setPitch(facing.getPitch());
+            }
+            rider.teleport(back);
+            de.raindancer.core.platform.util.Scheduling.entityLater(services.plugin(), rider, 1L, () -> {
+                if (mount.isValid() && rider.isOnline() && !mount.getPassengers().contains(rider)) {
+                    mount.addPassenger(rider);
+                }
+            });
         }
     }
 

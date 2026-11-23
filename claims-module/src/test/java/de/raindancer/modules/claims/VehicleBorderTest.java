@@ -9,7 +9,9 @@ import de.raindancer.core.world.protection.Land;
 import de.raindancer.core.world.protection.LandAction;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Camel;
 import org.bukkit.entity.Player;
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.util.Vector;
@@ -141,5 +143,81 @@ class VehicleBorderTest {
         listener.onVehicleMove(new VehicleMoveEvent(vehicle, from, to));
 
         verify(vehicle, never()).teleport(any(Location.class));
+    }
+
+    // ------------------------------------------------------------ living mounts
+
+    /*
+     * Paper fires VehicleMoveEvent only for boats and minecarts. A camel, horse, pig, strider or Happy
+     * Ghast is a living entity and reports its moves through EntityMoveEvent alone, so the handler above
+     * never saw them: a banned player only had to sit on a camel to ride straight into the claim.
+     */
+
+    private Camel camelCarrying(Player... riders) {
+        Camel camel = mock(Camel.class);
+        org.mockito.Mockito.lenient().when(camel.getPassengers())
+                .thenReturn(List.<org.bukkit.entity.Entity>of(riders));
+        return camel;
+    }
+
+    @Test
+    @DisplayName("a camel carrying a banned rider is stopped at the border, rider and all")
+    void aBannedCamelRiderIsTurnedBack() {
+        Claim claim = claim();
+        MovementListener listener = listener(claim);
+        Player rider = FakeServices.player(banned);
+        when(rider.isOnline()).thenReturn(true);
+        Camel camel = mock(Camel.class);
+        when(camel.isValid()).thenReturn(true);
+        // Seated while crossing, unseated once the teleport has run — as on a real server.
+        when(camel.getPassengers()).thenReturn(List.<org.bukkit.entity.Entity>of(rider),
+                List.<org.bukkit.entity.Entity>of(rider), List.of());
+
+        Location from = FakeServices.at(world, -1, 5, 5);
+        Location to = FakeServices.at(world, 1, 5, 5);
+        EntityMoveEvent event = new EntityMoveEvent(camel, from, to);
+        listener.onMountMove(event);
+
+        assertThat(event.isCancelled()).isTrue();
+        verify(camel).teleport(from);
+        // The rider steers the camel from their own client, which never hears about a server-side snap of
+        // the camel alone; only a teleport of the player is guaranteed to reach them.
+        verify(rider).teleport(any(Location.class));
+        verify(camel).addPassenger(rider);
+        assertThat(listener.claimOf(rider)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("a camel with a welcome rider walks in, and the tracker follows the rider")
+    void aWelcomeCamelRiderCrosses() {
+        Claim claim = claim();
+        MovementListener listener = listener(claim);
+        when(land.has(any(), any(), any(LandAction.class))).thenReturn(true);
+        Player rider = FakeServices.player(welcome);
+        Camel camel = camelCarrying(rider);
+
+        Location from = FakeServices.at(world, -1, 5, 5);
+        Location to = FakeServices.at(world, 1, 5, 5);
+        EntityMoveEvent event = new EntityMoveEvent(camel, from, to);
+        listener.onMountMove(event);
+
+        assertThat(event.isCancelled()).isFalse();
+        verify(camel, never()).teleport(any(Location.class));
+        assertThat(listener.claimOf(rider)).contains(claim);
+    }
+
+    @Test
+    @DisplayName("a riderless camel wandering in is none of the claim gate's business")
+    void aRiderlessCamelIsIgnored() {
+        Claim claim = claim();
+        MovementListener listener = listener(claim);
+        Camel camel = camelCarrying();
+
+        EntityMoveEvent event = new EntityMoveEvent(camel,
+                FakeServices.at(world, -1, 5, 5), FakeServices.at(world, 1, 5, 5));
+        listener.onMountMove(event);
+
+        assertThat(event.isCancelled()).isFalse();
+        verify(camel, never()).teleport(any(Location.class));
     }
 }
