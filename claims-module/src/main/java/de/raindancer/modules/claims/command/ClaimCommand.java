@@ -247,7 +247,6 @@ public final class ClaimCommand implements IClaimCommand {
     /** Stops the border being drawn. The counterpart to 'show', which otherwise runs until it times out. */
     private void hide(ClaimServices claims, Player player) {
         claims.visualizer().stop(player);
-        claims.messages().send(player, "claim.border-hidden");
     }
 
     /**

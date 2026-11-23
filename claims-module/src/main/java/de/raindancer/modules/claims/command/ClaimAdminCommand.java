@@ -122,7 +122,6 @@ public final class ClaimAdminCommand implements IClaimCommand {
             claims.messages().send(sender, "error.players-only");
             return;
         }
-        claims.messages().send(player, "admin.open-flags");
         new de.raindancer.modules.claims.screen.FlagPolicyMenu(claims, player, null).open();
     }
 

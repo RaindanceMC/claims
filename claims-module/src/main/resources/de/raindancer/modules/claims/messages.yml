@@ -33,7 +33,6 @@ claim:
     <dark_gray>everything else is in the menus
   manual-given: "<green>The manual is in your inventory. <gray>Read it any time."
   stick-given: "<green>Here is your marking-out tool. <gray>Left click one corner, right click the other."
-  border-hidden: "<gray>Borders hidden."
   rename-needs-a-name: "<red>Give it a name: <gray>/claim rename <new name>"
   group:
     given: "<green><white><claim></white> belongs to <white><group></white> <gray>[<tag>]</gray> now as well: its leader owns it, its officers manage it, its members may build. <gray>/claim guild off takes it back."
@@ -243,7 +242,6 @@ admin:
   here-flag-line: "<dark_gray>· <white><flag><dark_gray>: claim <gray><override><dark_gray>, so <white><verdict>"
   here-flag-tiers: "<dark_gray>· <white><flag><dark_gray>: owner <gray><owner><dark_gray>, trusted <gray><trusted><dark_gray>, visitor <gray><visitor>"
   stick-received: "<green><admin> gave you a marking-out tool. <gray>Left click one corner, right click the other."
-  open-flags: "<gray>Opening the flag settings."
   overview: "<gray><claims> claim(s), <zones> zone(s), <tracked> player(s) tracked. <dark_gray>land answered by <answering>"
   bypass-on: "<green>Bypass on. You ignore every claim."
   bypass-off: "<gray>Bypass off. Claims apply to you again."
