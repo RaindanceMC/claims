@@ -270,7 +270,7 @@ admin:
 
 server:
   # ── /serverclaim, also /claimadmin server: the server's own claims ──────
-  usage: "<gray>/serverclaim <white>list</white>, <white>create</white>, <white>resize</white>, <white>rename</white>, <white>delete</white>, <white>info</white>, <white>flag</white>, <white>public</white>, <white>border</white>, <white>trust</white>, <white>untrust</white>, <white>open</white>."
+  usage: "<gray>/serverclaim <white>list</white>, <white>create</white>, <white>resize</white>, <white>rename</white>, <white>delete</white>, <white>info</white>, <white>flag</white>, <white>public</white>, <white>border</white>, <white>quiet</white>, <white>polygon</white>, <white>trust</white>, <white>untrust</white>, <white>open</white>."
   list-header: "<gray>The server holds <white><count></white> claim(s):"
   list-line: "<dark_gray>· <white><claim></white> <dark_gray>in <gray><world></gray>, <gray><area></gray> blocks, x <x1>..<x2> z <z1>..<z2>"
   console-needs-coordinates: "<gray>From here, give the shape too: <white>create name world x1 z1 x2 z2</white> or <white>create name world circle x z radius</white>; <white>resize name x1 z1 x2 z2</white> or <white>resize name circle x z radius</white>."
@@ -294,6 +294,13 @@ server:
   untrusted: "<yellow><white><player></white> is no longer trusted on <white><claim></white>."
   not-trusted: "<gray><white><player></white> was not trusted on <white><claim></white>."
   not-a-number: "<gray><white><input></white> is not a whole number."
+  quiet-on: "<green>Crossing the border of <white><claim></white> now says nothing: no notice, no title, no flash."
+  quiet-off: "<yellow>Crossing the border of <white><claim></white> is announced again."
+  polygon-unusable: "<gray>Cannot use that outline: <white><problem></white>."
+  polygon-no-file: "<gray>No file <white><file></white>. <dark_gray>Put it in <white><folder></white>, or type the corners as <white>x,z;x,z;...</white>"
+  polygon-placed: "<green>The server now holds <white><claim></white>: <gray><corners> corners, <area> blocks, fully protected."
+  polygon-road: "<green><white><claim></white> is a road now: <gray><corners> corners, <area> blocks. Everybody may pass, ride and lead animals; nobody may build or break. Crossing it is quiet."
+  polygon-shares: "<dark_gray>Shares ground with <gray><claims></gray>; inside an overlap the smaller claim applies."
 
 upkeep:
   disabled: "<gray>This server charges no claim upkeep."

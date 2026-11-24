@@ -9,7 +9,7 @@ order: 31
 module: claims
 permission: rainsclaims.admin.server
 aliases: [serverclaim, serverclaims, sclaim, server-claim, spawn-claim]
-keywords: [spawn, server, protect, grief, builders, trust, force, overlap]
+keywords: [spawn, server, protect, grief, builders, trust, force, overlap, polygon, road, highway, quiet]
 commands: [serverclaim]
 related: [claim-staff, claim-rules]
 sections:
@@ -17,6 +17,10 @@ sections:
     title: Making one
     text: |
       {cmd:/serverclaim create <name>} hands you the marking tool: mark the corners and finish, and the claim reaches the full height of the world. From the console, give the rectangle instead: {cmd:/serverclaim create <name> <world> <x1> <z1> <x2> <z2>}, or make it round: {cmd:/serverclaim create <name> <world> circle <x> <z> <radius>}. The same is in {run:/claimadmin} under <b>The server's own claims</b>, and every word also works as {cmd:/claimadmin server …}.
+  - question: How do I claim a road or odd shape?
+    title: Any outline
+    text: |
+      {cmd:/serverclaim polygon <name> <world> <file>} claims the outline in a file under <white>polygons/</white> in the plugin's folder, one corner <white>x,z</white> per line (blank lines and <white>#</white> comments are skipped); or type the corners straight in as <white>x,z;x,z;…</white>. The same name again redraws it. Add <white>road</white> to open it for traffic: everybody may also ride, lead animals and use carts and boats, still nobody builds or breaks, and crossing it says nothing, so riding from one section into the next is quiet. Only a player's claim in the way stops it (add <white>force</white>); other server claims may share ground. {cmd:/serverclaim quiet <name> <on|off>} silences any server claim's border.
   - question: What does it protect?
     title: Fully protected
     text: |

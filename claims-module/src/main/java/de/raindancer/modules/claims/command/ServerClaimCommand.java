@@ -10,6 +10,7 @@ import de.raindancer.modules.claims.rules.ClaimAreaRule;
 import de.raindancer.modules.claims.selection.Selection;
 import de.raindancer.modules.claims.service.ClaimService;
 import de.raindancer.modules.claims.util.ClaimPermissions;
+import de.raindancer.modules.claims.util.PolygonText;
 import de.raindancer.modules.claims.util.Subjects;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.World;
@@ -42,7 +43,7 @@ public final class ServerClaimCommand implements IClaimCommand {
     }
 
     private static final List<String> WORDS = List.of("list", "create", "resize", "rename", "delete", "info",
-            "flag", "public", "border", "trust", "untrust", "open");
+            "flag", "public", "border", "quiet", "polygon", "trust", "untrust", "open");
 
     private final Supplier<ClaimServices> services;
 
@@ -90,6 +91,8 @@ public final class ServerClaimCommand implements IClaimCommand {
             case "flag" -> flag(claims, sender, args);
             case "public" -> publicAction(claims, sender, args);
             case "border" -> border(claims, sender, args);
+            case "quiet" -> quiet(claims, sender, args);
+            case "polygon" -> polygon(claims, sender, args);
             case "trust" -> trust(claims, sender, args, true);
             case "untrust" -> trust(claims, sender, args, false);
             case "open", "menu" -> open(claims, sender, args);
@@ -247,7 +250,8 @@ public final class ServerClaimCommand implements IClaimCommand {
                 "x1", String.valueOf(claim.shape().minX()), "z1", String.valueOf(claim.shape().minZ()),
                 "x2", String.valueOf(claim.shape().maxX()), "z2", String.valueOf(claim.shape().maxZ()));
         claims.messages().sendPlain(sender, "server.info-border",
-                "border", claim.borderAlwaysShown() ? "always shown" : "shown on entering");
+                "border", claim.quiet() ? "never shown, crossing it is quiet"
+                        : claim.borderAlwaysShown() ? "always shown" : "shown on entering");
         claims.messages().sendPlain(sender, "server.info-trusted",
                 "people", String.valueOf(claim.members().size()),
                 "permission", ClaimAreaRule.rolePermission(claim));
@@ -345,6 +349,109 @@ public final class ServerClaimCommand implements IClaimCommand {
                 "claim", claim.name());
     }
 
+    /** {@code quiet <name> <on|off>} — whether crossing its border says anything at all. */
+    private void quiet(ClaimServices claims, CommandSender sender, String[] args) {
+        String usage = "/serverclaim quiet <name> <on|off>";
+        Optional<Claim> found = serverClaim(claims, sender, args, usage);
+        if (found.isEmpty()) {
+            return;
+        }
+        Optional<Optional<Boolean>> value = args.length < 3 ? Optional.empty() : switchWord(args[2]);
+        if (value.isEmpty() || value.get().isEmpty()) {
+            claims.messages().send(sender, "claim.who", "usage", usage);
+            return;
+        }
+        Claim claim = found.get();
+        claim.quiet(value.get().get());
+        claims.claimService().saveAsync(claim);
+        claims.messages().send(sender, value.get().get() ? "server.quiet-on" : "server.quiet-off",
+                "claim", claim.name());
+    }
+
+    /**
+     * {@code polygon <name> <world> <file | x,z;x,z;…> [road] [force]} — a server claim of any outline, made or
+     * redrawn under that name. A file is looked for in {@code polygons/} in the plugin's folder, then in the
+     * folder itself, and never outside it.
+     */
+    private void polygon(ClaimServices claims, CommandSender sender, String[] args) {
+        List<String> words = new ArrayList<>(Arrays.asList(args));
+        boolean force = false;
+        boolean road = false;
+        while (words.size() > 4) {
+            String last = words.get(words.size() - 1).toLowerCase(Locale.ROOT);
+            if (last.equals("force")) {
+                force = true;
+            } else if (last.equals("road")) {
+                road = true;
+            } else {
+                break;
+            }
+            words.remove(words.size() - 1);
+        }
+        if (words.size() < 4) {
+            claims.messages().send(sender, "claim.who", "usage", POLYGON_USAGE);
+            return;
+        }
+        String name = words.get(1);
+        World world = claims.server().getWorld(words.get(2));
+        if (world == null) {
+            claims.messages().send(sender, "error.world-missing", "world", words.get(2));
+            return;
+        }
+        // An inline outline may have been typed with spaces after the semicolons; put it back together.
+        String source = String.join(" ", words.subList(3, words.size()));
+        Optional<String> text = outlineText(claims, sender, source);
+        if (text.isEmpty()) {
+            return;
+        }
+        PolygonText.Outline outline = PolygonText.parse(text.get());
+        if (outline.problem() != null) {
+            claims.messages().send(sender, "server.polygon-unusable", "problem", outline.problem());
+            return;
+        }
+        ClaimShape shape = new ClaimShape(outline.points(), world.getMinHeight(), world.getMaxHeight() - 1);
+        ClaimService.Result result = claims.claimService().placeServerPolygon(world, shape, name, road, force);
+        if (!result.success()) {
+            if (result.failure() == ClaimService.Failure.OTHER) {
+                claims.messages().send(sender, "server.polygon-unusable", "problem", result.detail());
+            } else {
+                claims.selectionFlow().reportServerFailure(sender, result.failure(), name, result.detail());
+            }
+            return;
+        }
+        claims.messages().send(sender, road ? "server.polygon-road" : "server.polygon-placed",
+                "claim", result.claim().name(),
+                "corners", String.valueOf(shape.vertices().size()),
+                "area", String.valueOf(shape.areaBlocks()));
+        if (!result.detail().isBlank()) {
+            claims.messages().sendPlain(sender, "server.polygon-shares", "claims", result.detail());
+        }
+    }
+
+    /** The outline as typed, or read from a file in the plugin's folder when it does not look like corners. */
+    private static Optional<String> outlineText(ClaimServices claims, CommandSender sender, String source) {
+        if (source.contains(";")) {
+            return Optional.of(source);
+        }
+        java.nio.file.Path folder = claims.plugin().getDataFolder().toPath().toAbsolutePath().normalize();
+        for (java.nio.file.Path candidate : List.of(folder.resolve("polygons").resolve(source), folder.resolve(source))) {
+            java.nio.file.Path file = candidate.toAbsolutePath().normalize();
+            if (!file.startsWith(folder) || !java.nio.file.Files.isRegularFile(file)) {
+                continue;
+            }
+            try {
+                return Optional.of(java.nio.file.Files.readString(file));
+            } catch (java.io.IOException unreadable) {
+                claims.messages().send(sender, "server.polygon-unusable", "problem",
+                        "cannot read " + folder.relativize(file) + ": " + unreadable.getMessage());
+                return Optional.empty();
+            }
+        }
+        claims.messages().send(sender, "server.polygon-no-file", "file", source,
+                "folder", folder.resolve("polygons").toString());
+        return Optional.empty();
+    }
+
     /** Trusts a named person — a builder — with the usual package, or takes it away again. */
     private void trust(ClaimServices claims, CommandSender sender, String[] args, boolean trusting) {
         String usage = "/serverclaim " + (trusting ? "trust" : "untrust") + " <name> <player>";
@@ -402,6 +509,8 @@ public final class ServerClaimCommand implements IClaimCommand {
 
     private static final String CREATE_USAGE =
             "/serverclaim create <name> [<world> <x1> <z1> <x2> <z2> | <world> circle <x> <z> <radius>] [force]";
+    private static final String POLYGON_USAGE =
+            "/serverclaim polygon <name> <world> <file | x,z;x,z;...> [road] [force]";
     private static final String RESIZE_USAGE =
             "/serverclaim resize <name> [<x1> <z1> <x2> <z2> | circle <x> <z> <radius>] [force]";
 
@@ -462,7 +571,8 @@ public final class ServerClaimCommand implements IClaimCommand {
         List<String> words = new ArrayList<>();
         if (args.length <= 1) {
             words.addAll(WORDS);
-        } else if (args.length == 2 && !args[0].equalsIgnoreCase("create") && !args[0].equalsIgnoreCase("list")) {
+        } else if (args.length == 2 && !args[0].equalsIgnoreCase("create") && !args[0].equalsIgnoreCase("list")
+                && !args[0].equalsIgnoreCase("polygon")) {
             services.get().claims().serverClaims().forEach(claim -> words.add(claim.name()));
         } else if (args.length == 3 && args[0].equalsIgnoreCase("create")) {
             services.get().server().getWorlds().forEach(world -> words.add(world.getName()));
@@ -477,7 +587,11 @@ public final class ServerClaimCommand implements IClaimCommand {
             }
         } else if (args.length == 4 && args[0].equalsIgnoreCase("flag")) {
             words.addAll(List.of("allow", "deny", "default"));
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("border")) {
+        } else if (args.length == 3 && args[0].equalsIgnoreCase("polygon")) {
+            services.get().server().getWorlds().forEach(world -> words.add(world.getName()));
+        } else if (args.length >= 5 && args[0].equalsIgnoreCase("polygon")) {
+            words.addAll(List.of("road", "force"));
+        } else if (args.length == 3 && (args[0].equalsIgnoreCase("border") || args[0].equalsIgnoreCase("quiet"))) {
             words.addAll(List.of("on", "off"));
         } else if (args.length == 4 && args[0].equalsIgnoreCase("public")) {
             words.addAll(List.of("allow", "deny"));

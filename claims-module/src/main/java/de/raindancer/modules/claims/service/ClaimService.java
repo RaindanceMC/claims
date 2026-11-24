@@ -299,6 +299,57 @@ public final class ClaimService implements IClaimService {
         return Result.ok(claim);
     }
 
+    /**
+     * A server claim of exactly this outline under this name: made if the server holds none by that name, redrawn
+     * if it does — so a generated road can be laid again section by section without deleting anything first.
+     *
+     * <p>Only a player's claim is in the way (refused unless {@code force}); other server claims — the next
+     * section, spawn — may share ground, and are named in the result's detail. Where two overlap the smaller
+     * one applies. A {@code road} is open for traffic as well: visitors may also ride and lead animals and use
+     * carts and boats, and crossing its border is {@link Claim#quiet() quiet}. Building and breaking stay closed.
+     */
+    public Result placeServerPolygon(World world, ClaimShape shape, String name, boolean road, boolean force) {
+        if (!de.raindancer.modules.claims.model.ClaimNames.isValidName(name)) {
+            return Result.fail(Failure.NAME_INVALID, name == null ? "" : name);
+        }
+        Optional<Claim> existing = registry.serverClaim(name);
+        if (existing.isPresent() && !existing.get().worldId().equals(world.getUID())) {
+            return Result.fail(Failure.OTHER, name + " is in " + existing.get().worldName());
+        }
+        UUID ignore = existing.map(Claim::id).orElse(null);
+        java.util.List<String> sharing = new java.util.ArrayList<>();
+        for (Claim candidate : registry.candidatesFor(world.getUID(), shape)) {
+            if (candidate.id().equals(ignore) || !candidate.shape().intersects(shape)) {
+                continue;
+            }
+            if (!candidate.isServerClaim() && !force) {
+                return Result.fail(Failure.OVERLAPS_CLAIM, candidate.name());
+            }
+            sharing.add(candidate.name());
+        }
+        Claim claim;
+        if (existing.isPresent()) {
+            claim = existing.get();
+            claim.shape(shape);
+            followShape(claim);
+            registry.reindex(claim);
+            if (fences != null) {
+                fences.sync(claim, null, "admin-reshape");
+            }
+        } else {
+            claim = Claim.server(UUID.randomUUID(), name, world.getUID(), world.getName(), shape);
+            claim.fence().material(settings.fenceDefaultMaterial());
+            registry.add(claim);
+        }
+        if (road) {
+            claim.setPublic(de.raindancer.core.world.protection.LandAction.ANIMALS, true);
+            claim.setPublic(de.raindancer.core.world.protection.LandAction.VEHICLES, true);
+            claim.quiet(true);
+        }
+        saveAsync(claim);
+        return new Result(true, null, claim, String.join(", ", sharing));
+    }
+
     /** Redraws a server claim; an overlap is refused unless forced. Empty when it worked. */
     public Optional<Failure> reshapeServerClaim(Claim claim, ClaimShape shape, boolean force) {
         if (!force && firstOverlap(claim.worldId(), shape, claim.id()).isPresent()) {

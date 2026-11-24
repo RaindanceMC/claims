@@ -503,7 +503,7 @@ public final class MovementListener implements IClaimListener {
     // ------------------------------------------------------------ enter and leave effects
 
     private void onEnter(Player player, Claim claim) {
-        if (isMuted(claim) || !announceable(player, claim)) {
+        if (claim.quiet() || isMuted(claim) || !announceable(player, claim)) {
             return;
         }
         if (services.features().appliesTo(claim, ClaimFeature.TITLES, player)
@@ -533,7 +533,7 @@ public final class MovementListener implements IClaimListener {
         if (!claim.effects().isEmpty()) {
             services.ambience().onLeaveClaim(player);
         }
-        if (isMuted(claim)) {
+        if (claim.quiet() || isMuted(claim)) {
             return;
         }
         if (services.features().appliesTo(claim, ClaimFeature.TITLES, player)

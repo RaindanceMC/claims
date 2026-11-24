@@ -172,6 +172,9 @@ public final class ClaimStorage {
         if (yaml.getBoolean("border-always", false)) {
             claim.borderAlwaysShown(true);
         }
+        if (yaml.getBoolean("quiet", false)) {
+            claim.quiet(true);
+        }
         claim.createdAt(yaml.getLong("created-at", System.currentTimeMillis()));
         // A guild's claim — absent on every file written before groups existed, which is "no group".
         claim.setGroup(yaml.getString("group", null));
@@ -494,6 +497,7 @@ public final class ClaimStorage {
         yaml.set("owners", owners);
         yaml.set("server", claim.isServerClaim() ? true : null);
         yaml.set("border-always", claim.borderAlwaysShown() ? true : null);
+        yaml.set("quiet", claim.quiet() ? true : null);
 
         List<String> publicPermissions = new ArrayList<>();
         claim.publicPermissions().forEach(permission -> publicPermissions.add(permission.key()));
