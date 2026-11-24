@@ -230,7 +230,8 @@ public final class ClaimRegistry {
 
     /**
      * The claim at a location. When several stacked claims cover the column the one with the smaller
-     * vertical range wins, so a small underground claim inside a huge surface claim still applies.
+     * vertical range wins, so a small underground claim inside a huge surface claim still applies; of two
+     * equally tall ones, the smaller footprint.
      */
     public Optional<Claim> at(Location location) {
         if (location == null || location.getWorld() == null) {
@@ -253,11 +254,28 @@ public final class ClaimRegistry {
             if (!claim.shape().containsBlock(x, y, z)) {
                 continue;
             }
-            if (best == null || claim.shape().height() < best.shape().height()) {
+            if (best == null || smaller(claim, best)) {
                 best = claim;
             }
         }
         return Optional.ofNullable(best);
+    }
+
+    /**
+     * Whether a claim is the more specific of two covering the same block: the lower one first, then — for
+     * the same height, a road across spawn say — the smaller footprint, then the name, so the answer never
+     * depends on which happened to be loaded first.
+     */
+    private static boolean smaller(Claim claim, Claim than) {
+        int height = Integer.compare(claim.shape().height(), than.shape().height());
+        if (height != 0) {
+            return height < 0;
+        }
+        int area = Long.compare(claim.shape().areaBlocks(), than.shape().areaBlocks());
+        if (area != 0) {
+            return area < 0;
+        }
+        return claim.name().compareToIgnoreCase(than.name()) < 0;
     }
 
     /**
